@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Pemilihan (Pascal, C, C++)}
+\section{Pendahuluan}
+Pemilihan adalah mekanisme kontrol alur yang memungkinkan program mengeksekusi cabang berbeda berdasarkan kondisi yang dievaluasi. Dengan struktur ini, algoritma dapat mengekspresikan keputusan, penanganan kasus khusus, dan pengelolaan kesalahan secara jelas. Di Pascal, C, dan C++, konstruksi dasar seperti \texttt{if} dan \texttt{switch/case} menyediakan fondasi umum.
+
+Desain percabangan yang baik menekankan keterbacaan, pemisahan kondisi kompleks menjadi subekspresi bernama, dan penggunaan default path yang eksplisit. Pola seperti early return dapat mengurangi kedalaman indentasi dan mempermudah pelacakan alur. Lihat \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} untuk ringkasan konsep dan variasi sintaks di tiap bahasa.
+
+\section{Pemilihan di Pascal}
+Pascal menyediakan \texttt{if ... then} dan \texttt{if ... then ... else} untuk percabangan dua arah atau lebih dengan pengelompokan \texttt{begin ... end}. Struktur \texttt{case ... of} memberi cara ringkas memilih di antara beberapa nilai diskret, sering dipakai pada tipe enumerasi. Penempatan \texttt{else} yang jelas dan konsisten membantu menghindari ambiguitas pengikatan.
+
+Kisaran nilai pada \texttt{case} dapat didefinisikan sebagai rentang, dan bagian \texttt{else} menyediakan jalur default ketika tidak ada alternatif yang cocok. Praktik baik mendorong pemecahan kondisi kompleks ke dalam fungsi boolean bernama agar maksudnya mudah dipahami. Rujuk \textcite{pascal-tutorial-wikibooks} untuk contoh idiomatik dan batasan tipe yang diizinkan.
+
+\section{Pemilihan di C}
+C menggunakan \texttt{if}, \texttt{else if}, dan \texttt{else} untuk membangun rantai keputusan dengan ekspresi bernilai bukan nol sebagai benar. Penggunaan kurung kurawal disarankan meskipun hanya satu pernyataan untuk mencegah kesalahan saat menambah baris baru. Waspadai kekeliruan umum seperti menukar operator penugasan dan perbandingan.
+
+Konstruksi \texttt{switch} mendukung pemilihan berbasis nilai integral, dengan perilaku jatuh-temurun (fallthrough) kecuali dihentikan oleh \texttt{break}. Penambahan cabang \texttt{default} menjamin adanya jalur ketika tidak ada konstanta yang cocok, meningkatkan keandalan. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk rincian semantik dan aturan label kasus.
+
+\section{Pemilihan di C++}
+C++ mewarisi \texttt{if} dan \texttt{switch} dari C, serta menambah fitur seperti inisialisasi di \texttt{if} (C++17) untuk membatasi cakupan variabel sementara. Dukungan \texttt{constexpr if} memungkinkan pemilihan pada waktu kompilasi dalam konteks templat, sehingga mengurangi cabang runtime. Tipe enumerasi bertipe kuat (\texttt{enum class}) memperkecil risiko konflik nilai.
+
+Pada \texttt{switch}, penggunaan \texttt{enum class} dan klausa \texttt{default} yang eksplisit membantu menjaga ketangguhan terhadap penambahan nilai baru. Untuk keputusan kompleks, kombinasi objek predicate, polimorfisme, atau \texttt{std::variant} dapat menggantikan rantai \texttt{if} yang panjang. Rujuk \textcite{cpp-reference} untuk praktik modern dan pertimbangan kinerja.
+\end{document}

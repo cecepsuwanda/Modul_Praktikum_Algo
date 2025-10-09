@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Array/Larik (Pascal, C, C++)}
+\section{Pendahuluan}
+Array adalah struktur data berindeks yang menyimpan elemen bertipe sama dalam memori bersebelahan. Representasi ini memungkinkan akses acak yang efisien, tetapi menuntut disiplin dalam menjaga batas. Di Pascal, C, dan C++, konsep array hadir dengan variasi sintaks dan fitur pelengkap.
+
+Desain yang baik mengharuskan penentuan ukuran, kebijakan kepemilikan, dan strategi validasi indeks sejak awal. Untuk koleksi yang ukurannya berubah-ubah, struktur dinamis seperti vektor atau daftar mungkin lebih tepat. Rujuk \textcite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference} untuk dasar teoretis dan praktik implementasi.
+
+\section{Array di Pascal}
+Pascal mendukung array statis dengan batas eksplisit, misalnya \texttt{array[1..N] of integer}, yang membantu deteksi kesalahan indeks pada saat kompilasi. Banyak dialek juga menyediakan array dinamis yang dialokasikan saat runtime untuk fleksibilitas ukuran. Tipe string tradisional sering direpresentasikan sebagai array karakter yang diterminasi.
+
+Penentuan rentang indeks yang sesuai domain masalah memudahkan penalaran dan mencegah off-by-one error. Saat memakai array dinamis, manajemen memori dan penyalinan perlu diperhatikan untuk menghindari kebocoran. Lihat \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk perincian sintaks dan contoh penggunaan.
+
+\section{Array di C}
+Di C, array memiliki ukuran tetap yang menjadi bagian dari tipenya, dengan elemen disusun kontigu dalam memori. Nama array akan terdegradasi menjadi pointer ke elemen pertama pada banyak konteks, yang memengaruhi cara fungsi menerima parameter. Penanganan string menggunakan array karakter yang diakhiri null dan membutuhkan kehati-hatian terhadap buffer.
+
+Standar C juga mengenal VLA (Variable Length Array) pada beberapa revisi, namun dukungannya bervariasi dan penggunaannya harus dipertimbangkan dengan hati-hati. Operasi tingkat rendah seperti aritmetika pointer memberi fleksibilitas namun menambah risiko kesalahan batas. Rujuk \textcite{iso-c-draft-n1570,gnu-c-manual} untuk aturan indeks, representasi memori, dan pembatasannya.
+
+\section{Array di C++}
+C++ menawarkan \texttt{std::array} untuk ukuran tetap dan \texttt{std::vector} untuk ukuran dinamis, keduanya terintegrasi dengan ekosistem iterator dan algoritme standar. Struktur ini memberikan antarmuka aman dengan dukungan fungsi anggota seperti \texttt{size()} dan pemeriksaan batas melalui \texttt{at()}. Kinerja tetap kompetitif berkat penyimpanan kontigu dan optimasi kompilator.
+
+Pemilihan antara \texttt{std::array} dan \texttt{std::vector} bergantung pada apakah ukuran diketahui di waktu kompilasi dan kebutuhan re-alokasi. Penggunaan iterator dan range-based loop meningkatkan keterbacaan dan memudahkan abstraksi. Rujuk \textcite{cpp-reference} untuk dokumentasi antarmuka dan contoh idiomatik.
+\end{document}

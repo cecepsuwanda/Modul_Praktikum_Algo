@@ -3,21 +3,29 @@
 \chapter{Instruksi Output (Pascal, C, C++)}
 \section{Konsep Output}
 Instruksi output bertugas menyajikan hasil perhitungan atau informasi kepada pengguna melalui konsol atau media lain. Dalam Pascal, C, dan C++, konsep dasarnya sama yaitu memformat nilai dan menampilkannya menggunakan fungsi atau prosedur bawaan. Perbedaan utama terletak pada sintaks, pustaka standar, dan fleksibilitas format.
+
 Kualitas output dipengaruhi oleh kemampuan memformat string, pengendalian presisi numerik, dan penyisipan karakter khusus. Dengan pemahaman ini, mahasiswa dapat menghasilkan antarmuka teks yang jelas dan informatif saat menguji algoritma. Praktik pemformatan yang konsisten juga membantu saat membandingkan hasil antar bahasa.
-Sumber terbuka seperti \textcite{w3pascal-io,k&r-c-output-input,cppreference-io} menjelaskan berbagai fungsi I/O dan contoh format yang relevan. Materi ini penting untuk memantapkan pemahaman saat berpindah dari teori ke implementasi.
+
+Aspek lain yang perlu diperhatikan adalah pembulatan angka, lokal (locale), serta pemisah ribuan yang dapat memengaruhi keterbacaan. Pengembang juga perlu mengelola pesan kesalahan secara terpisah dari keluaran normal untuk memudahkan debugging dan automasi. Lihat \textcite{w3pascal-io,k&r-c-output-input,cplusplus-io} untuk referensi dan contoh yang dapat direplikasi.
 
 \section{Output di Pascal}
 Pascal menyediakan prosedur \texttt{Write} dan \texttt{Writeln} untuk menampilkan data, dengan dukungan format dasar seperti lebar bidang dan presisi. Pemrogram dapat mencetak beberapa argumen secara berurutan dan mengatur baris baru menggunakan \texttt{Writeln}. Pada varian modern, penanganan tipe string dan karakter telah disederhanakan sehingga lebih mudah digunakan.
+
 Pengaturan format yang tepat memudahkan pembacaan data numerik dan tabel sederhana. Selain itu, konvensi pemisahan logika perhitungan dan presentasi hasil dianjurkan untuk menjaga struktur kode. Hal ini sejalan dengan tujuan modularitas dalam pengembangan perangkat lunak.
-Contoh dan penjelasan tambahan tersedia pada \textcite{w3pascal-io,free-pascal-docs} yang membahas parameter format dan perilaku bawaan. Mahasiswa disarankan mencoba variasi lebar bidang dan presisi untuk melihat dampaknya.
+
+Untuk keluaran berkas, Pascal menyediakan mekanisme penulisan ke \texttt{textfile} yang seragam dengan keluaran ke konsol, sehingga mudah melakukan redireksi. Penggunaan format kolom dan perataan (alignment) membantu saat menyajikan laporan sederhana. Rujuk \textcite{w3pascal-io,free-pascal-docs} untuk variasi format dan contoh praktik.
 
 \section{Output di C}
-Dalam C, fungsi \texttt{printf} dari pustaka \texttt{stdio.h} merupakan sarana utama untuk output terformat. Spesifier seperti \texttt{%d}, \texttt{%f}, dan \texttt{%s} digunakan untuk mencetak bilangan bulat, pecahan, dan string dengan kontrol presisi dan lebar. Mekanisme ini kuat namun menuntut kecermatan dalam mencocokkan tipe argumen dengan format.
+Dalam C, fungsi \texttt{printf} dari pustaka \texttt{stdio.h} merupakan sarana utama untuk output terformat. Spesifier seperti \texttt{\%d}, \texttt{\%f}, dan \texttt{\%s} digunakan untuk mencetak bilangan bulat, pecahan, dan string dengan kontrol presisi dan lebar. Mekanisme ini kuat namun menuntut kecermatan dalam mencocokkan tipe argumen dengan format.
+
 Penggunaan \texttt{fprintf} dan \texttt{snprintf} memungkinkan pengalihan output ke berkas atau buffer, sehingga pola I/O dapat diuji tanpa interaksi langsung. Praktik aman meliputi pembatasan panjang buffer dan pemeriksaan nilai kembali fungsi untuk mendeteksi kesalahan. Disiplin ini penting terutama pada program berskala besar.
-Rujukan \textcite{k&r-c-output-input,gnu-c-manual} memberikan penjelasan rinci disertai contoh. Mahasiswa perlu menguasai pola umum agar dapat menulis keluaran yang konsisten dan dapat diandalkan.
+
+Disarankan memisahkan keluaran kesalahan melalui \texttt{stderr} untuk memudahkan automasi dan logging. Pertimbangkan pula pengaruh lokal terhadap pemformatan desimal dan gunakan batasan presisi agar hasil numerik konsisten. Rujuk \textcite{k&r-c-output-input,gnu-c-manual} untuk rincian spesifier dan contoh penggunaan.
 
 \section{Output di C++}
 C++ memanfaatkan pustaka \texttt{iostream} dengan operator \texttt{<<} untuk membangun aliran keluaran yang bertipe kuat. Pendekatan berbasis stream memudahkan komposisi dan mendukung overloading untuk tipe kustom sehingga objek dapat dicetak secara idiomatis. Manipulator seperti \texttt{std::fixed}, \texttt{std::setprecision}, dan \texttt{std::setw} menyediakan kontrol format yang ekspresif.
+
 Kelebihan model ini adalah integrasi dengan tipe standar dan dukungan internasionalisasi melalui facet. Namun, performa dan sintaks bisa berbeda dibanding \texttt{printf}, sehingga pemilihan pendekatan bergantung pada kebutuhan. Pengembang sering menggabungkan kedua model sesuai konteks.
-Lihat \textcite{cplusplus-io,cpp-reference} untuk katalog lengkap manipulator dan praktik terbaik. Materi tersebut menguatkan pemahaman mengenai perbedaan paradigma format antara C dan C++.
+
+Untuk interoperabilitas, sinkronisasi antara iostream dan stdio dapat dimatikan guna meningkatkan performa, meski perlu kehati-hatian pada program yang menggabungkan keduanya. Pemeriksaan dan pemulihan status stream penting untuk keandalan ketika terjadi kesalahan format. Lihat \textcite{cplusplus-io,cpp-reference} untuk katalog lengkap manipulator dan praktik terbaik.
 \end{document}

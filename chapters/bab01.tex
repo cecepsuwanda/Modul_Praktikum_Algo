@@ -3,21 +3,29 @@
 \chapter{Struktur Program (Pascal, C, C++)}
 \section{Pendahuluan}
 Algoritma dan pemrograman dimulai dari pemahaman struktur program yang menjadi kerangka dasar suatu berkas sumber. Struktur ini menentukan bagaimana compiler membaca deklarasi, fungsi, dan blok kode sehingga program dapat dieksekusi secara benar. Pada bahasa Pascal, C, dan C++, meskipun sintaks bervariasi, terdapat pola umum seperti bagian deklarasi, titik masuk program, serta aturan penulisan blok.
+
 Struktur program yang baik memudahkan pengembang untuk menjaga keterbacaan dan modularitas, memungkinkan pemisahan tanggung jawab dan pengujian yang lebih sistematis. Dengan membandingkan tiga bahasa, mahasiswa dapat melihat persamaan konseptual dan perbedaan praktis yang mempengaruhi gaya penulisan dan desain. Pemahaman ini akan menjadi fondasi untuk topik berikutnya seperti input/output dan kontrol alur.
-Sebagai penutup bagian ini, penting untuk menekankan bahwa struktur program tidak sekadar tata letak, tetapi juga mengandung konvensi yang berdampak pada maintainability. Rujukan sumber terbuka seperti \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} memberikan pedoman resmi dan contoh yang dapat dipelajari lebih lanjut.
+
+Sebagai penutup bagian ini, penting untuk menekankan bahwa struktur program tidak sekadar tata letak, tetapi juga mengandung konvensi yang berdampak pada maintainability. Konsistensi penamaan, penempatan deklarasi, dan pembagian modul membantu tim menjaga kualitas dan mencegah regresi saat skala kode tumbuh. Rujukan sumber terbuka seperti \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} memberikan pedoman resmi dan contoh yang dapat dipelajari lebih lanjut.
 
 \section{Struktur Program Pascal}
 Dalam Pascal, program biasanya diawali dengan kata kunci \texttt{program}, diikuti deklarasi \texttt{uses} untuk unit, dan bagian \texttt{var} untuk variabel global sebelum blok \texttt{begin ... end.}. Titik masuk program berada langsung dalam blok utama tersebut sehingga urutan eksekusi mengikuti pernyataan di dalamnya. Unit tambahan memungkinkan modularisasi dengan mendefinisikan \texttt{interface} dan \texttt{implementation}.
+
 Pendekatan ini menekankan pemisahan antara deklarasi dan implementasi, sekaligus mendukung tipe terstruktur seperti \texttt{record}. Banyak distro Pascal modern seperti Free Pascal mendokumentasikan praktik terbaik dalam menyusun unit dan program utama yang kompatibel lintas platform. Hal ini membantu mahasiswa memahami bagaimana proyek besar dibagi menjadi beberapa berkas.
-Sebagai penguatan, lihat \textcite{pascal-tutorial-wikibooks,free-pascal-docs} untuk contoh lengkap struktur program dan unit. Referensi tersebut menyediakan panduan sintaks dan organisasi proyek yang relevan untuk lingkungan pengembangan masa kini.
+
+Kerangka minimal sering terdiri dari judul program, daftar unit, deklarasi variabel, dan blok utama berisi urutan pernyataan. Untuk proyek lebih besar, unit digunakan sebagai modul yang dapat diuji terpisah, sehingga antarmuka menjadi stabil dan implementasi dapat berevolusi. Lihat \textcite{pascal-tutorial-wikibooks,free-pascal-docs} untuk contoh struktur proyek yang disarankan.
 
 \section{Struktur Program C}
 Bahasa C menempatkan titik masuk program pada fungsi \texttt{int main(void)} atau \texttt{int main(int argc, char** argv)}. Deklarasi prototipe fungsi, \texttt{typedef}, dan \texttt{struct} umumnya ditempatkan sebelum \texttt{main} atau dalam berkas header terpisah yang disertakan dengan \texttt{#include}. Penautan terhadap pustaka standar dan eksternal terjadi saat proses kompilasi dan linking.
+
 Konsep modul di C dicapai melalui pemisahan \texttt{.h} dan \texttt{.c}, sehingga simbol publik diekspos via header sementara implementasi disembunyikan dalam berkas sumber. Pola ini mendorong enkapsulasi tingkat file dan mengurangi kopling antar komponen. Disiplin ini penting untuk menjaga antarmuka stabil meski implementasi berubah.
-Sumber seperti \textcite{gnu-c-manual,iso-c-draft-n1570} memberikan spesifikasi dan penjelasan resmi mengenai struktur program dan aturan linkage. Mahasiswa dianjurkan untuk meninjau contoh-contoh minimal dan proyek berskala kecil untuk mempraktikkan penyusunan modul.
+
+Praktik yang dianjurkan meliputi penggunaan header guard, penempatan deklarasi publik di header, dan pembatasan visibilitas internal dengan kata kunci \texttt{static}. Proyek C yang rapi juga memisahkan tahap kompilasi per berkas dan tahap linking, sehingga perubahan lokal tidak memaksa kompilasi ulang seluruh proyek. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk detail aturan linkage dan cakupan.
 
 \section{Struktur Program C++}
 C++ mewarisi model kompilasi dari C, namun memperkenalkan paradigma berorientasi objek dan generik. Struktur umum tetap menggunakan \texttt{main} sebagai titik masuk, tetapi banyak program diorganisasikan menjadi kelas, templat, dan namespace. Pemisahan header dan implementasi masih lazim, dengan tambahan praktik \texttt{inline} untuk fungsi kecil dan definisi templat di header.
+
 Adopsi fitur seperti namespace membantu mencegah konflik nama dan memperjelas batas modul. Selain itu, idiom RAII (Resource Acquisition Is Initialization) memengaruhi struktur dan urutan konstruksi objek dalam cakupan blok. Praktik terbaik modern C++ menekankan penggunaan \texttt{#include} minimal dan kompilasi yang efisien.
-Untuk pendalaman, \textcite{cpp-reference} menyediakan dokumentasi komprehensif terkait struktur program, namespace, kelas, dan templat. Referensi tersebut berguna sebagai panduan saat merancang proyek C++ yang bersih dan terstruktur.
+
+Fitur modern seperti inisialisasi pada \texttt{if} (C++17), \texttt{constexpr} \texttt{if}, dan modul C++ (diadopsi bertahap) memengaruhi cara pengorganisasian kode. Meskipun modul meningkatkan enkapsulasi dan waktu kompilasi, adopsinya bergantung pada toolchain dan kebutuhan proyek. Rujuk \textcite{cpp-reference} untuk rangkuman praktik dan rancangan struktur proyek C++.
 \end{document}
