@@ -8,6 +8,40 @@ Kualitas output dipengaruhi oleh kemampuan memformat string, pengendalian presis
 
 Aspek lain yang perlu diperhatikan adalah pembulatan angka, lokal (locale), serta pemisah ribuan yang dapat memengaruhi keterbacaan. Pengembang juga perlu mengelola pesan kesalahan secara terpisah dari keluaran normal untuk memudahkan debugging dan automasi. Lihat \textcite{w3pascal-io,k&r-c-output-input,cplusplus-io} untuk referensi dan contoh yang dapat direplikasi.
 
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan mekanisme output di Pascal, C, dan C++}
+  \label{tab:ringkasan-output}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Aspek & Pascal & C & C++ \\
+    \midrule
+    API utama & \texttt{Write/\,Writeln} & \texttt{printf/\,fprintf} & \texttt{cout} (\texttt{iomanip}) \\
+    Unit/Header & \texttt{System} & \texttt{stdio.h} & \texttt{iostream} \\
+    Gaya format & Posisi argumen & String format & Manipulator stream \\
+    Baris baru & \texttt{Writeln} & \texttt{\n} & \texttt{std::endl}/"\texttt{\n}" \\
+    Ke berkas & Assign/Rewrite & \texttt{FILE*} & \texttt{std::ofstream} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=10mm, every node/.style={font=\small}]
+    \node[draw, rounded corners, align=center] (value) {Nilai/Objek};
+    \node[draw, rounded corners, right=18mm of value] (fmt) {Formatter\\(specifier/manipulator)};
+    \node[draw, rounded corners, right=18mm of fmt] (buf) {Buffer/Stream};
+    \node[draw, rounded corners, right=18mm of buf] (dev) {Perangkat\\(konsol/berkas)};
+    \draw[-{Latex[length=3mm]}] (value) -- (fmt);
+    \draw[-{Latex[length=3mm]}] (fmt) -- (buf);
+    \draw[-{Latex[length=3mm]}] (buf) -- (dev);
+  \end{tikzpicture}
+  \caption{Pipa output terformat: dari nilai hingga perangkat}
+  \label{fig:pipa-output}
+\end{figure}
+
+Ringkasan pada \cref{tab:ringkasan-output} dan \cref{fig:pipa-output} membantu memilih pendekatan yang tepat sesuai bahasa dan kebutuhan format. Dengan memahami peran formatter dan buffer, mahasiswa dapat merancang keluaran yang konsisten dan mudah diuji.
+
 \section{Output di Pascal}
 Pascal menyediakan prosedur \texttt{Write} dan \texttt{Writeln} untuk menampilkan data, dengan dukungan format dasar seperti lebar bidang dan presisi. Pemrogram dapat mencetak beberapa argumen secara berurutan dan mengatur baris baru menggunakan \texttt{Writeln}. Pada varian modern, penanganan tipe string dan karakter telah disederhanakan sehingga lebih mudah digunakan.
 
@@ -15,12 +49,37 @@ Pengaturan format yang tepat memudahkan pembacaan data numerik dan tabel sederha
 
 Untuk keluaran berkas, Pascal menyediakan mekanisme penulisan ke \texttt{textfile} yang seragam dengan keluaran ke konsol, sehingga mudah melakukan redireksi. Penggunaan format kolom dan perataan (alignment) membantu saat menyajikan laporan sederhana. Rujuk \textcite{w3pascal-io,free-pascal-docs} untuk variasi format dan contoh praktik.
 
+\begin{lstlisting}[language=Pascal, caption={Contoh output Pascal dengan lebar bidang dan presisi}, label={lst:pascal-output}]
+program FormatOutput;
+var
+  a: integer;
+  x: real;
+begin
+  a := 42; x := 3.14159;
+  Writeln('a = ', a:4);           { perataan kanan lebar 4 }
+  Writeln('x = ', x:0:2);         { dua digit desimal }
+  Writeln('Halo, Dunia!');        { baris baru otomatis }
+end.
+\end{lstlisting}
+
 \section{Output di C}
 Dalam C, fungsi \texttt{printf} dari pustaka \texttt{stdio.h} merupakan sarana utama untuk output terformat. Spesifier seperti \texttt{\%d}, \texttt{\%f}, dan \texttt{\%s} digunakan untuk mencetak bilangan bulat, pecahan, dan string dengan kontrol presisi dan lebar. Mekanisme ini kuat namun menuntut kecermatan dalam mencocokkan tipe argumen dengan format.
 
 Penggunaan \texttt{fprintf} dan \texttt{snprintf} memungkinkan pengalihan output ke berkas atau buffer, sehingga pola I/O dapat diuji tanpa interaksi langsung. Praktik aman meliputi pembatasan panjang buffer dan pemeriksaan nilai kembali fungsi untuk mendeteksi kesalahan. Disiplin ini penting terutama pada program berskala besar.
 
-Disarankan memisahkan keluaran kesalahan melalui \texttt{stderr} untuk memudahkan automasi dan logging. Pertimbangkan pula pengaruh lokal terhadap pemformatan desimal dan gunakan batasan presisi agar hasil numerik konsisten. Rujuk \textcite{k&r-c-output-input,gnu-c-manual} untuk rincian spesifier dan contoh penggunaan.
+Disarankan memisahkan keluaran kesalahan melalui \texttt{stderr} untuk memudahkan automasi dan logging. Pertimbangkan pula pengaruh lokal terhadap pemformatan desimal dan gunakan batasan presisi agar hasil numerik konsisten. Rujuk \textcite{k&r-c-output-input,gnu-c-manual,iso-c-draft-n1570} untuk rincian spesifier dan contoh penggunaan.
+
+\begin{lstlisting}[language=C, caption={Contoh output C dengan printf}, label={lst:c-output}]
+#include <stdio.h>
+
+int main(void) {
+    int a = 42; double x = 3.14159;
+    printf("a = %4d\n", a);         /* lebar bidang 4 */
+    printf("x = %.2f\n", x);         /* dua digit desimal */
+    fprintf(stderr, "error: kode=%d\n", -1); /* ke stderr */
+    return 0;
+}
+\end{lstlisting}
 
 \section{Output di C++}
 C++ memanfaatkan pustaka \texttt{iostream} dengan operator \texttt{<<} untuk membangun aliran keluaran yang bertipe kuat. Pendekatan berbasis stream memudahkan komposisi dan mendukung overloading untuk tipe kustom sehingga objek dapat dicetak secara idiomatis. Manipulator seperti \texttt{std::fixed}, \texttt{std::setprecision}, dan \texttt{std::setw} menyediakan kontrol format yang ekspresif.
@@ -28,4 +87,15 @@ C++ memanfaatkan pustaka \texttt{iostream} dengan operator \texttt{<<} untuk mem
 Kelebihan model ini adalah integrasi dengan tipe standar dan dukungan internasionalisasi melalui facet. Namun, performa dan sintaks bisa berbeda dibanding \texttt{printf}, sehingga pemilihan pendekatan bergantung pada kebutuhan. Pengembang sering menggabungkan kedua model sesuai konteks.
 
 Untuk interoperabilitas, sinkronisasi antara iostream dan stdio dapat dimatikan guna meningkatkan performa, meski perlu kehati-hatian pada program yang menggabungkan keduanya. Pemeriksaan dan pemulihan status stream penting untuk keandalan ketika terjadi kesalahan format. Lihat \textcite{cplusplus-io,cpp-reference} untuk katalog lengkap manipulator dan praktik terbaik.
+
+\begin{lstlisting}[language=C++, caption={Contoh output C++ dengan iostream dan iomanip}, label={lst:cpp-output}]
+#include <iostream>
+#include <iomanip>
+int main() {
+    int a = 42; double x = 3.14159;
+    std::cout << "a = " << std::setw(4) << a << "\n";
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "x = " << x << "\n";
+}
+\end{lstlisting}
 \end{document}
