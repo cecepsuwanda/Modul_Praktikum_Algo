@@ -1,0 +1,70 @@
+% Universitas Bale Bandung - Buku Modul Praktikum
+% Algoritma dan Pemrograman (S1 Sistem Informasi)
+\documentclass[12pt,a4paper,oneside]{book}
+
+% Encoding and language
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[indonesian]{babel}
+\usepackage{lmodern}
+\usepackage{csquotes}
+
+% Page layout
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{setspace}
+\onehalfspacing
+
+% Graphics, tables, code listings
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Code listing style
+\lstdefinestyle{codestyle}{
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\tiny, numbersep=8pt,
+  keywordstyle=\color{blue!70!black},
+  stringstyle=\color{green!40!black},
+  commentstyle=\color{black!50},
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  columns=fullflexible
+}
+\lstset{style=codestyle}
+
+% Bibliography (biblatex)
+\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\addbibresource{references.bib}
+
+% Subfiles per chapter
+\usepackage{subfiles}
+
+% Metadata
+\title{Buku Modul Praktikum Algoritma dan Pemrograman\\Program Studi S1 Sistem Informasi\\Fakultas Teknologi Informasi\\Universitas Bale Bandung}
+\author{Tim Pengajar}
+\date{\today}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\subfile{chapters/bab01}
+\subfile{chapters/bab02}
+\subfile{chapters/bab03}
+\subfile{chapters/bab04}
+\subfile{chapters/bab05}
+\subfile{chapters/bab06}
+\subfile{chapters/bab07}
+\subfile{chapters/bab08}
+
+\backmatter
+\printbibliography
+\end{document}
