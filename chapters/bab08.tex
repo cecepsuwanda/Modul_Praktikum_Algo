@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Prosedur dan Fungsi (Pascal, C, C++)}
+\section{Pendahuluan}
+Prosedur dan fungsi adalah unit abstraksi yang mengenkapsulasi perilaku agar dapat digunakan kembali dan diuji secara terpisah. Kedua konsep ini mendorong dekomposisi masalah menjadi bagian-bagian kecil yang dapat dikelola. Di Pascal, C, dan C++, perbedaan terminologi dan fitur memengaruhi gaya perancangan API.
+
+Decomposisi yang baik menghasilkan antarmuka yang jelas, kontrak yang tegas, dan implementasi yang dapat berubah tanpa memengaruhi pengguna. Pertimbangkan aspek seperti penamaan, jumlah parameter, dan efek samping untuk menjaga keterbacaan. Rujuk \textcite{pascal-procedure-function,c-functions,cpp-functions} untuk landasan konsep dan praktik terbaik.
+
+\section{Prosedur dan Fungsi di Pascal}
+Pascal membedakan \texttt{procedure} yang tidak mengembalikan nilai dan \texttt{function} yang mengembalikan nilai. Parameter dapat diteruskan dengan nilai atau referensi menggunakan \texttt{var}, memungkinkan modifikasi langsung pada argumen. Sementara itu, deklarasi berada sebelum blok \texttt{begin ... end.} utama atau di dalam unit.
+
+Prinsip desain termasuk meminimalkan efek samping, membatasi ukuran tubuh prosedur, dan mendokumentasikan prasyarat serta pascakondisi. Penggunaan tipe rekaman dan array sebagai parameter meningkatkan kejelasan dengan mengelompokkan data terkait. Lihat \textcite{pascal-procedure-function,free-pascal-docs} untuk contoh idiomatik.
+
+\section{Fungsi di C}
+Di C, fungsi dideklarasikan melalui prototipe di header dan didefinisikan di berkas sumber. Parameter diteruskan dengan nilai, sementara efek referensi dicapai dengan pointer. Konvensi pemanggilan dan linkage menentukan visibilitas simbol dalam proyek multi-berkas.
+
+Praktik baik meliputi pembuatan fungsi kecil yang fokus pada satu tanggung jawab, penanganan nilai kembali untuk indikasi kesalahan, dan dokumentasi kontrak. Untuk API publik, stabilitas prototipe dan kompatibilitas biner menjadi pertimbangan utama. Rujuk \textcite{c-functions,gnu-c-manual} untuk detail spesifikasi dan pola umum.
+
+\section{Fungsi dan Overload di C++}
+C++ memperkaya model fungsi dengan overloading, default argument, templat fungsi, dan mekanisme nilai kembali yang kuat termasuk move semantics. Dukungan referensi dan referensi konstan memungkinkan API yang efisien tanpa mengorbankan keamanan. Integrasi dengan objek memfasilitasi desain berbasis kelas dengan fungsi anggota dan statis.
+
+Rekomendasi modern mencakup preferensi \texttt{auto} untuk tipe nilai kembali yang kompleks, penggunaan \texttt{noexcept} untuk kontrak pengecualian, dan penghindaran parameter keluaran yang tidak perlu. Untuk mengelola overload dan templat, kompilasi terpisah dan penempatan definisi templat di header perlu diperhatikan. Lihat \textcite{cpp-functions,cpp-reference} untuk praktik terkini.
+\end{document}

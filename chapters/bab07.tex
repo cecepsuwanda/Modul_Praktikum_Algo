@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Record/Struct (Pascal, C, C++)}
+\section{Pendahuluan}
+Tipe terstruktur memungkinkan pengelompokan nilai yang terkait menjadi satu kesatuan yang bermakna. Dalam Pascal disebut \texttt{record}, sedangkan di C dan C++ dikenal sebagai \texttt{struct} dengan variasi kemampuan. Abstraksi ini memfasilitasi pemodelan entitas dunia nyata dengan atribut yang jelas.
+
+Penggunaan tipe terstruktur meningkatkan keterbacaan, mengurangi jumlah parameter fungsi, dan mendorong desain modular. Pemilihan antara representasi datar atau bertingkat harus mempertimbangkan kebutuhan akses dan evolusi skema data. Rujuk \textcite{pascal-structs,c-struct,cpp-struct-class} untuk definisi formal dan praktik modern.
+
+\section{Record di Pascal}
+Pascal menyediakan \texttt{record} untuk menyatukan beberapa field bertipe berbeda dalam satu unit. Field diakses menggunakan operator titik, dan \texttt{record} dapat disarang guna memodelkan struktur yang lebih kompleks. Dukungan untuk variant record memungkinkan representasi data yang berbagi ruang memori.
+
+Manfaat praktis \texttt{record} terlihat pada pemisahan data dari logika, sehingga prosedur dan fungsi dapat menerima parameter yang terstruktur. Ketika ukuran data tumbuh, pertimbangkan pengaturan bidang opsional dan dokumentasi yang memadai. Lihat \textcite{pascal-structs,free-pascal-docs} untuk contoh dan batasan implementasi.
+
+\section{Struct di C}
+Di C, \texttt{struct} menyatukan field menjadi tipe komposit dengan tata letak memori terdefinisi dan potensi padding antar field. Deklarasi biasanya ditempatkan di header agar dapat digunakan lintas berkas, sementara definisi fungsi manipulasi berada di berkas sumber. Penggunaan pointer ke \texttt{struct} lazim untuk efisiensi penyalinan.
+
+Isu penting termasuk alignment, padding, dan portabilitas ketika melakukan serialisasi atau pertukaran antar mesin. Penggunaan \texttt{typedef} membantu menyederhanakan penamaan dan mengurangi verbosity pada API. Rujuk \textcite{c-struct,gnu-c-manual} untuk aturan tata letak dan konvensi penggunaan.
+
+\section{Struct dan Kelas di C++}
+C++ memperluas \texttt{struct} dengan semantik kelas, di mana perbedaannya hanya pada default akses publik untuk \texttt{struct}. Fitur seperti konstruktor, destruktor, fungsi anggota, dan overloading operator memungkinkan enkapsulasi dan invarian yang lebih kuat. Integrasi dengan library standar memperkaya kemampuan representasi dan manipulasi data.
+
+Praktik modern mendorong penggunaan agregasi, inisialisasi terbraket, dan \texttt{= default} untuk operasi khusus guna menjaga kesederhanaan. Pertimbangkan \texttt{std::optional}, \texttt{std::variant}, atau \texttt{std::unique_ptr} untuk merepresentasikan sifat opsional dan kepemilikan. Lihat \textcite{cpp-struct-class,cpp-reference} untuk pedoman implementasi dan idiom desain.
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Instruksi Input, Variabel, dan Tipe Data (Pascal, C, C++)}
+\section{Konsep Dasar}
+Input memungkinkan program menerima data dari pengguna atau berkas, sedangkan variabel menyimpan nilai yang diproses selama eksekusi. Tipe data menentukan domain dan operasi yang sah, sehingga validasi input harus mempertimbangkan batasan tipe. Dalam Pascal, C, dan C++, konsep ini diterapkan dengan gaya yang berbeda namun prinsipnya serupa.
+
+Desain yang baik memisahkan proses pembacaan input dari logika komputasi agar mudah diuji dan dipelihara. Penamaan variabel yang deskriptif dan pemilihan tipe yang tepat meningkatkan kejelasan program serta mencegah kesalahan runtime. Mahasiswa perlu memahami implikasi ukuran dan rentang tipe terhadap akurasi perhitungan.
+
+Selain itu, pemahaman tentang representasi memori, rentang nilai, dan perilaku konversi implisit akan memengaruhi ketepatan hasil. Keputusan pemilihan tipe mempengaruhi jejak memori dan performa, terutama pada struktur data besar. Lihat \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} untuk ikhtisar tipe dan pedoman penggunaannya.
+
+\section{Input dan Variabel di Pascal}
+Di Pascal, pembacaan input dilakukan dengan \texttt{Read} dan \texttt{Readln} yang secara implisit melakukan konversi sesuai tipe variabel target. Tipe primitif meliputi \texttt{integer}, \texttt{real}, \texttt{char}, dan \texttt{boolean}, sementara string ditangani sebagai array karakter atau tipe string modern. Deklarasi variabel terjadi di bagian \texttt{var} sebelum blok utama atau dalam lingkup prosedur.
+
+Kekuatan Pascal terletak pada pengecekan tipe statis yang ketat, sehingga kesalahan tipe dapat terdeteksi saat kompilasi. Praktik ini mengurangi bug yang sulit dilacak dan meningkatkan keandalan. Unit tambahan dapat memperluas kemampuan input, termasuk validasi dan pengolahan berkas.
+
+Perbedaan antara \texttt{Read} dan \texttt{Readln} berpengaruh pada konsumsi karakter baris baru yang dapat memicu perilaku tak terduga bila dikombinasikan dengan pembacaan string. Validasi input dapat dilakukan dengan membaca sebagai teks lalu mengonversi secara eksplisit untuk memperjelas penanganan kesalahan. Rujuk \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk variasi pola pembacaan.
+
+\section{Input dan Variabel di C}
+Bahasa C menggunakan \texttt{scanf} dan variannya untuk input terformat dari \texttt{stdin}, dengan format string yang harus selaras dengan tipe argumen. Variabel dideklarasikan dengan tipe eksplisit seperti \texttt{int}, \texttt{double}, dan \texttt{char}, serta dapat ditempatkan dalam berbagai cakupan. Penanganan string memerlukan perhatian pada buffer dan terminator null.
+
+Karena sifatnya yang dekat dengan sistem, C menuntut kehati-hatian terhadap overflow, kesalahan format, dan validasi nilai kembali fungsi input. Penggunaan \texttt{fgets} dipadukan dengan \texttt{sscanf} sering direkomendasikan untuk input yang lebih aman dan dapat dikontrol. Disiplin ini sangat penting dalam aplikasi yang berinteraksi dengan pengguna secara intensif.
+
+Untuk konversi numerik yang lebih kuat, fungsi seperti \texttt{strtol} dan \texttt{strtod} memberi cara mendeteksi kesalahan dan rentang nilai, termasuk pelaporan melalui \texttt{errno}. Validasi panjang masukan dan sanitasi karakter non-digit membantu mencegah perilaku tak terduga. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk detail standar dan pedoman keamanan.
+
+\section{Input dan Variabel di C++}
+C++ menyediakan \texttt{std::cin} dari \texttt{iomanip}/\texttt{iostream} untuk input bertipe kuat yang memanfaatkan operator \texttt{>>}. Tipe dasar dan komposit dapat dibaca langsung dengan kelebihan beban operator yang sesuai, sementara kesalahan parsing dapat dideteksi melalui status stream. Struktur data modern seperti \texttt{std::string} menyederhanakan penanganan teks.
+
+Keleluasaan format hadir melalui penggunaan manipulator dan konversi eksplisit bila diperlukan. Untuk kebutuhan yang lebih aman dan fleksibel, banyak pengembang memadukan \texttt{std::getline} dengan parsing manual. Pendekatan ini menghindari masalah whitespace dan memberikan kontrol penuh.
+
+Penggunaan penanda status seperti \texttt{failbit} dan \texttt{eofbit} penting untuk memutuskan strategi pemulihan ketika parsing gagal. Selain itu, pembacaan berbasis iterator dan algoritme standar dapat menyederhanakan proses transformasi data dari input menjadi struktur yang dibutuhkan. Dokumentasi \textcite{cplusplus-io,cpp-reference} menyediakan contoh lengkap dan idiom modern.
+\end{document}

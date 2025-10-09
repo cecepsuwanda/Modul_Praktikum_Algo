@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Perulangan (Pascal, C, C++)}
+\section{Pendahuluan}
+Perulangan memungkinkan eksekusi berulang suatu blok kode sampai kondisi tertentu terpenuhi. Konstruksi ini penting untuk memproses koleksi data, melakukan simulasi bertahap, dan mengimplementasikan algoritme iteratif. Pascal, C, dan C++ menyediakan beberapa bentuk loop untuk menyesuaikan kebutuhan.
+
+Pemilihan bentuk loop yang tepat bergantung pada apakah jumlah iterasi diketahui di muka, evaluasi kondisi di awal atau akhir, serta kebutuhan kontrol seperti \texttt{break} dan \texttt{continue}. Penamaan variabel penghitung yang jelas dan batasan yang eksplisit meningkatkan keterbacaan serta mencegah off-by-one error. Rujuk \textcite{free-pascal-docs,gnu-c-manual,cpp-reference} untuk katalog bentuk perulangan.
+
+\section{Perulangan di Pascal}
+Pascal menyediakan \texttt{for ... to/downto ... do} untuk iterasi dengan batas yang diketahui, serta \texttt{while} dan \texttt{repeat ... until} untuk kondisi umum. Perbedaan utama antara \texttt{while} dan \texttt{repeat} adalah lokasi evaluasi kondisi, yang memengaruhi apakah tubuh loop dieksekusi setidaknya sekali. Bentuk-bentuk ini menutup kebutuhan iterasi dasar dengan sintaks yang mudah dibaca.
+
+Untuk koleksi terstruktur, iterasi dapat dikombinasikan dengan array atau record untuk memproses elemen secara terurut. Penggunaan tipe skalar dan batas eksplisit pada array membantu mencegah akses di luar rentang. Lihat \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk variasi contoh dan praktik aman.
+
+\section{Perulangan di C}
+C memiliki \texttt{while}, \texttt{do ... while}, dan \texttt{for} yang fleksibel untuk banyak skenario. Bentuk \texttt{for} menggabungkan inisialisasi, kondisi, dan kenaikan dalam satu konstruksi, memudahkan pengelolaan variabel penghitung. Penggunaan \texttt{break} untuk keluar dan \texttt{continue} untuk melompati iterasi memperkaya kontrol alur.
+
+Waspadai kondisi tak berubah yang menyebabkan loop tak berujung dan perbarui variabel kondisi secara disiplin. Ketika bekerja dengan pointer atau indeks array, pastikan invarian batas dipertahankan pada setiap iterasi. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk detail semantik dan contoh idiomatik.
+
+\section{Perulangan di C++}
+C++ selain mewarisi bentuk loop dari C, juga menyediakan \texttt{range-based for} untuk iterasi koleksi dengan sintaks ringkas. Pendekatan ini bekerja dengan tipe yang memiliki dukungan iterator, seperti \texttt{std::vector} dan \texttt{std::array}. Integrasi dengan algoritme standar mendorong penggantian loop manual dengan operasi tingkat lebih tinggi saat sesuai.
+
+Penggunaan iterator konstan, pemisahan transformasi ke algoritme, dan penghindaran mutasi tak perlu akan meningkatkan kejelasan dan keamanan. Untuk performa, kompilator modern mampu melakukan inlining dan unrolling pada pola perulangan yang sederhana. Lihat \textcite{cpp-reference} untuk idiom modern dan pertimbangan kinerja.
+\end{document}

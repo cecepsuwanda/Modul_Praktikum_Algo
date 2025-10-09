@@ -1,0 +1,118 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Pemilihan (Pascal, C, C++)}
+\section{Pendahuluan}
+Pemilihan adalah mekanisme kontrol alur yang memungkinkan program mengeksekusi cabang berbeda berdasarkan kondisi yang dievaluasi. Dengan struktur ini, algoritma dapat mengekspresikan keputusan, penanganan kasus khusus, dan pengelolaan kesalahan secara jelas. Di Pascal, C, dan C++, konstruksi dasar seperti \texttt{if} dan \texttt{switch/case} menyediakan fondasi umum.
+
+Desain percabangan yang baik menekankan keterbacaan, pemisahan kondisi kompleks menjadi subekspresi bernama, dan penggunaan jalur default yang eksplisit. Pola seperti early return dapat mengurangi kedalaman indentasi dan mempermudah pelacakan alur. Lihat \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} untuk ringkasan konsep dan variasi sintaks di tiap bahasa.
+
+Ringkasan pada Tabel\,\ref{tab:pilih-perbandingan} dan diagram pada Gambar\,\ref{fig:decision-flow} membantu memetakan korespondensi antar bahasa dan memvisualisasikan alur keputusan. Dengan memanfaatkan representasi ini, mahasiswa dapat memilih konstruksi yang paling sesuai dan menyederhanakan logika bercabang sebelum diubah menjadi kode.
+
+\begin{table}[h]
+  \centering
+  \caption{Perbandingan konstruksi pemilihan}
+  \label{tab:pilih-perbandingan}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Aspek & Pascal & C & C++ \\
+    \midrule
+    Seleksi sederhana & \texttt{if then else} & \texttt{if/else} & \texttt{if/else} \\
+    Multi-cabang & \texttt{case of} & \texttt{switch} & \texttt{switch} (+ \texttt{enum class}) \\
+    Ekspresi kondisi & Boolean & Nilai bukan nol & Boolean bertipe kuat \\
+    Default branch & \texttt{else} & \texttt{default} & \texttt{default} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=10mm, every node/.style={font=\small}]
+    \node[draw, diamond, aspect=2, align=center] (cond) {Kondisi?};
+    \node[draw, rounded corners, below left=12mm and 18mm of cond] (trueb) {Cabang benar};
+    \node[draw, rounded corners, below right=12mm and 18mm of cond] (falseb) {Cabang salah};
+    \node[draw, rounded corners, below=24mm of cond] (merge) {Lanjutkan};
+    \draw[-{Latex[length=3mm]}] (cond) -- node[left] {ya} (trueb);
+    \draw[-{Latex[length=3mm]}] (cond) -- node[right] {tidak} (falseb);
+    \draw[-{Latex[length=3mm]}] (trueb) |- (merge);
+    \draw[-{Latex[length=3mm]}] (falseb) |- (merge);
+  \end{tikzpicture}
+  \caption{Diagram alur keputusan biner}
+  \label{fig:decision-flow}
+\end{figure}
+
+\section{Pemilihan di Pascal}
+Pascal menyediakan \texttt{if \ldots{} then} dan \texttt{if \ldots{} then \ldots{} else} untuk percabangan dua arah atau lebih dengan pengelompokan \texttt{begin \ldots{} end}. Struktur \texttt{case \ldots{} of} memberi cara ringkas memilih di antara beberapa nilai diskret, sering dipakai pada tipe enumerasi. Penempatan \texttt{else} yang jelas dan konsisten membantu menghindari ambiguitas pengikatan.
+
+Kisaran nilai pada \texttt{case} dapat didefinisikan sebagai rentang, dan bagian \texttt{else} menyediakan jalur default ketika tidak ada alternatif yang cocok. Praktik baik mendorong pemecahan kondisi kompleks ke dalam fungsi boolean bernama agar maksudnya mudah dipahami. Rujuk \textcite{pascal-tutorial-wikibooks} untuk contoh idiomatik dan batasan tipe yang diizinkan.
+
+Contoh berikut memperlihatkan kombinasi \texttt{if} dan \texttt{case} yang sederhana untuk mengkategorikan nilai masukan. Setelah menilai genap/ganjil, program memilih kategori numerik dengan \texttt{case} untuk ilustrasi multi-cabang.
+
+\begin{lstlisting}[language=Pascal, caption={Contoh pemilihan di Pascal}, label={lst:pascal-if}]
+program Branching;
+var x: integer;
+begin
+  Readln(x);
+  if x mod 2 = 0 then
+    Writeln('Genap')
+  else
+    Writeln('Ganjil');
+
+  case x of
+    0..9: Writeln('Digit');
+    10..99: Writeln('Dua digit');
+  else
+    Writeln('Lebih besar');
+  end;
+end.
+\end{lstlisting}
+
+\section{Pemilihan di C}
+C menggunakan \texttt{if}, \texttt{else if}, dan \texttt{else} untuk membangun rantai keputusan dengan ekspresi bernilai bukan nol sebagai benar. Penggunaan kurung kurawal disarankan meskipun hanya satu pernyataan untuk mencegah kesalahan saat menambah baris baru. Waspadai kekeliruan umum seperti menukar operator penugasan dan perbandingan.
+
+Konstruksi \texttt{switch} mendukung pemilihan berbasis nilai integral, dengan perilaku jatuh-temurun (fallthrough) kecuali dihentikan oleh \texttt{break}. Penambahan cabang \texttt{default} menjamin adanya jalur ketika tidak ada konstanta yang cocok, meningkatkan keandalan. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk rincian semantik dan aturan label kasus.
+
+Contoh berikut menampilkan rantai \texttt{if/else} untuk genap/ganjil dan \texttt{switch} untuk klasifikasi sederhana. Praktik aman mencakup memeriksa nilai kembali dari \texttt{scanf} agar kesalahan input tidak diabaikan.
+
+\begin{lstlisting}[language=C, caption={Contoh pemilihan di C}, label={lst:c-if}]
+#include <stdio.h>
+
+int main(void) {
+    int x; if (scanf("%d", &x) != 1) return 1;
+    if (x % 2 == 0) {
+        puts("Genap");
+    } else {
+        puts("Ganjil");
+    }
+    switch (x) {
+        case 0 ... 9: puts("Digit"); break; /* ekstensi GCC */
+        case 10 ... 99: puts("Dua digit"); break; /* ekstensi GCC */
+        default: puts("Lebih besar");
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\section{Pemilihan di C++}
+C++ mewarisi \texttt{if} dan \texttt{switch} dari C, serta menambah fitur seperti inisialisasi di \texttt{if} (C++17) untuk membatasi cakupan variabel sementara. Dukungan \texttt{constexpr if} memungkinkan pemilihan pada waktu kompilasi dalam konteks templat, sehingga mengurangi cabang runtime. Tipe enumerasi bertipe kuat (\texttt{enum class}) memperkecil risiko konflik nilai.
+
+Pada \texttt{switch}, penggunaan \texttt{enum class} dan klausa \texttt{default} yang eksplisit membantu menjaga ketangguhan terhadap penambahan nilai baru. Untuk keputusan kompleks, kombinasi objek predicate, polimorfisme, atau \texttt{std::variant} dapat menggantikan rantai \texttt{if} yang panjang. Rujuk \textcite{cpp-reference} untuk praktik modern dan pertimbangan kinerja.
+
+Contoh berikut memakai \texttt{enum class} untuk menegaskan ruang nilai yang sah. Selain itu, operator kondisional dimanfaatkan untuk menentukan kategori secara ringkas sebelum dievaluasi oleh \texttt{switch}.
+
+\begin{lstlisting}[language=C++, caption={Contoh pemilihan di C++}, label={lst:cpp-if}]
+#include <iostream>
+
+enum class Size { Small, Medium, Large };
+
+int main() {
+    int x; if (!(std::cin >> x)) return 1;
+    if (x % 2 == 0) std::cout << "Genap\n"; else std::cout << "Ganjil\n";
+    Size s = x < 10 ? Size::Small : (x < 100 ? Size::Medium : Size::Large);
+    switch (s) {
+        case Size::Small: std::cout << "<10\n"; break;
+        case Size::Medium: std::cout << "10..99\n"; break;
+        case Size::Large: std::cout << ">=100\n"; break;
+    }
+}
+\end{lstlisting}
+\end{document}
