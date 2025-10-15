@@ -2,24 +2,74 @@
 \begin{document}
 \chapter{Array \& Multidimensi}
 \section{Array Satu Dimensi}
-Array satu dimensi menyimpan elemen bertipe sama dalam susunan kontigu, sehingga mendukung akses indeks \(O(1)\) dan iterasi yang efisien. Pascal menggunakan deklarasi batas eksplisit, C memanfaatkan ukuran sebagai bagian dari tipe, dan C++ menyediakan \texttt{std::array} untuk ukuran tetap. Pertimbangan utama meliputi pemilihan ukuran, kebijakan kepemilikan, dan strategi validasi indeks \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference}.
+Array satu dimensi menyimpan elemen bertipe sama secara kontigu, dengan akses indeks \(O(1)\) dan iterasi efisien. Pascal memakai batas eksplisit, C memakai ukuran sebagai bagian dari tipe, dan C++ menyediakan \texttt{std::array} (ukuran tetap) \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference,cpp-std-array}.
 
-Pada C, nama array sering terdegradasi menjadi pointer pada konteks tertentu sehingga memengaruhi cara parameter diteruskan ke fungsi. Di C++, \texttt{std::array} menjaga informasi ukuran di tingkat tipe yang membantu validasi pada waktu kompilasi. Pada Pascal, rentang indeks yang eksplisit memudahkan penalaran formal terhadap batas dan invarian \parencite{free-pascal-docs}.
+Pada C, nama array sering terdegradasi menjadi pointer sehingga memengaruhi cara parameter fungsi. Di C++, \texttt{std::array} menyimpan ukuran di tingkat tipe (bantu validasi kompilasi). Pada Pascal, rentang indeks eksplisit memudahkan penalaran batas \parencite{free-pascal-docs,cpp-std-array}.
 
 Representasi kontigu memaksimalkan locality cache dan performa operasi berulang. Namun, hal ini juga menuntut kebijakan alokasi yang jelas untuk koleksi besar agar tidak menimbulkan fragmentasi memori. Uji unit untuk indeks pertama dan terakhir penting untuk mencegah kesalahan off-by-one.
 
 \section{Array Multidimensi}
-Array multidimensi memperluas konsep ke dua dimensi atau lebih untuk memodelkan matriks dan tensor. Pascal dan C mendukung array bertingkat dengan tata letak baris-utama, sementara C++ menyediakan \texttt{std::vector<std::vector<T>>} atau penampung datar dengan indeks terhitung. Pilihan representasi memengaruhi efisiensi akses dan kesederhanaan API \parencite{iso-c-draft-n1570,cpp-reference}.
+Array multidimensi memperluas konsep ke dua dimensi atau lebih untuk memodelkan matriks/tensor. Pascal dan C mendukung array bertingkat (row-major), sedangkan C++ umum memakai \texttt{std::vector<std::vector<T>>} atau buffer datar + indeks terhitung \parencite{iso-c-draft-n1570,cpp-reference,cpp-vector}.
 
 Pada representasi datar, hitung indeks linier menggunakan rumus yang mempertimbangkan lebar baris dan kolom. Pendekatan ini mengurangi alokasi berulang dan meningkatkan locality, terutama untuk operasi numerik intensif. Sertakan fungsi pembantu untuk menerjemahkan koordinat ke indeks linier agar kesalahan penghitungan dapat diminimalkan.
 
 \section{Operasi Dasar (iterasi, traversal)}
-Operasi umum pada array meliputi iterasi, pencarian, dan transformasi elemen. Gunakan bentuk loop yang menyatakan niat dengan jelas dan pertimbangkan algoritme standar pada C++ untuk menggantikan loop manual ketika sesuai. Pada Pascal dan C, dokumentasi referensi menyediakan idiom yang aman dan portabel untuk traversal \parencite{free-pascal-docs,gnu-c-manual}.
+Operasi umum: iterasi, pencarian, transformasi. Gunakan bentuk loop yang jelas; pada C++ pertimbangkan algoritme standar \texttt{<algorithm>} untuk menggantikan loop manual. Pada Pascal dan C, gunakan idiom traversal yang aman \parencite{free-pascal-docs,gnu-c-manual}.
+
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=Pascal, caption={Array tetap di Pascal}]
+var a: array[1..5] of integer; i: integer; begin
+  for i := 1 to 5 do a[i] := i*i; Writeln(a[5]);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Array C dan degradasi ke pointer}]
+void fill(int *p, int n){ for (int i=0;i<n;++i) p[i]=i*i; }
+int a[5]; fill(a, 5); // a terdegradasi menjadi int*
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={std::array dan algoritme}]
+#include <array>
+#include <algorithm>
+#include <iostream>
+int main(){
+  std::array<int,5> a{}; int v=1;
+  std::generate(a.begin(), a.end(), [&]{ return v++ * v; });
+  std::cout << a.back() << "\n";
+}
+\end{lstlisting}
 
 Validasi batas sebelum akses merupakan kebiasaan yang tidak boleh diabaikan, terutama ketika indeks berasal dari input pengguna. Untuk operasi transformasi, pertimbangkan penggunaan buffer sementara untuk menghindari konflik baca-tulis yang mengakibatkan hasil tak terduga. Uji unit berfokus pada nilai batas dan koleksi kosong sangat membantu.
 
 \section{Alokasi Dinamis pada Array}
-Ketika ukuran tidak diketahui di awal, gunakan alokasi dinamis untuk menyesuaikan kapasitas saat runtime. Di C, \texttt{malloc}/\texttt{free} dan keluarga \texttt{realloc} memberikan kontrol tingkat rendah, sedangkan di C++ \texttt{std::vector} mengelola kapasitas dan pertumbuhan secara otomatis. Pada Pascal modern, dukungan array dinamis memungkinkan strategi serupa dengan antarmuka yang lebih aman \parencite{iso-c-draft-n1570,cpp-reference,free-pascal-docs}.
+Ketika ukuran tidak diketahui di awal, gunakan alokasi dinamis. Di C, \texttt{malloc}/\texttt{free}/\texttt{realloc}; di C++ \texttt{std::vector} mengelola kapasitas otomatis; pada Pascal modern, array dinamis didukung \parencite{iso-c-draft-n1570,cpp-reference,free-pascal-docs,cpp-vector,pascal-dynarray}.
+
+\subsection{Contoh Dinamis}
+\begin{lstlisting}[language=C, caption={malloc/realloc/free di C}]
+#include <stdlib.h>
+int *a = malloc(n * sizeof *a);
+// ... isi a ...
+int *tmp = realloc(a, m * sizeof *a); if (tmp) a = tmp;
+free(a);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={std::vector di C++}]
+#include <vector>
+#include <iostream>
+int main(){
+  std::vector<int> v; v.reserve(100);
+  for (int i=0;i<200;++i) v.push_back(i);
+  std::cout << v.size() << " " << v.capacity() << "\n";
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Pascal, caption={Array dinamis di Free Pascal}]
+var a: array of integer; i: integer; begin
+  SetLength(a, 10);
+  for i := 0 to High(a) do a[i] := i;
+  SetLength(a, 20);
+end.
+\end{lstlisting}
 
 Pastikan invarian kepemilikan memori dipertahankan pada semua jalur eksekusi, termasuk cabang kesalahan. Pada C++, gunakan RAII untuk memastikan pembebasan sumber daya meskipun terjadi pengecualian. Hindari penyalinan yang tidak perlu dengan menerapkan strategi \emph{move} dan peminjaman referensi yang jelas.
 \end{document}
