@@ -9,6 +9,21 @@ Kontrak fungsi yang baik mencakup prasyarat, pascakondisi, dan efek samping yang
 Pada C++, metode anggota mengikat perilaku dengan data, memungkinkan enkapsulasi dan invarian kelas. Gunakan kata kunci seperti \texttt{const} pada metode yang tidak memodifikasi keadaan dan pertimbangkan \texttt{noexcept} untuk menyatakan jaminan pengecualian. Dokumentasi modern memuat praktik terbaik untuk menjaga keterbacaan dan keamanan \parencite{cpp-functions,cpp-reference}.
 
 \section{Parameter — by value / by reference}
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=Pascal, caption={Parameter by value vs var (Pascal)}]
+procedure IncByOne(var x: integer); begin x := x + 1; end;
+var n: integer = 10; begin IncByOne(n); Writeln(n); end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={By value dan via pointer (C)}]
+void inc_by_one(int *p){ if (p) (*p)++; }
+int n = 10; inc_by_one(&n);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Referensi dan referensi konstan (C++)}]
+void inc(int &x){ ++x; }
+int sum_len(const std::string &a, const std::string &b){ return (int)(a.size()+b.size()); }
+\end{lstlisting}
 Strategi passing parameter memengaruhi biaya penyalinan dan kemampuan fungsi memodifikasi argumen. Di C, passing by value adalah default, dengan efek referensi dicapai melalui pointer; di C++ gunakan referensi atau referensi konstan untuk efisiensi dan kejelasan. Pada Pascal, \texttt{var} menandakan parameter rujukan yang dapat diubah \parencite{gnu-c-manual,free-pascal-docs}.
 
 Gunakan referensi konstan untuk argumen besar yang hanya dibaca demi menghindari penyalinan. Untuk pengembalian banyak nilai, pertimbangkan struktur hasil atau tipe pasangan alih-alih parameter keluaran, menjaga tanda tangan tetap jelas. Uji beban membantu menilai dampak strategi passing pada performa jalur panas.
@@ -16,6 +31,30 @@ Gunakan referensi konstan untuk argumen besar yang hanya dibaca demi menghindari
 Semantik kepemilikan harus ditegaskan ketika pointer dipakai, termasuk siapa yang bertanggung jawab membebaskan sumber daya. Pada C++, konvensi \emph{caller-allocates/caller-frees} atau penggunaan penunjuk pintar membuat kontrak eksplisit. Dokumentasikan kebijakan ini agar interaksi antarmuka stabil jangka panjang.
 
 \section{Fungsi Rekursif}
+\subsection{Diagram Tumpukan Panggilan}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.2cm]
+    \tikzstyle{f}=[rectangle, draw, rounded corners, minimum width=3.0cm, align=center]
+    \node[f] (f1) {fact(4)};
+    \node[f, below=of f1] (f2) {fact(3)};
+    \node[f, below=of f2] (f3) {fact(2)};
+    \node[f, below=of f3] (f4) {fact(1)};
+    \draw (f1) -- (f2); \draw (f2) -- (f3); \draw (f3) -- (f4);
+  \end{tikzpicture}
+  \caption{Tumpukan panggilan saat menghitung faktorial}
+\end{figure}
+
+\subsection{Contoh Rekursi dan Iterasi}
+\begin{lstlisting}[language=C, caption={Faktorial rekursif dan iteratif (C)}]
+unsigned fact_rec(unsigned n){ return (n<=1)?1:n*fact_rec(n-1); }
+unsigned fact_it(unsigned n){ unsigned r=1; for(unsigned i=2;i<=n;++i) r*=i; return r; }
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Tail-recursion vs loop (C++)}]
+int sum_rec(int n){ return n==0?0:n+sum_rec(n-1); }
+int sum_loop(int n){ int s=0; while(n>0) s+=n--; return s; }
+\end{lstlisting}
 Rekursi memecah masalah menjadi submasalah yang serupa, dengan basis dan langkah rekursif yang jelas. Terapkan kondisi berhenti yang tepat untuk mencegah rekursi tak hingga dan gunakan strategi memoization bila submasalah tumpang tindih. Analisis kompleksitas dan kedalaman tumpukan diperlukan untuk memastikan kelayakan pada input besar \parencite{cpp-reference,gnu-c-manual}.
 
 Untuk performa, pertimbangkan konversi ke iterasi jika rekursi terlalu dalam atau jika kompilator tidak melakukan optimisasi tail-call. Pada C++, gunakan struktur data standar untuk menggantikan tumpukan rekursif manual jika diperlukan. Sertakan uji batas dan input acak untuk memverifikasi ketahanan implementasi rekursif.
@@ -23,6 +62,28 @@ Untuk performa, pertimbangkan konversi ke iterasi jika rekursi terlalu dalam ata
 Rekursi sering menjadi landasan implementasi algoritme klasik seperti pencarian biner, traversals pohon, dan divide-and-conquer. Pastikan invarian terjaga di setiap panggilan dan hasil digabung sesuai spesifikasi. Dokumentasi referensi menyediakan contoh idiomatik yang dapat diadaptasi \parencite{cpp-reference,gnu-c-manual}.
 
 \section{Metode \& Fungsi dalam C++}
+\subsection{Overload dan Default Argument}
+\begin{lstlisting}[language=C++, caption={Overload dan default argument}]
+int area(int w, int h){ return w*h; }
+int area(int side){ return area(side, side); }
+int connect(std::string host, int port = 80);
+\end{lstlisting}
+
+\subsection{Ringkasan Strategi Parameter}
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan strategi parameter}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Strategi & Kapan dipakai & Catatan \\
+    \midrule
+    Nilai (value) & argumen kecil/imutabel & salin murah \\
+    Referensi konstan & baca- saja, objek besar & hindari salin \\
+    Referensi non-const & perlu modifikasi & jelas dan aman \\
+    Pointer & opsional/null, antarmuka C & dokumentasikan kepemilikan \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 C++ memperkaya fungsi dengan overloading, default argument, templat, dan objek panggil (functor, lambda). Fitur ini memungkinkan gaya pemrograman yang ekspresif dan generik tanpa mengorbankan performa. Gunakan pedoman modern seperti pembuatan nilai kembali melalui RVO/NRVO dan preferensi \texttt{auto} saat inferensi tipe meningkatkan kejelasan \parencite{cpp-functions,cpp-reference}.
 
 Pertimbangkan aturan visibilitas dan linkage saat fungsi didefinisikan di beberapa berkas, serta pisahkan antarmuka dari implementasi untuk mempercepat kompilasi. Uji unit yang kaya kasus memastikan kompatibilitas saat evolusi tanda tangan dan perilaku fungsi berlangsung. Sumber terbuka menyediakan contoh komprehensif dan praktik terbaik terkini.
