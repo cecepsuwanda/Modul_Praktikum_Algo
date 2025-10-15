@@ -1,23 +1,27 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Prosedur dan Fungsi (Pascal, C, C++)}
-\section{Pendahuluan}
-Prosedur dan fungsi adalah unit abstraksi yang mengenkapsulasi perilaku agar dapat digunakan kembali dan diuji secara terpisah. Kedua konsep ini mendorong dekomposisi masalah menjadi bagian-bagian kecil yang dapat dikelola. Di Pascal, C, dan C++, perbedaan terminologi dan fitur memengaruhi gaya perancangan API.
+\chapter{Struktur Data Dasar \& Pointer Dasar}
+\section{Record / \texttt{struct}, Enumerasi, Set}
+Struktur data dasar menyediakan cara menyusun data kompleks dari tipe sederhana. Pascal menggunakan \texttt{record} untuk mengelompokkan bidang heterogen, sementara C dan C++ memakai \texttt{struct} dengan kendali tata letak memori yang eksplisit. Enumerasi menyatakan himpunan nilai terbatas yang membuat kode lebih jelas, dan pada C++ \texttt{enum class} menyediakan keselamatan tipe yang lebih kuat \parencite{pascal-structs,c-struct,cpp-struct-class}.
 
-Decomposisi yang baik menghasilkan antarmuka yang jelas, kontrak yang tegas, dan implementasi yang dapat berubah tanpa memengaruhi pengguna. Pertimbangkan aspek seperti penamaan, jumlah parameter, dan efek samping untuk menjaga keterbacaan. Rujuk \textcite{pascal-procedure-function,c-functions,cpp-functions} untuk landasan konsep dan praktik terbaik.
+Representasi terstruktur mengurangi jumlah parameter fungsi dan meningkatkan kohesi modul. Ketika kebutuhan berevolusi, dokumentasikan invarian dan pertimbangkan kompatibilitas biner untuk antarmuka publik. Sertakan pengujian konstruksi, penugasan, dan perbandingan agar regresi mudah dideteksi.
 
-\section{Prosedur dan Fungsi di Pascal}
-Pascal membedakan \texttt{procedure} yang tidak mengembalikan nilai dan \texttt{function} yang mengembalikan nilai. Parameter dapat diteruskan dengan nilai atau referensi menggunakan \texttt{var}, memungkinkan modifikasi langsung pada argumen. Sementara itu, deklarasi berada sebelum blok \texttt{begin ... end.} utama atau di dalam unit.
+Pada Pascal, \texttt{record} dapat bersarang dan memiliki varian untuk berbagi ruang memori; gunakan dengan hati-hati agar invarian tetap terjaga. Pada C, perhatikan alignment dan padding yang memengaruhi interoperabilitas dan serialisasi lintas mesin. Pada C++, integrasikan dengan fitur kelas untuk mendapatkan enkapsulasi yang lebih kuat \parencite{pascal-structs,c-struct,cpp-struct-class}.
 
-Prinsip desain termasuk meminimalkan efek samping, membatasi ukuran tubuh prosedur, dan mendokumentasikan prasyarat serta pascakondisi. Penggunaan tipe rekaman dan array sebagai parameter meningkatkan kejelasan dengan mengelompokkan data terkait. Lihat \textcite{pascal-procedure-function,free-pascal-docs} untuk contoh idiomatik.
+\section{Pointer \& Referensi Dasar}
+Pointer merepresentasikan alamat memori dan memungkinkan pembagian data antar fungsi tanpa penyalinan. Di C, pointer merupakan primitif yang kuat namun rawan kesalahan sehingga memerlukan disiplin ketat atas kepemilikan dan masa hidup. C++ menambahkan referensi (\texttt{\&}) dan referensi konstan sebagai alternatif yang lebih aman untuk parameter keluaran \parencite{gnu-c-manual,cpp-reference}.
 
-\section{Fungsi di C}
-Di C, fungsi dideklarasikan melalui prototipe di header dan didefinisikan di berkas sumber. Parameter diteruskan dengan nilai, sementara efek referensi dicapai dengan pointer. Konvensi pemanggilan dan linkage menentukan visibilitas simbol dalam proyek multi-berkas.
+Keselamatan pointer mencakup inisialisasi ke nilai null yang jelas, validasi sebelum dereferensi, dan pembebasan memori tepat waktu. Pada antarmuka publik, preferensikan referensi konstan atau penunjuk non-null yang didokumentasikan agar niat terlihat. Sertakan uji yang mensimulasikan jalur kesalahan untuk memastikan tidak terjadi dereferensi null.
 
-Praktik baik meliputi pembuatan fungsi kecil yang fokus pada satu tanggung jawab, penanganan nilai kembali untuk indikasi kesalahan, dan dokumentasi kontrak. Untuk API publik, stabilitas prototipe dan kompatibilitas biner menjadi pertimbangan utama. Rujuk \textcite{c-functions,gnu-c-manual} untuk detail spesifikasi dan pola umum.
+Pada Pascal, pointer digunakan untuk mengelola struktur dinamis dan interoperabilitas sistem. Kombinasi \texttt{new}/\texttt{dispose} atau fasilitas dialek modern perlu diiringi dengan kebijakan kepemilikan yang tegas. Dokumentasi referensi menyediakan panduan dan contoh idiomatik \parencite{free-pascal-docs,gnu-c-manual}.
 
-\section{Fungsi dan Overload di C++}
-C++ memperkaya model fungsi dengan overloading, default argument, templat fungsi, dan mekanisme nilai kembali yang kuat termasuk move semantics. Dukungan referensi dan referensi konstan memungkinkan API yang efisien tanpa mengorbankan keamanan. Integrasi dengan objek memfasilitasi desain berbasis kelas dengan fungsi anggota dan statis.
+\section{Pointer ke Record / Struct}
+Menggabungkan pointer dengan struktur memungkinkan pembentukan graf dan daftar tertaut. Di C, pola umum melibatkan alokasi dinamis dan fungsi pembungkus untuk konstruksi serta destruksi. Di C++, gunakan \texttt{std::unique_ptr} atau \texttt{std::shared_ptr} untuk mengekspresikan kepemilikan eksplisit dan menghindari kebocoran memori \parencite{cpp-reference}.
 
-Rekomendasi modern mencakup preferensi \texttt{auto} untuk tipe nilai kembali yang kompleks, penggunaan \texttt{noexcept} untuk kontrak pengecualian, dan penghindaran parameter keluaran yang tidak perlu. Untuk mengelola overload dan templat, kompilasi terpisah dan penempatan definisi templat di header perlu diperhatikan. Lihat \textcite{cpp-functions,cpp-reference} untuk praktik terkini.
+Abstraksikan akses bidang melalui fungsi pembantu untuk menjaga invarian dan memudahkan pengujian. Untuk struktur yang sering berpindah kepemilikan, gunakan semantik pindah agar penyalinan tidak mahal. Pada Pascal, manfaatkan unit untuk memisahkan antarmuka dan implementasi struktur dinamis \parencite{free-pascal-docs}.
+
+\section{Akses anggota via pointer / referensi}
+Akses terhadap anggota melalui pointer atau referensi menuntut perhatian terhadap operator (\texttt{->} di C/C++ atau dereferensi eksplisit pada Pascal). Jaga agar dereferensi dilakukan setelah validasi dan tangani kemungkinan null secara sistematis. Untuk C++, operator panah dan referensi konstan memudahkan penulisan API yang jelas dan aman \parencite{gnu-c-manual,cpp-reference}.
+
+Untuk kode portabel, hindari asumsi tentang packing dan urutan bidang; gunakan fungsi akses yang stabil untuk mengurangi ketergantungan terhadap tata letak memori. Uji regresi perlu memastikan bahwa perubahan pada struktur tidak mematahkan kode klien yang memanipulasi pointer ke struktur tersebut.
 \end{document}

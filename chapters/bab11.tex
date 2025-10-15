@@ -1,0 +1,18 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{File \& Operasi I/O Lanjutan}
+\section{File Teks \& Biner}
+Berinteraksi dengan berkas memungkinkan program menyimpan dan memuat data secara persisten. Pascal menyediakan tipe \texttt{textfile} dan mekanisme serupa untuk berkas biner; C memakai API \texttt{FILE*} pada \texttt{<stdio.h>}; C++ menggunakan \texttt{std::ifstream}/\texttt{std::ofstream} pada \texttt{<fstream>}. Pilih mode dan representasi yang sesuai dengan kebutuhan portabilitas dan kinerja \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+
+Pada berkas biner, pertimbangkan endianness, alignment, dan tata letak struktur untuk mencegah ketidakcocokan antar arsitektur. Gunakan format serialisasi yang terdokumentasi ketika interoperabilitas lintas platform dibutuhkan. Sertakan uji regresi yang memeriksa kompatibilitas baca/tulis antar versi.
+
+\section{Mode File, Seek, ftell}
+Operasi posisi file seperti \texttt{fseek}/\texttt{ftell} (C) dan \texttt{seekg}/\texttt{tellg} (C++) memungkinkan akses acak yang efisien pada berkas besar. Pastikan mode buka berkas konsisten dengan operasi baca/tulis yang akan dilakukan. Tangani kesalahan I/O dengan memeriksa nilai kembali fungsi dan status stream sebelum memproses data \parencite{gnu-c-manual,cpp-reference}.
+
+Strategi buffering dapat meningkatkan throughput tetapi memerlukan sinkronisasi saat menggabungkan I/O dan perhitungan. Pada C++, manfaatkan \texttt{std::ios\_base::sync\_with\_stdio(false)} bila tidak memerlukan interoperabilitas dengan stdio untuk meningkatkan kinerja. Dokumentasi referensi memberikan pedoman pengaturan buffer dan mode sinkronisasi \parencite{cplusplus-io,cpp-reference}.
+
+\section{Penanganan Kesalahan File}
+Kegagalan I/O umum meliputi berkas tidak ditemukan, izin ditolak, dan perangkat penuh. Tangani kondisi ini dengan pesan kesalahan yang jelas dan jalur pemulihan yang aman, seperti membuat direktori yang hilang atau meminta ulang lokasi berkas. Selalu hindari hilangnya data dengan menulis ke berkas sementara dan mengganti secara atomik bila diperlukan \parencite{gnu-c-manual}.
+
+Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data. Pada C++, pemeriksaan flag stream seperti \texttt{failbit} dan \texttt{eofbit} memberikan granularitas dalam diagnosis masalah. Rujuk dokumentasi standar untuk matriks kondisi kesalahan dan praktik terbaiknya.
+\end{document}

@@ -1,0 +1,23 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Modul / Unit / Header \& Manajemen Proyek}
+\section{Unit dan ``uses'' (Pascal)}
+Unit pada Pascal memisahkan antarmuka (\texttt{interface}) dari implementasi (\texttt{implementation}) untuk meningkatkan modularitas dan kompilasi terpisah. Kata kunci \texttt{uses} menentukan ketergantungan lintas unit sehingga resolusi simbol menjadi eksplisit. Pendekatan ini memperjelas kontrak publik dan memungkinkan pengujian bagian-bagian program secara mandiri \parencite{free-pascal-docs,pascal-tutorial-wikibooks}.
+
+Dokumentasikan simbol yang diekspos pada bagian antarmuka dan sembunyikan detail pada implementasi guna menjaga enkapsulasi. Struktur direktori yang konsisten memudahkan navigasi dan automasi build. Sertakan uji yang memverifikasi kompatibilitas antar unit saat evolusi API berlangsung.
+
+\section{Header / Implementasi (C / C++)}
+Di C/C++, pemisahan berkas header (deklarasi) dan berkas sumber (definisi) memungkinkan kompilasi terpisah dan pengelolaan ketergantungan yang lebih baik. Sertakan include guard atau \texttt{\#pragma once} untuk mencegah duplikasi definisi. Untuk C++, pertimbangkan modul C++ modern bila toolchain mendukung untuk mempercepat kompilasi dan meningkatkan enkapsulasi \parencite{gnu-c-manual,cpp-reference}.
+
+Organisasi proyek yang baik meminimalkan \texttt{#include} yang tidak perlu dan menghindari ketergantungan siklik. Ekstraksi antarmuka minimal ke header membantu mempercepat waktu kompilasi dan memperkuat pemisahan tanggung jawab. Dokumentasi referensi memuat pola dan kontra-pola umum dalam pengelolaan header.
+
+\section{Include Guards / \texttt{\#pragma once}}
+Include guards mencegah definisi ganda saat header disertakan dari banyak tempat. Pola konvensional menggunakan makro unik untuk setiap berkas header, sedangkan \texttt{\#pragma once} menawarkan alternatif yang ringkas dengan dukungan luas. Pastikan strategi yang dipilih konsisten di seluruh proyek \parencite{gnu-c-manual,cpp-reference}.
+
+Gunakan alat analisis untuk mendeteksi siklus penyertaan dan header yang terlalu gemuk. Refaktor ke antarmuka yang lebih kecil dan spesifik agar unit kompilasi tidak memuat lebih banyak dependensi daripada yang dibutuhkan. Pendekatan ini mengurangi waktu build dan mempermudah pemeliharaan.
+
+\section{Organisasi Proyek Modular}
+Struktur proyek modular memfasilitasi kolaborasi dan penskalaan basis kode. Pisahkan kode aplikasi, pustaka bersama, dan pengujian ke dalam direktori yang jelas. Gunakan sistem build seperti Make atau CMake untuk mendeskripsikan target, dependensi, dan opsi kompilasi secara deklaratif \parencite{gnu-c-manual,cpp-reference}.
+
+Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar regresi dapat terdeteksi dini. Dokumentasi proyek harus memuat instruksi build, daftar dependensi, dan konvensi penamaan berkas. Praktik ini memastikan mahasiswa dapat mereproduksi dan memperluas contoh dengan konsisten di berbagai lingkungan.
+\end{document}

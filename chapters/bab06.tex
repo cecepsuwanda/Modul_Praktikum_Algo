@@ -1,23 +1,25 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Array/Larik (Pascal, C, C++)}
-\section{Pendahuluan}
-Array adalah struktur data berindeks yang menyimpan elemen bertipe sama dalam memori bersebelahan. Representasi ini memungkinkan akses acak yang efisien, tetapi menuntut disiplin dalam menjaga batas. Di Pascal, C, dan C++, konsep array hadir dengan variasi sintaks dan fitur pelengkap.
+\chapter{Array \& Multidimensi}
+\section{Array Satu Dimensi}
+Array satu dimensi menyimpan elemen bertipe sama dalam susunan kontigu, sehingga mendukung akses indeks \(O(1)\) dan iterasi yang efisien. Pascal menggunakan deklarasi batas eksplisit, C memanfaatkan ukuran sebagai bagian dari tipe, dan C++ menyediakan \texttt{std::array} untuk ukuran tetap. Pertimbangan utama meliputi pemilihan ukuran, kebijakan kepemilikan, dan strategi validasi indeks \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference}.
 
-Desain yang baik mengharuskan penentuan ukuran, kebijakan kepemilikan, dan strategi validasi indeks sejak awal. Untuk koleksi yang ukurannya berubah-ubah, struktur dinamis seperti vektor atau daftar mungkin lebih tepat. Rujuk \textcite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference} untuk dasar teoretis dan praktik implementasi.
+Pada C, nama array sering terdegradasi menjadi pointer pada konteks tertentu sehingga memengaruhi cara parameter diteruskan ke fungsi. Di C++, \texttt{std::array} menjaga informasi ukuran di tingkat tipe yang membantu validasi pada waktu kompilasi. Pada Pascal, rentang indeks yang eksplisit memudahkan penalaran formal terhadap batas dan invarian \parencite{free-pascal-docs}.
 
-\section{Array di Pascal}
-Pascal mendukung array statis dengan batas eksplisit, misalnya \texttt{array[1..N] of integer}, yang membantu deteksi kesalahan indeks pada saat kompilasi. Banyak dialek juga menyediakan array dinamis yang dialokasikan saat runtime untuk fleksibilitas ukuran. Tipe string tradisional sering direpresentasikan sebagai array karakter yang diterminasi.
+Representasi kontigu memaksimalkan locality cache dan performa operasi berulang. Namun, hal ini juga menuntut kebijakan alokasi yang jelas untuk koleksi besar agar tidak menimbulkan fragmentasi memori. Uji unit untuk indeks pertama dan terakhir penting untuk mencegah kesalahan off-by-one.
 
-Penentuan rentang indeks yang sesuai domain masalah memudahkan penalaran dan mencegah off-by-one error. Saat memakai array dinamis, manajemen memori dan penyalinan perlu diperhatikan untuk menghindari kebocoran. Lihat \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk perincian sintaks dan contoh penggunaan.
+\section{Array Multidimensi}
+Array multidimensi memperluas konsep ke dua dimensi atau lebih untuk memodelkan matriks dan tensor. Pascal dan C mendukung array bertingkat dengan tata letak baris-utama, sementara C++ menyediakan \texttt{std::vector<std::vector<T>>} atau penampung datar dengan indeks terhitung. Pilihan representasi memengaruhi efisiensi akses dan kesederhanaan API \parencite{iso-c-draft-n1570,cpp-reference}.
 
-\section{Array di C}
-Di C, array memiliki ukuran tetap yang menjadi bagian dari tipenya, dengan elemen disusun kontigu dalam memori. Nama array akan terdegradasi menjadi pointer ke elemen pertama pada banyak konteks, yang memengaruhi cara fungsi menerima parameter. Penanganan string menggunakan array karakter yang diakhiri null dan membutuhkan kehati-hatian terhadap buffer.
+Pada representasi datar, hitung indeks linier menggunakan rumus yang mempertimbangkan lebar baris dan kolom. Pendekatan ini mengurangi alokasi berulang dan meningkatkan locality, terutama untuk operasi numerik intensif. Sertakan fungsi pembantu untuk menerjemahkan koordinat ke indeks linier agar kesalahan penghitungan dapat diminimalkan.
 
-Standar C juga mengenal VLA (Variable Length Array) pada beberapa revisi, namun dukungannya bervariasi dan penggunaannya harus dipertimbangkan dengan hati-hati. Operasi tingkat rendah seperti aritmetika pointer memberi fleksibilitas namun menambah risiko kesalahan batas. Rujuk \textcite{iso-c-draft-n1570,gnu-c-manual} untuk aturan indeks, representasi memori, dan pembatasannya.
+\section{Operasi Dasar (iterasi, traversal)}
+Operasi umum pada array meliputi iterasi, pencarian, dan transformasi elemen. Gunakan bentuk loop yang menyatakan niat dengan jelas dan pertimbangkan algoritme standar pada C++ untuk menggantikan loop manual ketika sesuai. Pada Pascal dan C, dokumentasi referensi menyediakan idiom yang aman dan portabel untuk traversal \parencite{free-pascal-docs,gnu-c-manual}.
 
-\section{Array di C++}
-C++ menawarkan \texttt{std::array} untuk ukuran tetap dan \texttt{std::vector} untuk ukuran dinamis, keduanya terintegrasi dengan ekosistem iterator dan algoritme standar. Struktur ini memberikan antarmuka aman dengan dukungan fungsi anggota seperti \texttt{size()} dan pemeriksaan batas melalui \texttt{at()}. Kinerja tetap kompetitif berkat penyimpanan kontigu dan optimasi kompilator.
+Validasi batas sebelum akses merupakan kebiasaan yang tidak boleh diabaikan, terutama ketika indeks berasal dari input pengguna. Untuk operasi transformasi, pertimbangkan penggunaan buffer sementara untuk menghindari konflik baca-tulis yang mengakibatkan hasil tak terduga. Uji unit berfokus pada nilai batas dan koleksi kosong sangat membantu.
 
-Pemilihan antara \texttt{std::array} dan \texttt{std::vector} bergantung pada apakah ukuran diketahui di waktu kompilasi dan kebutuhan re-alokasi. Penggunaan iterator dan range-based loop meningkatkan keterbacaan dan memudahkan abstraksi. Rujuk \textcite{cpp-reference} untuk dokumentasi antarmuka dan contoh idiomatik.
+\section{Alokasi Dinamis pada Array}
+Ketika ukuran tidak diketahui di awal, gunakan alokasi dinamis untuk menyesuaikan kapasitas saat runtime. Di C, \texttt{malloc}/\texttt{free} dan keluarga \texttt{realloc} memberikan kontrol tingkat rendah, sedangkan di C++ \texttt{std::vector} mengelola kapasitas dan pertumbuhan secara otomatis. Pada Pascal modern, dukungan array dinamis memungkinkan strategi serupa dengan antarmuka yang lebih aman \parencite{iso-c-draft-n1570,cpp-reference,free-pascal-docs}.
+
+Pastikan invarian kepemilikan memori dipertahankan pada semua jalur eksekusi, termasuk cabang kesalahan. Pada C++, gunakan RAII untuk memastikan pembebasan sumber daya meskipun terjadi pengecualian. Hindari penyalinan yang tidak perlu dengan menerapkan strategi \emph{move} dan peminjaman referensi yang jelas.
 \end{document}
