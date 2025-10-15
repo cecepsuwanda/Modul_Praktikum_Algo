@@ -2,28 +2,102 @@
 \begin{document}
 \chapter{Operator \& Ekspresi}
 \section{Operator Aritmetika, Relasional, Logika}
-Operator aritmetika (penjumlahan, pengurangan, perkalian, pembagian, dan sisa bagi) membentuk dasar evaluasi numerik di ketiga bahasa. Operator relasional dan logika memungkinkan penyusunan kondisi untuk pengambilan keputusan dan kontrol alur. Perhatikan domain dan aturan pembagian bilangan bulat versus pecahan, serta kebenaran logika yang berbeda antara Pascal dan C/C++ \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Operator aritmetika (\texttt{+}, \texttt{-}, \texttt{*}, pembagian, sisa), relasional (\texttt{<}, \texttt{<=}, \texttt{==}/\texttt{=}, \texttt{>}, \texttt{>=}), dan logika (\texttt{and}/\texttt{or}/\texttt{not} atau \texttt{\&\&}/\texttt{||}/\texttt{!}) adalah dasar evaluasi ekspresi. Perhatikan perbedaan pembagian bilangan bulat vs pecahan dan konvensi operator kesetaraan antarbahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Semantik pembagian pada bilangan bulat dapat berbeda dengan pembagian pecahan, sehingga pemilihan tipe operan memengaruhi hasil. Evaluasi malas (short-circuit) pada operator logika \texttt{and}/\texttt{or} (Pascal) dan \texttt{\&\&}/\texttt{||} (C/C++) berdampak pada efek samping fungsi yang dipanggil di dalam kondisi. Hindari menempatkan panggilan yang mengubah keadaan pada sisi kanan operator yang mungkin tidak dievaluasi.
+Gunakan tanda kurung untuk menegaskan maksud pada ekspresi panjang. Pecah ekspresi kompleks menjadi variabel perantara bernama agar mudah diuji. Rujuk tabel resmi operator untuk detail prioritas dan asosiasi \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
 
-Uji ekspresi kompleks dengan memecahnya menjadi variabel perantara bernama untuk meningkatkan keterbacaan. Langkah ini juga mempermudah penulisan uji unit yang memverifikasi bagian-bagian ekspresi secara terisolasi. Dokumentasi referensi menguraikan tabel operator dan perilaku batas \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+\subsection{Ringkasan Operator Umum}
+\begin{table}[h]
+  \centering
+  \caption{Operator umum lintas bahasa (ringkas)}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Kategori & Pascal & C & C++ \\
+    \midrule
+    Aritmetika & \texttt{+ - * / div mod} & \texttt{+ - * / %} & \texttt{+ - * / %} \\
+    Relasional & \texttt{= <> < <= > >=} & \texttt{== != < <= > >=} & sama dengan C \\
+    Logika & \texttt{and or not} & \texttt{&& || !} & sama dengan C \\
+    Penugasan & \texttt{:=} & \texttt{=} & \texttt{=} \\
+    Inkremen & (tidak ada) & \texttt{++ --} & \texttt{++ --} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Short-circuit dan Efek Samping}
+Di C/C++, \texttt{&&} dan \texttt{||} melakukan evaluasi singkat (operan kanan hanya dievaluasi bila perlu). Hindari efek samping pada operan yang mungkin tidak dievaluasi \parencite{gnu-c-manual,cpp-reference}.
+\begin{lstlisting}[language=C, caption={Short-circuit di C}]
+int expensive();
+if (ptr != NULL && expensive()) {
+  // aman: expensive() hanya dipanggil jika ptr != NULL
+}
+\end{lstlisting}
+Pada Pascal, kebijakan evaluasi boolean dapat bergantung opsi/ mode kompiler. Hindari mengandalkan evaluasi kondisi untuk mencegah error; lebih aman tulis pemeriksaan bertahap \parencite{free-pascal-docs}.
+\begin{lstlisting}[language=Pascal, caption={Pemeriksaan bertahap di Pascal}]
+if b <> 0 then begin
+  if a / b > 1 then Writeln('ok');
+end;
+\end{lstlisting}
 
 \section{Operator Bitwise}
-Operator bitwise memberikan kontrol tingkat rendah terhadap representasi biner data, seperti \texttt{\&}, \texttt{|}, \texttt{\^{}}, \texttt{<<}, dan \texttt{>>} pada C/C++. Pada Pascal, dukungan operator setara tersedia tergantung dialek dan unit yang dipakai, misalnya \texttt{and}, \texttt{or}, \texttt{xor}, dan pergeseran bit. Fitur ini penting untuk pemrosesan sinyal, kriptografi ringan, dan manipulasi \emph{flags} \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
+Operator bitwise mengoperasikan representasi biner: \texttt{\&}, \texttt{|}, \texttt{\^{}}, \texttt{\~{}} (not), \texttt{<<}, \texttt{>>} di C/C++; di Pascal gunakan \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{not}, serta \texttt{shl}/\texttt{shr}. Gunakan untuk \emph{flags}, protokol, dan optimasi bit-level \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
-Hati-hati terhadap pergeseran pada tipe bertanda versus tak bertanda karena perluasan tanda dapat memengaruhi hasil. Spesifikasi juga membatasi jumlah pergeseran agar tidak melebihi lebar tipe, sehingga validasi operand adalah kebiasaan yang baik. Dengan mengekstrak makro atau fungsi utilitas, ekspresi bitwise dapat dibuat lebih aman dan mudah diuji.
+\subsection{Contoh Flags}
+\begin{lstlisting}[language=C, caption={Bit flags di C}]
+#include <stdio.h>
+enum { READ = 1<<0, WRITE = 1<<1, EXEC = 1<<2 };
+int main(void){
+  unsigned mask = READ | WRITE;        // set dua bit
+  mask &= ~WRITE;                      // clear satu bit
+  if (mask & READ) printf("READ on\n");
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Pascal, caption={Pergeseran dan bitwise di Pascal}]
+var mask: longint; begin
+  mask := (1 shl 0) or (1 shl 1); // set bit 0 dan 1
+  mask := mask and not (1 shl 1); // clear bit 1
+  if (mask and (1 shl 0)) <> 0 then Writeln('READ on');
+end.
+\end{lstlisting}
+
+Hati-hati saat pergeseran pada tipe bertanda: pergeseran kanan dapat memperluas tanda pada beberapa implementasi. Batasi jumlah pergeseran agar tidak melebihi lebar tipe \parencite{iso-c-draft-n1570,cpp-reference}.
 
 \section{Precedence dan Asosiasi}
-Precedence dan asosiasi operator menentukan urutan evaluasi tanpa tanda kurung eksplisit. Walaupun tabel prioritas serupa di berbagai bahasa, variasi kecil dapat memicu kesalahan interpretasi pada ekspresi yang rumit. Prinsip umum adalah menambahkan tanda kurung untuk menegaskan niat, terutama ketika menggabungkan operator dengan prioritas mendekati \parencite{gnu-c-manual,cpp-reference}.
+Precedence dan asosiasi menentukan urutan evaluasi tanpa tanda kurung. Variasi kecil antarbahasa dapat memicu salah tafsir; tambahkan tanda kurung untuk memperjelas maksud \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
 
-Asosiasi kiri atau kanan memengaruhi hasil pada operasi berantai seperti pengurangan dan pembagian. Kesalahan umum termasuk menganggap operator logika memiliki prioritas yang lebih tinggi daripada perbandingan, yang dapat mengubah arti kondisi. Uji kasus batas membantu memastikan bahwa penambahan tanda kurung tidak mengubah hasil yang diharapkan.
+\subsection{Sketsa Pohon Ekspresi}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[level distance=1.1cm, sibling distance=2.2cm]
+    \tikzstyle{n}=[draw, rounded corners, minimum width=9mm, align=center]
+    \node[n]{&&}
+      child{ node[n]{==}
+        child{ node[n]{+}
+          child{ node[n]{a} }
+          child{ node[n]{*}
+            child{ node[n]{b} }
+            child{ node[n]{c} }
+          }
+        }
+        child{ node[n]{d} }
+      }
+      child{ node[n]{e} };
+  \end{tikzpicture}
+  \caption{Precedence: \texttt{*} > \texttt{+} > \texttt{==} > \texttt{&&}}
+\end{figure}
 
-Selain meningkatkan keterbacaan, tanda kurung eksplisit mempermudah alat analisis statis mengidentifikasi potensi anomali. Praktik ini sangat bermanfaat pada kode yang akan dikelola jangka panjang dan melibatkan banyak kontributor. Tabel prioritas resmi dapat dirujuk dari dokumentasi standar \parencite{gnu-c-manual,cpp-reference}.
+Uji dengan menambahkan atau menghapus tanda kurung dan bandingkan hasilnya di masing-masing bahasa.
 
 \section{Operator Overloading (Pendahuluan)}
-Di C++, \emph{operator overloading} memungkinkan definisi makna baru operator untuk tipe buatan pengguna. Fitur ini meningkatkan kejelasan notasi matematis dan domain-spesifik, namun memerlukan disiplin agar tidak menyamarkan biaya komputasi. Gunakan hanya jika notasi infiks benar-benar meningkatkan pemahaman dan tidak menyalahi intuisi \parencite{cpp-reference}.
+Di C++, \emph{operator overloading} mendefinisikan makna operator untuk tipe pengguna. Gunakan saat notasi infiks benar-benar memperjelas maksud dan konsisten secara aljabar \parencite{cpp-reference,cpp-operator-overloading}.
 
-Overload sebaiknya bersifat konstan terhadap invarian kelas, menjaga konsistensi dengan operasi terkait seperti perbandingan dan penugasan. Pertimbangkan implikasi performa serta interaksi dengan templat dan ADL (argument-dependent lookup). Dokumentasi C++ modern menyediakan pedoman komprehensif tentang pemilihan operator yang layak dioverload dan pengecualian yang disarankan.
+\begin{lstlisting}[language=C++, caption={Contoh singkat operator+ pada vektor 2D}]
+#include <iostream>
+struct Vec2 { double x, y; };
+Vec2 operator+(const Vec2& a, const Vec2& b) { return {a.x + b.x, a.y + b.y}; }
+std::ostream& operator<<(std::ostream& os, const Vec2& v){ return os << '(' << v.x << ',' << v.y << ')'; }
+int main(){ Vec2 a{1,2}, b{3,4}; std::cout << (a+b) << "\n"; }
+\end{lstlisting}
 
-Pengujian yang kuat diperlukan untuk memverifikasi sifat-sifat aljabar seperti komutatif dan asosiatif jika relevan. Sertakan juga uji properti yang memeriksa kesetaraan antara representasi infiks dan bentuk fungsi biasa. Referensi praktis dapat ditemukan pada sumber terbuka \parencite{cpp-reference}.
+Jaga konsistensi dengan operasi terkait (mis. \texttt{+=}, perbandingan) dan perhatikan biaya komputasi.
 \end{document}
