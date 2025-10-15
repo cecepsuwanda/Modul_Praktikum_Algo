@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\geometry{
+  left=3cm,
+  right=3cm,
+  top=3cm,
+  bottom=3cm
+}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegray},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numbersep=5pt
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+
+\frontmatter
+\title{Buku Praktikum: Pascal, C \& C++}
+\author{Dosen Informatika}
+\date{\today}
+\maketitle
+\tableofcontents
+
+\mainmatter
+
+\chapter{Pengantar \& Persiapan Lingkungan}
+\section{Sejarah dan Posisi Pascal, C, C++}
+\section{Menyiapkan Lingkungan Pengembangan}
+\subsection{Compiler / IDE untuk Pascal}
+\subsection{Compiler / IDE untuk C / C++}
+\section{Hello, World! — Program Pertama}
+
+\chapter{T tipe Data, Variabel, Input / Output}
+\section{Tipe Data Dasar}
+\section{Deklarasi \& Inisialisasi Variabel}
+\section{Input / Output Dasar}
+\section{Konversi Tipe dan Operasi Terkait}
+
+\chapter{Operator \& Ekspresi}
+\section{Operator Aritmetika, Relasional, Logika}
+\section{Operator Bitwise}
+\section{Precedence dan Asosiasi}
+\section{Operator Overloading (Pendahuluan)}
+
+\chapter{Struktur Kontrol Kondisional}
+\section{Pernyataan \texttt{if} / \texttt{else}}
+\section{Pernyataan \texttt{case} / \texttt{switch}}
+
+\chapter{Struktur Kontrol Perulangan & Lainnya}
+\section{Perulangan: \texttt{for}, \texttt{while}, \texttt{repeat} / \texttt{do–while}}
+\section{Penggunaan \texttt{break}, \texttt{continue}}
+\section{Operator Ternary / Conditional (C / C++)}
+
+\chapter{Array \& Multidimensi}
+\section{Array Satu Dimensi}
+\section{Array Multidimensi}
+\section{Operasi Dasar (iterasi, traversal)}
+\section{Alokasi Dinamis pada Array (pointer ke array, jika relevan)}
+
+\chapter{String / Karakter \& Operasi String}
+\section{String sebagai Array Karakter}
+\section{Operasi Dasar String (concat, substring, length)}
+\section{Pengolahan Karakter, escape sequences}
+\section{Fungsi / prosedur string library (jika tersedia)}
+
+\chapter{Struktur Data Dasar \& Pointer Dasar}
+\section{Record / \texttt{struct}, Enumerasi, Set}
+\section{Pointer & Referensi Dasar}
+\section{Pointer ke Record / Struct}
+\section{Akses anggota via pointer / referensi}
+
+\chapter{Fungsi \& Prosedur / Metode}
+\section{Deklarasi \& Definisi Fungsi / Prosedur}
+\section{Parameter — by value / by reference}
+\section{Fungsi Rekursif}
+\section{Metode \& Fungsi dalam C++}
+
+\chapter{Alokasi Dinamis \& Pointer Lanjutan}
+\section{Alokasi Memori Dinamis}
+\section{Pointer \& Dereferensi}
+\section{Pointer ke Array / Pointer ke Pointer}
+\section{Pointer ke Fungsi / Smart Pointers}
+
+\chapter{File \& Operasi I/O Lanjutan}
+\section{File Teks \& Biner}
+\section{Mode File, Seek, ftell}
+\section{Penanganan Kesalahan File}
+
+\chapter{Modul / Unit / Header \& Manajemen Proyek}
+\section{Unit dan “uses” (Pascal)}
+\section{Header / Implementasi (C / C++)}
+\section{Include Guards / \texttt{\#pragma once}}
+\section{Organisasi Proyek Modular}
+
+\backmatter
+\chapter*{Referensi}
+% Daftar sumber: GitHub repo, buku, artikel
+
+\end{document}
