@@ -2,28 +2,77 @@
 \begin{document}
 \chapter{String / Karakter \& Operasi String}
 \section{String sebagai Array Karakter}
-Pada tingkat dasar, string dapat dianggap sebagai urutan karakter yang disimpan dalam memori secara bersebelahan. Pascal tradisional merepresentasikan string sebagai array karakter dengan panjang tetap atau bertipe \texttt{string} modern, sementara C memakai array \texttt{char} yang diakhiri dengan karakter null. C++ menyediakan \texttt{std::string} yang mengelola memori dan panjang secara otomatis \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-strings}.
+String adalah urutan karakter yang disimpan bersebelahan. Pascal menyediakan tipe \texttt{string} modern (serta bentuk berbasis array), C memakai array \texttt{char} berakhir null, dan C++ menyediakan \texttt{std::string} yang mengelola memori otomatis \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-strings}.
 
 Model array memudahkan akses indeks dan iterasi, tetapi menuntut kehati-hatian terhadap batas dan terminator. Pada C, kelalaian menempatkan karakter null dapat menyebabkan pembacaan melewati batas yang berbahaya. Abstraksi tingkat lebih tinggi seperti \texttt{std::string} mengurangi risiko tersebut dengan menjaga invarian panjang dan kapasitas \parencite{cpp-strings}.
 
 Pemilihan representasi sebaiknya mempertimbangkan kompatibilitas pustaka dan performa. Untuk interoperabilitas dengan API C, C++ menyediakan \texttt{c\_str()} guna memperoleh penunjuk ke buffer null-terminated. Pascal modern juga menyediakan konversi antar tipe string untuk berinteraksi dengan komponen sistem \parencite{free-pascal-docs}.
 
 \section{Operasi Dasar String (konkatenasi, substring, panjang)}
-Operasi umum pada string meliputi menggabungkan dua string, mengambil bagian (substring), dan memperoleh panjang. Pascal menyediakan operator atau fungsi bawaan untuk konkatenasi dan pencuplikan, C menggunakan fungsi pada \texttt{<string.h>} seperti \texttt{strcat} dan \texttt{strncpy}, sedangkan C++ menyediakan antarmuka kaya pada \texttt{std::string}. Perbedaan antarmuka memengaruhi keselamatan dan kejelasan kode \parencite{c-strings-h,cpp-strings,free-pascal-docs}.
+Operasi umum: konkatenasi, substring, panjang. Pascal menyediakan operator/fungsi bawaan; C menggunakan \texttt{<string.h>}; C++ menyediakan antarmuka kaya pada \texttt{std::string} \parencite{c-strings-h,cpp-strings,free-pascal-docs}.
+
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=Pascal, caption={Konkatenasi dan panjang di Pascal}]
+var a,b,c: string; begin
+  a := 'Halo'; b := ' Dunia'; c := a + b; Writeln(Length(c));
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Konkatenasi aman di C}]
+#include <string.h>
+char dst[64] = "Halo";
+strncat(dst, " Dunia", sizeof(dst)-strlen(dst)-1);
+size_t len = strlen(dst);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={std::string di C++}]
+#include <string>
+#include <iostream>
+int main(){
+  std::string a = "Halo", b = " Dunia";
+  std::string c = a + b;
+  std::cout << c.size() << "\n";
+}
+\end{lstlisting}
 
 Dalam C, operasi berbasis buffer menuntut pengelolaan ukuran tujuan untuk mencegah luapan dan korupsi memori. Fungsi dengan varian panjang tetap atau yang memerlukan ukuran buffer eksplisit lebih disarankan pada konteks aman. Pada C++, metode seperti \texttt{append}, \texttt{substr}, dan \texttt{size} memberikan semantik yang lebih jelas dan aman terhadap batas \parencite{cpp-strings}.
 
 Pengukuran panjang perlu membedakan antara jumlah byte dan jumlah karakter ketika menggunakan enkode multibita. Untuk pemrosesan Unicode yang benar, gunakan pustaka khusus atau tipe yang sesuai di ekosistem masing-masing bahasa. Dokumentasi referensi menguraikan batasan representasi dan operasi yang tersedia \parencite{cpp-strings,iso-c-draft-n1570}.
 
 \section{Pengolahan Karakter \& escape sequences}
-Karakter diwakili oleh kode numerik yang ditafsirkan menurut set karakter aktif, dengan escape sequence untuk menyatakan simbol khusus. C/C++ mendefinisikan escape seperti \texttt{\textbackslash n}, \texttt{\textbackslash t}, dan \texttt{\textbackslash\textbackslash} dalam literal, sementara Pascal memiliki notasi yang sepadan tergantung dialeknya. Pemahaman aturan literal membantu mencegah kesalahan interpretasi string dan ketidakcocokan lintas platform \parencite{iso-c-draft-n1570,free-pascal-docs}.
+Karakter diwakili oleh kode numerik dengan escape sequence untuk simbol khusus. C/C++: \texttt{\textbackslash n}, \texttt{\textbackslash t}, \texttt{\textbackslash\textbackslash}; Pascal memiliki notasi serupa bergantung dialek \parencite{iso-c-draft-n1570,free-pascal-docs}.
+
+\begin{table}[h]
+  \centering
+  \caption{Escape sequence umum}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Notasi & Arti & Catatan \\
+    \midrule
+    \texttt{\textbackslash n} & baris baru & LF \\
+    \texttt{\textbackslash t} & tab & horizontal tab \\
+    \texttt{\\} & backslash & butuh escape \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 Normalisasi baris baru dan pengkodean berkas mempengaruhi hasil I/O dan perbandingan string. Pada sistem yang berbeda, representasi baris baru dapat bervariasi sehingga perlu strategi konsisten saat membaca atau menulis file teks. Pengujian yang memverifikasi perilaku pada berbagai lingkungan sangat dianjurkan.
 
 Fungsi utilitas untuk klasifikasi karakter, seperti \texttt{isalpha} dan \texttt{isdigit} di C, memudahkan validasi input tingkat rendah. Pada C++, \texttt{<locale>} dan fasilitas standar lain menyediakan cara yang lebih kaya untuk mempertimbangkan regionalisasi. Rujuk dokumentasi resmi untuk cakupan kelas karakter dan dampaknya pada portable code \parencite{iso-c-draft-n1570,cpp-reference}.
 
 \section{Fungsi/prosedur string library}
-Pustaka standar menyediakan koleksi fungsi untuk manipulasi string tingkat rendah maupun tinggi. Di C, \texttt{<string.h>} berisi fungsi seperti \texttt{strlen}, \texttt{strcmp}, dan \texttt{memcpy} yang beroperasi pada buffer. Di Pascal, unit dan fungsi bawaan menawarkan operasi seperti penggabungan dan ekstraksi bagian string. Di C++, \texttt{std::string} dan algoritme standar menyediakan antarmuka yang ekspresif dan aman terhadap batas \parencite{c-strings-h,free-pascal-docs,cpp-strings}.
+Pustaka standar menyediakan fungsi untuk manipulasi string tingkat rendah/tinggi. C: \texttt{strlen}, \texttt{strcmp}, \texttt{memcpy}; Pascal: unit dan fungsi bawaan; C++: \texttt{std::string} dan algoritme standar \parencite{c-strings-h,free-pascal-docs,cpp-strings}.
+
+\subsection{Contoh API}
+\begin{lstlisting}[language=C, caption={Validasi digit dengan <ctype.h>}]
+#include <ctype.h>
+int all_digit(const char* s){ for (; *s; ++s) if (!isdigit((unsigned char)*s)) return 0; return 1; }
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Mencari substring di C++}]
+#include <string>
+bool contains(std::string_view s, std::string_view sub){ return s.find(sub) != std::string::npos; }
+\end{lstlisting}
 
 Pemilihan API harus mempertimbangkan keselamatan, performa, dan kejelasan. Gunakan fungsi yang memerlukan ukuran buffer eksplisit atau objek yang mengelola memori otomatis untuk mengurangi risiko. Kombinasikan dengan pengujian properti untuk memastikan invarian seperti tidak adanya pemotongan senyap atau korupsi memori.
 
