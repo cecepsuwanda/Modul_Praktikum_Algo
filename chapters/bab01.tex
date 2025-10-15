@@ -153,6 +153,26 @@ int main() {
   \end{tabular}
 \end{table}
 
+\subsection{Toolchain Resmi untuk Buku Ini}
+\begin{itemize}
+  \item \textbf{Online}: OnlineGDB — jalankan Pascal, C, C++ di browser. Pilih bahasa, tempel kode, lalu \emph{Run}. Simpan berkas untuk berbagi tautan \parencite{onlinegdb}.
+  \item \textbf{Offline Pascal}: Lazarus IDE — buat proyek \texttt{Console Application}, tulis kode Pascal, \texttt{Run} untuk kompilasi dan eksekusi \parencite{lazarus}.
+  \item \textbf{Offline C/C++}: Code::Blocks — buat \texttt{Console Application}, pilih C atau C++, tulis kode di \texttt{main.c}/\texttt{main.cpp}, \texttt{Build \& Run} \parencite{codeblocks}.
+\end{itemize}
+
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan lingkungan rekomendasi}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Kebutuhan & Pascal & C & C++ \\
+    \midrule
+    Online & OnlineGDB & OnlineGDB & OnlineGDB \\
+    Offline & Lazarus & Code::Blocks & Code::Blocks \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \subsection{Troubleshooting Cepat}
 \begin{itemize}
   \item \textbf{Perintah tidak ditemukan}: pastikan instalasi selesai dan folder \texttt{bin} ada di \texttt{PATH} \parencite{gcc-docs,clang-docs,free-pascal-docs}.
@@ -160,3 +180,32 @@ int main() {
   \item \textbf{Linker error}: tambahkan file sumber yang benar, atau opsi standar bahasa yang sesuai.
 \end{itemize}
 \end{document}
+% Toolchain resmi untuk buku ini
+\subsection{Toolchain Resmi: OnlineGDB, Lazarus, Code::Blocks}
+Untuk konsistensi praktikum:
+\begin{itemize}
+  \item \textbf{Online (semua bahasa)}: OnlineGDB — jalankan Pascal, C, C++ langsung di browser \parencite{onlinegdb}.
+  \item \textbf{Offline Pascal}: Lazarus IDE (berbasis Free Pascal) \parencite{lazarus}.
+  \item \textbf{Offline C/C++}: Code::Blocks IDE (dengan toolchain MinGW/Clang sesuai OS) \parencite{codeblocks}.
+\end{itemize}
+
+Langkah cepat:
+\begin{enumerate}
+  \item \textbf{OnlineGDB}: buka proyek baru, pilih bahasa (Pascal/C/C++), tempel kode, klik Run.
+  \item \textbf{Lazarus}: buat Project \textrightarrow{} Program; tambahkan unit bila perlu; Build \& Run.
+  \item \textbf{Code::Blocks}: buat Console Application (C atau C++), letakkan sumber di \texttt{src/}, Build \& Run.
+\end{enumerate}
+
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan toolchain praktikum}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Modus & Pascal & C/C++ \\
+    \midrule
+    Online & OnlineGDB & OnlineGDB \\
+    Offline & Lazarus & Code::Blocks \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
