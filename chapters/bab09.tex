@@ -1,0 +1,29 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Fungsi \& Prosedur / Metode}
+\section{Deklarasi \& Definisi Fungsi / Prosedur}
+Abstraksi fungsi dan prosedur memungkinkan dekomposisi masalah ke unit yang dapat diuji dan digunakan ulang. Pascal membedakan \texttt{procedure} dan \texttt{function}, sementara C/C++ menggunakan fungsi dengan nilai kembali sebagai sarana utama. Penempatan deklarasi di header/unit dan definisi di berkas implementasi memudahkan kompilasi terpisah \parencite{pascal-procedure-function,c-functions,cpp-functions}.
+
+Kontrak fungsi yang baik mencakup prasyarat, pascakondisi, dan efek samping yang terdokumentasi. Minimalkan jumlah parameter dan gunakan struktur untuk mengelompokkan data terkait agar tanda tangan tetap ringkas. Sertakan uji unit yang memverifikasi perilaku normal dan jalur kesalahan.
+
+Pada C++, metode anggota mengikat perilaku dengan data, memungkinkan enkapsulasi dan invarian kelas. Gunakan kata kunci seperti \texttt{const} pada metode yang tidak memodifikasi keadaan dan pertimbangkan \texttt{noexcept} untuk menyatakan jaminan pengecualian. Dokumentasi modern memuat praktik terbaik untuk menjaga keterbacaan dan keamanan \parencite{cpp-functions,cpp-reference}.
+
+\section{Parameter — by value / by reference}
+Strategi passing parameter memengaruhi biaya penyalinan dan kemampuan fungsi memodifikasi argumen. Di C, passing by value adalah default, dengan efek referensi dicapai melalui pointer; di C++ gunakan referensi atau referensi konstan untuk efisiensi dan kejelasan. Pada Pascal, \texttt{var} menandakan parameter rujukan yang dapat diubah \parencite{gnu-c-manual,free-pascal-docs}.
+
+Gunakan referensi konstan untuk argumen besar yang hanya dibaca demi menghindari penyalinan. Untuk pengembalian banyak nilai, pertimbangkan struktur hasil atau tipe pasangan alih-alih parameter keluaran, menjaga tanda tangan tetap jelas. Uji beban membantu menilai dampak strategi passing pada performa jalur panas.
+
+Semantik kepemilikan harus ditegaskan ketika pointer dipakai, termasuk siapa yang bertanggung jawab membebaskan sumber daya. Pada C++, konvensi \emph{caller-allocates/caller-frees} atau penggunaan penunjuk pintar membuat kontrak eksplisit. Dokumentasikan kebijakan ini agar interaksi antarmuka stabil jangka panjang.
+
+\section{Fungsi Rekursif}
+Rekursi memecah masalah menjadi submasalah yang serupa, dengan basis dan langkah rekursif yang jelas. Terapkan kondisi berhenti yang tepat untuk mencegah rekursi tak hingga dan gunakan strategi memoization bila submasalah tumpang tindih. Analisis kompleksitas dan kedalaman tumpukan diperlukan untuk memastikan kelayakan pada input besar \parencite{cpp-reference,gnu-c-manual}.
+
+Untuk performa, pertimbangkan konversi ke iterasi jika rekursi terlalu dalam atau jika kompilator tidak melakukan optimisasi tail-call. Pada C++, gunakan struktur data standar untuk menggantikan tumpukan rekursif manual jika diperlukan. Sertakan uji batas dan input acak untuk memverifikasi ketahanan implementasi rekursif.
+
+Rekursi sering menjadi landasan implementasi algoritme klasik seperti pencarian biner, traversals pohon, dan divide-and-conquer. Pastikan invarian terjaga di setiap panggilan dan hasil digabung sesuai spesifikasi. Dokumentasi referensi menyediakan contoh idiomatik yang dapat diadaptasi \parencite{cpp-reference,gnu-c-manual}.
+
+\section{Metode \& Fungsi dalam C++}
+C++ memperkaya fungsi dengan overloading, default argument, templat, dan objek panggil (functor, lambda). Fitur ini memungkinkan gaya pemrograman yang ekspresif dan generik tanpa mengorbankan performa. Gunakan pedoman modern seperti pembuatan nilai kembali melalui RVO/NRVO dan preferensi \texttt{auto} saat inferensi tipe meningkatkan kejelasan \parencite{cpp-functions,cpp-reference}.
+
+Pertimbangkan aturan visibilitas dan linkage saat fungsi didefinisikan di beberapa berkas, serta pisahkan antarmuka dari implementasi untuk mempercepat kompilasi. Uji unit yang kaya kasus memastikan kompatibilitas saat evolusi tanda tangan dan perilaku fungsi berlangsung. Sumber terbuka menyediakan contoh komprehensif dan praktik terbaik terkini.
+\end{document}

@@ -1,0 +1,25 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Alokasi Dinamis \& Pointer Lanjutan}
+\section{Alokasi Memori Dinamis}
+Alokasi dinamis memungkinkan program memperoleh memori pada runtime untuk ukuran data yang tidak dapat diprediksi di awal. Di C, fungsi \texttt{malloc}/\texttt{calloc}/\texttt{realloc}/\texttt{free} menyediakan kontrol langsung atas siklus hidup memori. Di C++, operator \texttt{new}/\texttt{delete} dan penunjuk pintar seperti \texttt{std::unique_ptr} mengenkapsulasi kepemilikan dan pembebasan otomatis \parencite{iso-c-draft-n1570,cpp-reference}.
+
+Strategi pengalokasian harus menyatakan dengan jelas pemilik data dan jalur pembebasan untuk setiap cabang eksekusi. Gunakan \emph{RAII} pada C++ untuk menjamin pembebasan meski terjadi pengecualian. Pada C, pola goto cleanup dan blok \texttt{defer}-like (dengan makro) membantu menjaga konsistensi pembebasan sumber daya \parencite{gnu-c-manual}.
+
+Pertimbangkan dampak fragmentasi memori dan biaya realokasi pada struktur yang sering berubah ukuran. Di C++, \texttt{std::vector} dan \texttt{std::string} mengelola pertumbuhan kapasitas, namun tetap butuh kewaspadaan pada invalidasi iterator saat re-alokasi.
+
+\section{Pointer \& Dereferensi}
+Manipulasi pointer yang aman menuntut inisialisasi eksplisit, larangan penggunaan setelah dibebaskan (use-after-free), dan validasi sebelum dereferensi. Gunakan pengenal null yang konsisten dan pertimbangkan \texttt{nonnull} pada kontrak API. Di C++, preferensikan referensi ketika non-null dijamin agar niat lebih terlihat \parencite{gnu-c-manual,cpp-reference}.
+
+Teknik seperti \emph{owner/raw pointer split} di C++ memisahkan peran pengelolaan dari akses non-kepemilikan. Untuk C, konvensi dokumenter tentang siapa yang bertanggung jawab membebaskan memori harus ditegakkan dengan uji dan tinjauan kode. Alat analisis statis dapat membantu mendeteksi kebocoran dan akses tidak valid.
+
+\section{Pointer ke Array / Pointer ke Pointer}
+Pointer ke array dan pointer ganda digunakan untuk memanipulasi matriks dinamis dan buffer variabel. Di C, pola alokasi dua tingkat memerlukan pembebasan bertahap untuk mencegah kebocoran. Di C++, preferensikan penampung standar atau \texttt{std::unique_ptr<T[]>} untuk menyederhanakan manajemen \parencite{iso-c-draft-n1570,cpp-reference}.
+
+Perhitungan offset harus memperhitungkan ukuran elemen untuk menjaga korektitas. Saat memaparkan API, gunakan ukuran eksplisit dan validasi untuk mencegah akses di luar batas. Uji yang memeriksa skenario ukuran nol dan pertumbuhan bertahap membantu menstabilkan implementasi.
+
+\section{Pointer ke Fungsi / Smart Pointers}
+Pointer ke fungsi di C memungkinkan strategi callback dan tabel vektor, sedangkan C++ menyediakan alternatif modern seperti objek callable dan \texttt{std::function}. Penunjuk pintar mengekspresikan kepemilikan eksplisit: \texttt{unique\_ptr} untuk kepemilikan tunggal dan \texttt{shared\_ptr} untuk berbagi siklus hidup. Hindari siklus referensi dengan \texttt{weak\_ptr} jika hubungan graf tidak terarah \parencite{cpp-reference}.
+
+Evaluasi biaya overhead penunjuk pintar dalam jalur kritis dan gunakan penunjuk mentah hanya sebagai non-owner view bila dibenarkan. Dokumentasi modern menyediakan pola yang jelas untuk memilih jenis penunjuk sesuai kebutuhan kepemilikan dan performa. Sertakan uji untuk skenario penghancuran berurutan guna mencegah kebocoran dan dangling pointer.
+\end{document}

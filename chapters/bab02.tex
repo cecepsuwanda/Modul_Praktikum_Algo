@@ -1,101 +1,31 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Instruksi Output (Pascal, C, C++)}
-\section{Konsep Output}
-Instruksi output bertugas menyajikan hasil perhitungan atau informasi kepada pengguna melalui konsol atau media lain. Dalam Pascal, C, dan C++, konsep dasarnya sama yaitu memformat nilai dan menampilkannya menggunakan fungsi atau prosedur bawaan. Perbedaan utama terletak pada sintaks, pustaka standar, dan fleksibilitas format.
+\chapter{Tipe Data, Variabel, Input / Output (Pascal, C, C++)}
+\section{Tipe Data Dasar}
+Tipe data menentukan domain nilai dan operasi yang sah, sehingga berpengaruh langsung terhadap ketepatan perhitungan dan penggunaan memori. Pascal menyediakan tipe skalar seperti \texttt{integer}, \texttt{real}, \texttt{char}, dan \texttt{boolean}, sedangkan C/C++ memiliki \texttt{int}, \texttt{double}, \texttt{char}, dan tipe logika modern seperti \texttt{bool}. Pemahaman ukuran dan rentang nilai pada tiap platform penting untuk mencegah overflow dan kesalahan representasi \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference}.
 
-Kualitas output dipengaruhi oleh kemampuan memformat string, pengendalian presisi numerik, dan penyisipan karakter khusus. Dengan pemahaman ini, mahasiswa dapat menghasilkan antarmuka teks yang jelas dan informatif saat menguji algoritma. Praktik pemformatan yang konsisten juga membantu saat membandingkan hasil antar bahasa.
+Penggunaan tipe yang tepat membantu menyatakan maksud program secara jelas dan memudahkan optimasi oleh kompilator. Pada C/C++, kualifikator seperti \texttt{signed/unsigned} serta \texttt{short/long} memengaruhi rentang dan kinerja, sedangkan pada Pascal rentang indeks yang eksplisit memperjelas invarian. Dokumentasi resmi menyediakan tabel korespondensi ukuran tipe serta ketentuan standar yang relevan \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
-Aspek lain yang perlu diperhatikan adalah pembulatan angka, lokal (locale), serta pemisah ribuan yang dapat memengaruhi keterbacaan. Pengembang juga perlu mengelola pesan kesalahan secara terpisah dari keluaran normal untuk memudahkan debugging dan automasi. Lihat \textcite{w3pascal-io,k&r-c-output-input,cplusplus-io} untuk referensi dan contoh yang dapat direplikasi.
+Representasi memori dan aturan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral dalam C dapat mengubah hasil evaluasi ekspresi ketika tipe berbeda dicampurkan. Prinsip konservatif adalah memperjelas konversi dengan eksplisit \emph{cast} hanya ketika benar-benar diperlukan \parencite{gnu-c-manual,cpp-reference}.
 
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan mekanisme output di Pascal, C, dan C++}
-  \label{tab:ringkasan-output}
-  \begin{tabular}{@{}llll@{}}
-    \toprule
-    Aspek & Pascal & C & C++ \\
-    \midrule
-    API utama & \texttt{Write/\,Writeln} & \texttt{printf/\,fprintf} & \texttt{cout} (\texttt{iomanip}) \\
-    Unit/Header & \texttt{System} & \texttt{stdio.h} & \texttt{iostream} \\
-    Gaya format & Posisi argumen & String format & Manipulator stream \\
-    Baris baru & \texttt{Writeln} & \texttt{\n} & \texttt{std::endl}/"\texttt{\n}" \\
-    Ke berkas & Assign/Rewrite & \texttt{FILE*} & \texttt{std::ofstream} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\section{Deklarasi \& Inisialisasi Variabel}
+Deklarasi variabel menetapkan nama, tipe, dan cakupan sehingga kompilator dapat memeriksa ketepatan penggunaan. Inisialisasi awal penting untuk menghindari kondisi tak terdefinisi, terutama pada C yang tidak menginisialisasi variabel lokal secara otomatis. Pascal dan C++ menawarkan inisialisasi yang lebih ekspresif, termasuk inisialisasi terbraket pada C++ \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-\begin{figure}[h]
-  \centering
-  \begin{tikzpicture}[node distance=10mm, every node/.style={font=\small}]
-    \node[draw, rounded corners, align=center] (value) {Nilai/Objek};
-    \node[draw, rounded corners, right=18mm of value] (fmt) {Formatter\\(specifier/manipulator)};
-    \node[draw, rounded corners, right=18mm of fmt] (buf) {Buffer/Stream};
-    \node[draw, rounded corners, right=18mm of buf] (dev) {Perangkat\\(konsol/berkas)};
-    \draw[-{Latex[length=3mm]}] (value) -- (fmt);
-    \draw[-{Latex[length=3mm]}] (fmt) -- (buf);
-    \draw[-{Latex[length=3mm]}] (buf) -- (dev);
-  \end{tikzpicture}
-  \caption{Pipa output terformat: dari nilai hingga perangkat}
-  \label{fig:pipa-output}
-\end{figure}
+Disiplin penamaan yang konsisten meningkatkan keterbacaan dan memudahkan penelusuran data melalui program. Ketika lingkup variabel terlalu panjang, pecahlah fungsi menjadi unit yang lebih kecil agar invarian lebih mudah dipertahankan. Praktik baik lain meliputi penggunaan \texttt{const} untuk menyatakan nilai yang tidak boleh berubah dan preferensi imutabilitas saat memungkinkan.
 
-Ringkasan pada \cref{tab:ringkasan-output} dan \cref{fig:pipa-output} membantu memilih pendekatan yang tepat sesuai bahasa dan kebutuhan format. Dengan memahami peran formatter dan buffer, mahasiswa dapat merancang keluaran yang konsisten dan mudah diuji.
+Pada C/C++, pertimbangkan aturan durasi penyimpanan seperti otomatis, statik, dan dinamis untuk mengelola siklus hidup variabel. Deklarasi pada titik penggunaan (\emph{declare near use}) meminimalkan rentang hidup dan menurunkan kompleksitas. Pada Pascal, penempatan deklarasi yang jelas di bagian \texttt{var} tetap menyediakan struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
 
-\section{Output di Pascal}
-Pascal menyediakan prosedur \texttt{Write} dan \texttt{Writeln} untuk menampilkan data, dengan dukungan format dasar seperti lebar bidang dan presisi. Pemrogram dapat mencetak beberapa argumen secara berurutan dan mengatur baris baru menggunakan \texttt{Writeln}. Pada varian modern, penanganan tipe string dan karakter telah disederhanakan sehingga lebih mudah digunakan.
+\section{Input / Output Dasar}
+Masukan/keluaran dasar menyediakan sarana interaksi program dengan pengguna atau berkas. Pascal menggunakan \texttt{Read/Readln} dan \texttt{Write/Writeln} dengan dukungan format sederhana, sementara C memakai keluarga fungsi \texttt{scanf/printf} dan C++ memakai \texttt{std::cin/std::cout}. Perbedaan model pemformatan berpengaruh pada cara mengendalikan presisi, lebar bidang, dan penanganan spasi \parencite{w3pascal-io,gnu-c-manual,cplusplus-io}.
 
-Pengaturan format yang tepat memudahkan pembacaan data numerik dan tabel sederhana. Selain itu, konvensi pemisahan logika perhitungan dan presentasi hasil dianjurkan untuk menjaga struktur kode. Hal ini sejalan dengan tujuan modularitas dalam pengembangan perangkat lunak.
+Keluaran kesalahan sebaiknya dipisahkan dari keluaran normal untuk memudahkan automasi dan pengujian. Pada C, gunakan \texttt{stderr} untuk pesan kesalahan dan pertimbangkan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, manfaatkan manipulator seperti \texttt{std::setw} dan \texttt{std::setprecision} untuk menghasilkan keluaran yang konsisten secara visual \parencite{gnu-c-manual,cpp-reference}.
 
-Untuk keluaran berkas, Pascal menyediakan mekanisme penulisan ke \texttt{textfile} yang seragam dengan keluaran ke konsol, sehingga mudah melakukan redireksi. Penggunaan format kolom dan perataan (alignment) membantu saat menyajikan laporan sederhana. Rujuk \textcite{w3pascal-io,free-pascal-docs} untuk variasi format dan contoh praktik.
+Untuk masukan yang tangguh, pertimbangkan membaca baris teks lalu melakukan parsing eksplisit agar validasi lebih terkendali. Pada C/C++, menggabungkan \texttt{fgets}/\texttt{std::getline} dengan konversi numerik yang memeriksa kesalahan meningkatkan keandalan. Dokumentasi standar menguraikan spesifikasi lengkap format dan status stream untuk diagnosa \parencite{iso-c-draft-n1570,cpp-reference}.
 
-\begin{lstlisting}[language=Pascal, caption={Contoh output Pascal dengan lebar bidang dan presisi}, label={lst:pascal-output}]
-program FormatOutput;
-var
-  a: integer;
-  x: real;
-begin
-  a := 42; x := 3.14159;
-  Writeln('a = ', a:4);           { perataan kanan lebar 4 }
-  Writeln('x = ', x:0:2);         { dua digit desimal }
-  Writeln('Halo, Dunia!');        { baris baru otomatis }
-end.
-\end{lstlisting}
+\section{Konversi Tipe dan Operasi Terkait}
+Konversi tipe dapat bersifat implisit atau eksplisit, dan keduanya memiliki konsekuensi terhadap presisi serta aturan evaluasi. Pada C, promosi aritmetika menstandarkan tipe operan sebelum evaluasi ekspresi; pada C++ konversi eksplisit seperti \texttt{static\_cast} memberikan niat yang lebih tegas. Pascal cenderung menolak pencampuran tipe yang ambigu sehingga mendorong penulisan konversi yang jelas \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-\section{Output di C}
-Dalam C, fungsi \texttt{printf} dari pustaka \texttt{stdio.h} merupakan sarana utama untuk output terformat. Spesifier seperti \texttt{\%d}, \texttt{\%f}, dan \texttt{\%s} digunakan untuk mencetak bilangan bulat, pecahan, dan string dengan kontrol presisi dan lebar. Mekanisme ini kuat namun menuntut kecermatan dalam mencocokkan tipe argumen dengan format.
+Pertimbangkan biaya konversi pada jalur panas eksekusi, terutama untuk koleksi besar atau perhitungan numerik intensif. Teknik seperti mempersempit titik konversi dan menggunakan tipe target sejak awal dapat menurunkan beban runtime. Unit uji sangat membantu untuk memastikan kesetaraan numerik sebelum dan sesudah refaktor konversi.
 
-Penggunaan \texttt{fprintf} dan \texttt{snprintf} memungkinkan pengalihan output ke berkas atau buffer, sehingga pola I/O dapat diuji tanpa interaksi langsung. Praktik aman meliputi pembatasan panjang buffer dan pemeriksaan nilai kembali fungsi untuk mendeteksi kesalahan. Disiplin ini penting terutama pada program berskala besar.
-
-Disarankan memisahkan keluaran kesalahan melalui \texttt{stderr} untuk memudahkan automasi dan logging. Pertimbangkan pula pengaruh lokal terhadap pemformatan desimal dan gunakan batasan presisi agar hasil numerik konsisten. Rujuk \textcite{k&r-c-output-input,gnu-c-manual,iso-c-draft-n1570} untuk rincian spesifier dan contoh penggunaan.
-
-\begin{lstlisting}[language=C, caption={Contoh output C dengan printf}, label={lst:c-output}]
-#include <stdio.h>
-
-int main(void) {
-    int a = 42; double x = 3.14159;
-    printf("a = %4d\n", a);         /* lebar bidang 4 */
-    printf("x = %.2f\n", x);         /* dua digit desimal */
-    fprintf(stderr, "error: kode=%d\n", -1); /* ke stderr */
-    return 0;
-}
-\end{lstlisting}
-
-\section{Output di C++}
-C++ memanfaatkan pustaka \texttt{iostream} dengan operator \texttt{<<} untuk membangun aliran keluaran yang bertipe kuat. Pendekatan berbasis stream memudahkan komposisi dan mendukung overloading untuk tipe kustom sehingga objek dapat dicetak secara idiomatis. Manipulator seperti \texttt{std::fixed}, \texttt{std::setprecision}, dan \texttt{std::setw} menyediakan kontrol format yang ekspresif.
-
-Kelebihan model ini adalah integrasi dengan tipe standar dan dukungan internasionalisasi melalui facet. Namun, performa dan sintaks bisa berbeda dibanding \texttt{printf}, sehingga pemilihan pendekatan bergantung pada kebutuhan. Pengembang sering menggabungkan kedua model sesuai konteks.
-
-Untuk interoperabilitas, sinkronisasi antara iostream dan stdio dapat dimatikan guna meningkatkan performa, meski perlu kehati-hatian pada program yang menggabungkan keduanya. Pemeriksaan dan pemulihan status stream penting untuk keandalan ketika terjadi kesalahan format. Lihat \textcite{cplusplus-io,cpp-reference} untuk katalog lengkap manipulator dan praktik terbaik.
-
-\begin{lstlisting}[language=C++, caption={Contoh output C++ dengan iostream dan iomanip}, label={lst:cpp-output}]
-#include <iostream>
-#include <iomanip>
-int main() {
-    int a = 42; double x = 3.14159;
-    std::cout << "a = " << std::setw(4) << a << "\n";
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "x = " << x << "\n";
-}
-\end{lstlisting}
+Dalam konteks I/O, konversi format ke representasi internal dan sebaliknya harus diperlakukan sebagai batas kepercayaan data. Validasi masukan dan sanitasi karakter membantu mencegah perilaku tak terduga. Standar bahasa dan dokumentasi referensi menyediakan aturan formal serta contoh idiomatik \parencite{iso-c-draft-n1570,cpp-reference}.
 \end{document}

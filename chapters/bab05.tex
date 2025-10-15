@@ -1,23 +1,24 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Perulangan (Pascal, C, C++)}
-\section{Pendahuluan}
-Perulangan memungkinkan eksekusi berulang suatu blok kode sampai kondisi tertentu terpenuhi. Konstruksi ini penting untuk memproses koleksi data, melakukan simulasi bertahap, dan mengimplementasikan algoritme iteratif. Pascal, C, dan C++ menyediakan beberapa bentuk loop untuk menyesuaikan kebutuhan.
+\chapter{Struktur Kontrol Perulangan \& Lainnya}
+\section{Perulangan: \texttt{for}, \texttt{while}, \texttt{repeat} / \texttt{do\textendash while}}
+Bentuk perulangan berbeda digunakan tergantung apakah jumlah iterasi diketahui di muka dan apakah kondisi dievaluasi di awal atau akhir. Pascal menyediakan \texttt{for}, \texttt{while}, dan \texttt{repeat\ldots until}; C/C++ menyediakan \texttt{for}, \texttt{while}, dan \texttt{do\ldots while}. Pilihlah bentuk yang menyatakan niat dengan paling jelas sambil menjaga invarian batas \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
-Pemilihan bentuk loop yang tepat bergantung pada apakah jumlah iterasi diketahui di muka, evaluasi kondisi di awal atau akhir, serta kebutuhan kontrol seperti \texttt{break} dan \texttt{continue}. Penamaan variabel penghitung yang jelas dan batasan yang eksplisit meningkatkan keterbacaan serta mencegah off-by-one error. Rujuk \textcite{free-pascal-docs,gnu-c-manual,cpp-reference} untuk katalog bentuk perulangan.
+Ketelitian terhadap off-by-one error sangat penting ketika beroperasi pada indeks array. Gunakan variabel penghitung yang bernama jelas dan batas eksplisit, serta pertimbangkan \texttt{range-based for} pada C++ untuk koleksi yang mendukung iterator. Uji unit yang memeriksa elemen pertama dan terakhir efektif mencegah regresi pada pengubahan batas iterasi.
 
-\section{Perulangan di Pascal}
-Pascal menyediakan \texttt{for ... to/downto ... do} untuk iterasi dengan batas yang diketahui, serta \texttt{while} dan \texttt{repeat ... until} untuk kondisi umum. Perbedaan utama antara \texttt{while} dan \texttt{repeat} adalah lokasi evaluasi kondisi, yang memengaruhi apakah tubuh loop dieksekusi setidaknya sekali. Bentuk-bentuk ini menutup kebutuhan iterasi dasar dengan sintaks yang mudah dibaca.
+Pada skenario di mana tubuh loop perlu dijalankan minimal satu kali, gunakan \texttt{repeat\ldots until} (Pascal) atau \texttt{do\ldots while} (C/C++). Dokumentasi resmi memuat contoh idiomatik dan peringatan terhadap pola yang rentan kesalahan. Hindari mutasi tak perlu di dalam loop untuk menjaga prediktabilitas kinerja \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
-Untuk koleksi terstruktur, iterasi dapat dikombinasikan dengan array atau record untuk memproses elemen secara terurut. Penggunaan tipe skalar dan batas eksplisit pada array membantu mencegah akses di luar rentang. Lihat \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk variasi contoh dan praktik aman.
+\section{Penggunaan \texttt{break}, \texttt{continue}}
+Kata kunci \texttt{break} menghentikan loop lebih awal, sedangkan \texttt{continue} melompati sisa iterasi saat ini. Keduanya bermanfaat untuk menangani kondisi batas atau kesalahan lokal secara ringkas. Namun, penggunaan berlebihan dapat menyamarkan alur sehingga perlu ditakar dengan pertimbangan keterbacaan \parencite{gnu-c-manual,cpp-reference}.
 
-\section{Perulangan di C}
-C memiliki \texttt{while}, \texttt{do ... while}, dan \texttt{for} yang fleksibel untuk banyak skenario. Bentuk \texttt{for} menggabungkan inisialisasi, kondisi, dan kenaikan dalam satu konstruksi, memudahkan pengelolaan variabel penghitung. Penggunaan \texttt{break} untuk keluar dan \texttt{continue} untuk melompati iterasi memperkaya kontrol alur.
+Ekstraksi kondisi kompleks ke fungsi predikat sering kali mengurangi kebutuhan \texttt{break}/\texttt{continue} dan membuat maksud lebih eksplisit. Untuk kasus banyak keluaran dini, pertimbangkan refaktor menjadi fungsi terpisah agar alur utama tetap linear. Pada C++, perhatikan status iterator ketika keluar dini agar tidak meninggalkan struktur data dalam keadaan tidak valid.
 
-Waspadai kondisi tak berubah yang menyebabkan loop tak berujung dan perbarui variabel kondisi secara disiplin. Ketika bekerja dengan pointer atau indeks array, pastikan invarian batas dipertahankan pada setiap iterasi. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk detail semantik dan contoh idiomatik.
+Pada algoritme pencarian, \texttt{break} dapat menjaga kompleksitas waktu rata-rata dengan keluar begitu ditemukan kecocokan. Di sisi lain, \texttt{continue} efektif untuk menyaring input yang tidak relevan sebelum melakukan pekerjaan berat. Dokumentasi referensi memberikan rincian semantik dan contoh kasus penggunaan yang representatif \parencite{gnu-c-manual,cpp-reference}.
 
-\section{Perulangan di C++}
-C++ selain mewarisi bentuk loop dari C, juga menyediakan \texttt{range-based for} untuk iterasi koleksi dengan sintaks ringkas. Pendekatan ini bekerja dengan tipe yang memiliki dukungan iterator, seperti \texttt{std::vector} dan \texttt{std::array}. Integrasi dengan algoritme standar mendorong penggantian loop manual dengan operasi tingkat lebih tinggi saat sesuai.
+\section{Operator Ternary / Conditional (C / C++)}
+Operator kondisional \texttt{?:} menyederhanakan pemilihan nilai berdasarkan kondisi dalam satu ekspresi. Gunakan dengan hemat dan pastikan kedua cabang mengembalikan tipe yang kompatibel untuk menghindari konversi implisit yang mengejutkan. Jika ekspresi menjadi panjang atau bersarang, kembali ke bentuk \texttt{if/else} untuk menjaga keterbacaan \parencite{cpp-reference}.
 
-Penggunaan iterator konstan, pemisahan transformasi ke algoritme, dan penghindaran mutasi tak perlu akan meningkatkan kejelasan dan keamanan. Untuk performa, kompilator modern mampu melakukan inlining dan unrolling pada pola perulangan yang sederhana. Lihat \textcite{cpp-reference} untuk idiom modern dan pertimbangan kinerja.
+Pada C++, kombinasikan dengan inisialisasi terbraket dan \texttt{auto} dengan hati-hati agar inferensi tipe tetap jelas. Hindari efek samping di dalam operand untuk mencegah kerancuan evaluasi. Uji unit dengan nilai batas memastikan bahwa operator ternary tidak menyelundupkan perubahan perilaku yang sulit dilihat.
+
+Operator kondisional bermanfaat untuk definisi konstanta yang bergantung pada platform atau pra-kondisi kompilasi. Namun, untuk logika yang lebih kaya, pertimbangkan strategi pemetaan atau fungsi pembantu dibanding menumpuk operator ternary. Praktik modern C++ menekankan kesederhanaan dan ekspresivitas yang seimbang \parencite{cpp-reference}.
 \end{document}

@@ -1,23 +1,31 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Record/Struct (Pascal, C, C++)}
-\section{Pendahuluan}
-Tipe terstruktur memungkinkan pengelompokan nilai yang terkait menjadi satu kesatuan yang bermakna. Dalam Pascal disebut \texttt{record}, sedangkan di C dan C++ dikenal sebagai \texttt{struct} dengan variasi kemampuan. Abstraksi ini memfasilitasi pemodelan entitas dunia nyata dengan atribut yang jelas.
+\chapter{String / Karakter \& Operasi String}
+\section{String sebagai Array Karakter}
+Pada tingkat dasar, string dapat dianggap sebagai urutan karakter yang disimpan dalam memori secara bersebelahan. Pascal tradisional merepresentasikan string sebagai array karakter dengan panjang tetap atau bertipe \texttt{string} modern, sementara C memakai array \texttt{char} yang diakhiri dengan karakter null. C++ menyediakan \texttt{std::string} yang mengelola memori dan panjang secara otomatis \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-strings}.
 
-Penggunaan tipe terstruktur meningkatkan keterbacaan, mengurangi jumlah parameter fungsi, dan mendorong desain modular. Pemilihan antara representasi datar atau bertingkat harus mempertimbangkan kebutuhan akses dan evolusi skema data. Rujuk \textcite{pascal-structs,c-struct,cpp-struct-class} untuk definisi formal dan praktik modern.
+Model array memudahkan akses indeks dan iterasi, tetapi menuntut kehati-hatian terhadap batas dan terminator. Pada C, kelalaian menempatkan karakter null dapat menyebabkan pembacaan melewati batas yang berbahaya. Abstraksi tingkat lebih tinggi seperti \texttt{std::string} mengurangi risiko tersebut dengan menjaga invarian panjang dan kapasitas \parencite{cpp-strings}.
 
-\section{Record di Pascal}
-Pascal menyediakan \texttt{record} untuk menyatukan beberapa field bertipe berbeda dalam satu unit. Field diakses menggunakan operator titik, dan \texttt{record} dapat disarang guna memodelkan struktur yang lebih kompleks. Dukungan untuk variant record memungkinkan representasi data yang berbagi ruang memori.
+Pemilihan representasi sebaiknya mempertimbangkan kompatibilitas pustaka dan performa. Untuk interoperabilitas dengan API C, C++ menyediakan \texttt{c\_str()} guna memperoleh penunjuk ke buffer null-terminated. Pascal modern juga menyediakan konversi antar tipe string untuk berinteraksi dengan komponen sistem \parencite{free-pascal-docs}.
 
-Manfaat praktis \texttt{record} terlihat pada pemisahan data dari logika, sehingga prosedur dan fungsi dapat menerima parameter yang terstruktur. Ketika ukuran data tumbuh, pertimbangkan pengaturan bidang opsional dan dokumentasi yang memadai. Lihat \textcite{pascal-structs,free-pascal-docs} untuk contoh dan batasan implementasi.
+\section{Operasi Dasar String (konkatenasi, substring, panjang)}
+Operasi umum pada string meliputi menggabungkan dua string, mengambil bagian (substring), dan memperoleh panjang. Pascal menyediakan operator atau fungsi bawaan untuk konkatenasi dan pencuplikan, C menggunakan fungsi pada \texttt{<string.h>} seperti \texttt{strcat} dan \texttt{strncpy}, sedangkan C++ menyediakan antarmuka kaya pada \texttt{std::string}. Perbedaan antarmuka memengaruhi keselamatan dan kejelasan kode \parencite{c-strings-h,cpp-strings,free-pascal-docs}.
 
-\section{Struct di C}
-Di C, \texttt{struct} menyatukan field menjadi tipe komposit dengan tata letak memori terdefinisi dan potensi padding antar field. Deklarasi biasanya ditempatkan di header agar dapat digunakan lintas berkas, sementara definisi fungsi manipulasi berada di berkas sumber. Penggunaan pointer ke \texttt{struct} lazim untuk efisiensi penyalinan.
+Dalam C, operasi berbasis buffer menuntut pengelolaan ukuran tujuan untuk mencegah luapan dan korupsi memori. Fungsi dengan varian panjang tetap atau yang memerlukan ukuran buffer eksplisit lebih disarankan pada konteks aman. Pada C++, metode seperti \texttt{append}, \texttt{substr}, dan \texttt{size} memberikan semantik yang lebih jelas dan aman terhadap batas \parencite{cpp-strings}.
 
-Isu penting termasuk alignment, padding, dan portabilitas ketika melakukan serialisasi atau pertukaran antar mesin. Penggunaan \texttt{typedef} membantu menyederhanakan penamaan dan mengurangi verbosity pada API. Rujuk \textcite{c-struct,gnu-c-manual} untuk aturan tata letak dan konvensi penggunaan.
+Pengukuran panjang perlu membedakan antara jumlah byte dan jumlah karakter ketika menggunakan enkode multibita. Untuk pemrosesan Unicode yang benar, gunakan pustaka khusus atau tipe yang sesuai di ekosistem masing-masing bahasa. Dokumentasi referensi menguraikan batasan representasi dan operasi yang tersedia \parencite{cpp-strings,iso-c-draft-n1570}.
 
-\section{Struct dan Kelas di C++}
-C++ memperluas \texttt{struct} dengan semantik kelas, di mana perbedaannya hanya pada default akses publik untuk \texttt{struct}. Fitur seperti konstruktor, destruktor, fungsi anggota, dan overloading operator memungkinkan enkapsulasi dan invarian yang lebih kuat. Integrasi dengan library standar memperkaya kemampuan representasi dan manipulasi data.
+\section{Pengolahan Karakter \& escape sequences}
+Karakter diwakili oleh kode numerik yang ditafsirkan menurut set karakter aktif, dengan escape sequence untuk menyatakan simbol khusus. C/C++ mendefinisikan escape seperti \texttt{\n}, \texttt{\t}, dan \texttt{\\} dalam literal, sementara Pascal memiliki notasi yang sepadan tergantung dialeknya. Pemahaman aturan literal membantu mencegah kesalahan interpretasi string dan ketidakcocokan lintas platform \parencite{iso-c-draft-n1570,free-pascal-docs}.
 
-Praktik modern mendorong penggunaan agregasi, inisialisasi terbraket, dan \texttt{= default} untuk operasi khusus guna menjaga kesederhanaan. Pertimbangkan \texttt{std::optional}, \texttt{std::variant}, atau \texttt{std::unique_ptr} untuk merepresentasikan sifat opsional dan kepemilikan. Lihat \textcite{cpp-struct-class,cpp-reference} untuk pedoman implementasi dan idiom desain.
+Normalisasi baris baru dan pengkodean berkas mempengaruhi hasil I/O dan perbandingan string. Pada sistem yang berbeda, representasi baris baru dapat bervariasi sehingga perlu strategi konsisten saat membaca atau menulis file teks. Pengujian yang memverifikasi perilaku pada berbagai lingkungan sangat dianjurkan.
+
+Fungsi utilitas untuk klasifikasi karakter, seperti \texttt{isalpha} dan \texttt{isdigit} di C, memudahkan validasi input tingkat rendah. Pada C++, \texttt{<locale>} dan fasilitas standar lain menyediakan cara yang lebih kaya untuk mempertimbangkan regionalisasi. Rujuk dokumentasi resmi untuk cakupan kelas karakter dan dampaknya pada portable code \parencite{iso-c-draft-n1570,cpp-reference}.
+
+\section{Fungsi/prosedur string library}
+Pustaka standar menyediakan koleksi fungsi untuk manipulasi string tingkat rendah maupun tinggi. Di C, \texttt{<string.h>} berisi fungsi seperti \texttt{strlen}, \texttt{strcmp}, dan \texttt{memcpy} yang beroperasi pada buffer. Di Pascal, unit dan fungsi bawaan menawarkan operasi seperti penggabungan dan ekstraksi bagian string. Di C++, \texttt{std::string} dan algoritme standar menyediakan antarmuka yang ekspresif dan aman terhadap batas \parencite{c-strings-h,free-pascal-docs,cpp-strings}.
+
+Pemilihan API harus mempertimbangkan keselamatan, performa, dan kejelasan. Gunakan fungsi yang memerlukan ukuran buffer eksplisit atau objek yang mengelola memori otomatis untuk mengurangi risiko. Kombinasikan dengan pengujian properti untuk memastikan invarian seperti tidak adanya pemotongan senyap atau korupsi memori.
+
+Integrasi dengan I/O sering kali melibatkan konversi antara representasi internal dan bentuk terformat. Dokumentasi referensi memberikan contoh pola yang konsisten untuk pembentukan string, parsing, dan pemformatan. Sumber terbuka menyediakan contoh yang dapat direplikasi untuk setiap bahasa \parencite{c-strings-h,cpp-strings,free-pascal-docs}.
 \end{document}

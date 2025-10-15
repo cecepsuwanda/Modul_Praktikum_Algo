@@ -1,31 +1,29 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Instruksi Input, Variabel, dan Tipe Data (Pascal, C, C++)}
-\section{Konsep Dasar}
-Input memungkinkan program menerima data dari pengguna atau berkas, sedangkan variabel menyimpan nilai yang diproses selama eksekusi. Tipe data menentukan domain dan operasi yang sah, sehingga validasi input harus mempertimbangkan batasan tipe. Dalam Pascal, C, dan C++, konsep ini diterapkan dengan gaya yang berbeda namun prinsipnya serupa.
+\chapter{Operator \& Ekspresi}
+\section{Operator Aritmetika, Relasional, Logika}
+Operator aritmetika (penjumlahan, pengurangan, perkalian, pembagian, dan sisa bagi) membentuk dasar evaluasi numerik di ketiga bahasa. Operator relasional dan logika memungkinkan penyusunan kondisi untuk pengambilan keputusan dan kontrol alur. Perhatikan domain dan aturan pembagian bilangan bulat versus pecahan, serta kebenaran logika yang berbeda antara Pascal dan C/C++ \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Desain yang baik memisahkan proses pembacaan input dari logika komputasi agar mudah diuji dan dipelihara. Penamaan variabel yang deskriptif dan pemilihan tipe yang tepat meningkatkan kejelasan program serta mencegah kesalahan runtime. Mahasiswa perlu memahami implikasi ukuran dan rentang tipe terhadap akurasi perhitungan.
+Semantik pembagian pada bilangan bulat dapat berbeda dengan pembagian pecahan, sehingga pemilihan tipe operan memengaruhi hasil. Evaluasi malas (short-circuit) pada operator logika \texttt{and}/\texttt{or} (Pascal) dan \texttt{&&}/\texttt{||} (C/C++) berdampak pada efek samping fungsi yang dipanggil di dalam kondisi. Hindari menempatkan panggilan yang mengubah keadaan pada sisi kanan operator yang mungkin tidak dievaluasi.
 
-Selain itu, pemahaman tentang representasi memori, rentang nilai, dan perilaku konversi implisit akan memengaruhi ketepatan hasil. Keputusan pemilihan tipe mempengaruhi jejak memori dan performa, terutama pada struktur data besar. Lihat \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference} untuk ikhtisar tipe dan pedoman penggunaannya.
+Uji ekspresi kompleks dengan memecahnya menjadi variabel perantara bernama untuk meningkatkan keterbacaan. Langkah ini juga mempermudah penulisan uji unit yang memverifikasi bagian-bagian ekspresi secara terisolasi. Dokumentasi referensi menguraikan tabel operator dan perilaku batas \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-\section{Input dan Variabel di Pascal}
-Di Pascal, pembacaan input dilakukan dengan \texttt{Read} dan \texttt{Readln} yang secara implisit melakukan konversi sesuai tipe variabel target. Tipe primitif meliputi \texttt{integer}, \texttt{real}, \texttt{char}, dan \texttt{boolean}, sementara string ditangani sebagai array karakter atau tipe string modern. Deklarasi variabel terjadi di bagian \texttt{var} sebelum blok utama atau dalam lingkup prosedur.
+\section{Operator Bitwise}
+Operator bitwise memberikan kontrol tingkat rendah terhadap representasi biner data, seperti \texttt{\&}, \texttt{|}, \texttt{\^{}}, \texttt{<<}, dan \texttt{>>} pada C/C++. Pada Pascal, dukungan operator setara tersedia tergantung dialek dan unit yang dipakai, misalnya \texttt{and}, \texttt{or}, \texttt{xor}, dan pergeseran bit. Fitur ini penting untuk pemrosesan sinyal, kriptografi ringan, dan manipulasi \emph{flags} \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
-Kekuatan Pascal terletak pada pengecekan tipe statis yang ketat, sehingga kesalahan tipe dapat terdeteksi saat kompilasi. Praktik ini mengurangi bug yang sulit dilacak dan meningkatkan keandalan. Unit tambahan dapat memperluas kemampuan input, termasuk validasi dan pengolahan berkas.
+Hati-hati terhadap pergeseran pada tipe bertanda versus tak bertanda karena perluasan tanda dapat memengaruhi hasil. Spesifikasi juga membatasi jumlah pergeseran agar tidak melebihi lebar tipe, sehingga validasi operand adalah kebiasaan yang baik. Dengan mengekstrak makro atau fungsi utilitas, ekspresi bitwise dapat dibuat lebih aman dan mudah diuji.
 
-Perbedaan antara \texttt{Read} dan \texttt{Readln} berpengaruh pada konsumsi karakter baris baru yang dapat memicu perilaku tak terduga bila dikombinasikan dengan pembacaan string. Validasi input dapat dilakukan dengan membaca sebagai teks lalu mengonversi secara eksplisit untuk memperjelas penanganan kesalahan. Rujuk \textcite{free-pascal-docs,pascal-tutorial-wikibooks} untuk variasi pola pembacaan.
+\section{Precedence dan Asosiasi}
+Precedence dan asosiasi operator menentukan urutan evaluasi tanpa tanda kurung eksplisit. Walaupun tabel prioritas serupa di berbagai bahasa, variasi kecil dapat memicu kesalahan interpretasi pada ekspresi yang rumit. Prinsip umum adalah menambahkan tanda kurung untuk menegaskan niat, terutama ketika menggabungkan operator dengan prioritas mendekati \parencite{gnu-c-manual,cpp-reference}.
 
-\section{Input dan Variabel di C}
-Bahasa C menggunakan \texttt{scanf} dan variannya untuk input terformat dari \texttt{stdin}, dengan format string yang harus selaras dengan tipe argumen. Variabel dideklarasikan dengan tipe eksplisit seperti \texttt{int}, \texttt{double}, dan \texttt{char}, serta dapat ditempatkan dalam berbagai cakupan. Penanganan string memerlukan perhatian pada buffer dan terminator null.
+Asosiasi kiri atau kanan memengaruhi hasil pada operasi berantai seperti pengurangan dan pembagian. Kesalahan umum termasuk menganggap operator logika memiliki prioritas yang lebih tinggi daripada perbandingan, yang dapat mengubah arti kondisi. Uji kasus batas membantu memastikan bahwa penambahan tanda kurung tidak mengubah hasil yang diharapkan.
 
-Karena sifatnya yang dekat dengan sistem, C menuntut kehati-hatian terhadap overflow, kesalahan format, dan validasi nilai kembali fungsi input. Penggunaan \texttt{fgets} dipadukan dengan \texttt{sscanf} sering direkomendasikan untuk input yang lebih aman dan dapat dikontrol. Disiplin ini sangat penting dalam aplikasi yang berinteraksi dengan pengguna secara intensif.
+Selain meningkatkan keterbacaan, tanda kurung eksplisit mempermudah alat analisis statis mengidentifikasi potensi anomali. Praktik ini sangat bermanfaat pada kode yang akan dikelola jangka panjang dan melibatkan banyak kontributor. Tabel prioritas resmi dapat dirujuk dari dokumentasi standar \parencite{gnu-c-manual,cpp-reference}.
 
-Untuk konversi numerik yang lebih kuat, fungsi seperti \texttt{strtol} dan \texttt{strtod} memberi cara mendeteksi kesalahan dan rentang nilai, termasuk pelaporan melalui \texttt{errno}. Validasi panjang masukan dan sanitasi karakter non-digit membantu mencegah perilaku tak terduga. Rujuk \textcite{gnu-c-manual,iso-c-draft-n1570} untuk detail standar dan pedoman keamanan.
+\section{Operator Overloading (Pendahuluan)}
+Di C++, \emph{operator overloading} memungkinkan definisi makna baru operator untuk tipe buatan pengguna. Fitur ini meningkatkan kejelasan notasi matematis dan domain-spesifik, namun memerlukan disiplin agar tidak menyamarkan biaya komputasi. Gunakan hanya jika notasi infiks benar-benar meningkatkan pemahaman dan tidak menyalahi intuisi \parencite{cpp-reference}.
 
-\section{Input dan Variabel di C++}
-C++ menyediakan \texttt{std::cin} dari \texttt{iomanip}/\texttt{iostream} untuk input bertipe kuat yang memanfaatkan operator \texttt{>>}. Tipe dasar dan komposit dapat dibaca langsung dengan kelebihan beban operator yang sesuai, sementara kesalahan parsing dapat dideteksi melalui status stream. Struktur data modern seperti \texttt{std::string} menyederhanakan penanganan teks.
+Overload sebaiknya bersifat konstan terhadap invarian kelas, menjaga konsistensi dengan operasi terkait seperti perbandingan dan penugasan. Pertimbangkan implikasi performa serta interaksi dengan templat dan ADL (argument-dependent lookup). Dokumentasi C++ modern menyediakan pedoman komprehensif tentang pemilihan operator yang layak dioverload dan pengecualian yang disarankan.
 
-Keleluasaan format hadir melalui penggunaan manipulator dan konversi eksplisit bila diperlukan. Untuk kebutuhan yang lebih aman dan fleksibel, banyak pengembang memadukan \texttt{std::getline} dengan parsing manual. Pendekatan ini menghindari masalah whitespace dan memberikan kontrol penuh.
-
-Penggunaan penanda status seperti \texttt{failbit} dan \texttt{eofbit} penting untuk memutuskan strategi pemulihan ketika parsing gagal. Selain itu, pembacaan berbasis iterator dan algoritme standar dapat menyederhanakan proses transformasi data dari input menjadi struktur yang dibutuhkan. Dokumentasi \textcite{cplusplus-io,cpp-reference} menyediakan contoh lengkap dan idiom modern.
+Pengujian yang kuat diperlukan untuk memverifikasi sifat-sifat aljabar seperti komutatif dan asosiatif jika relevan. Sertakan juga uji properti yang memeriksa kesetaraan antara representasi infiks dan bentuk fungsi biasa. Referensi praktis dapat ditemukan pada sumber terbuka \parencite{cpp-reference}.
 \end{document}
