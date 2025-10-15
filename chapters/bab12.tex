@@ -2,21 +2,97 @@
 \begin{document}
 \chapter{Modul / Unit / Header \& Manajemen Proyek}
 \section{Unit dan ``uses'' (Pascal)}
+\subsection{Contoh Unit Sederhana}
+\begin{lstlisting}[language=Pascal, caption={Unit dan program utama (Pascal)}]
+// mathutil.pas
+unit MathUtil;
+interface
+function Square(x: integer): integer;
+implementation
+function Square(x: integer): integer; begin Square := x*x; end;
+end.
+
+// main.pas
+program Main; uses MathUtil; begin Writeln(Square(5)); end.
+\end{lstlisting}
 Unit pada Pascal memisahkan antarmuka (\texttt{interface}) dari implementasi (\texttt{implementation}) untuk meningkatkan modularitas dan kompilasi terpisah. Kata kunci \texttt{uses} menentukan ketergantungan lintas unit sehingga resolusi simbol menjadi eksplisit. Pendekatan ini memperjelas kontrak publik dan memungkinkan pengujian bagian-bagian program secara mandiri \parencite{free-pascal-docs,pascal-tutorial-wikibooks}.
 
 Dokumentasikan simbol yang diekspos pada bagian antarmuka dan sembunyikan detail pada implementasi guna menjaga enkapsulasi. Struktur direktori yang konsisten memudahkan navigasi dan automasi build. Sertakan uji yang memverifikasi kompatibilitas antar unit saat evolusi API berlangsung.
 
 \section{Header / Implementasi (C / C++)}
+\subsection{Contoh Header dan Implementasi}
+\begin{lstlisting}[language=C, caption={Header dengan include guard dan implementasi C}]
+// math.h
+#ifndef MATH_H_INCLUDED
+#define MATH_H_INCLUDED
+int square(int x);
+#endif
+
+// math.c
+int square(int x){ return x*x; }
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Header C++ dan catatan module C++20}]
+// math.hpp
+#pragma once
+inline int square(int x){ return x*x; }
+// Catatan: C++20 modules (jika toolchain mendukung) dapat menggantikan header tradisional.
+\end{lstlisting}
 Di C/C++, pemisahan berkas header (deklarasi) dan berkas sumber (definisi) memungkinkan kompilasi terpisah dan pengelolaan ketergantungan yang lebih baik. Sertakan include guard atau \texttt{\#pragma once} untuk mencegah duplikasi definisi. Untuk C++, pertimbangkan modul C++ modern bila toolchain mendukung untuk mempercepat kompilasi dan meningkatkan enkapsulasi \parencite{gnu-c-manual,cpp-reference}.
 
 Organisasi proyek yang baik meminimalkan \texttt{\#include} yang tidak perlu dan menghindari ketergantungan siklik. Ekstraksi antarmuka minimal ke header membantu mempercepat waktu kompilasi dan memperkuat pemisahan tanggung jawab. Dokumentasi referensi memuat pola dan kontra-pola umum dalam pengelolaan header.
 
 \section{Include Guards / \texttt{\#pragma once}}
+\subsection{Perbandingan Singkat}
+\begin{table}[h]
+  \centering
+  \caption{Guard vs pragma once}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Teknik & Kelebihan & Pertimbangan \\
+    \midrule
+    Include guard & Portabel, eksplisit & Butuh nama makro unik \\
+    #pragma once & Ringkas & Bukan standar (dukungan luas) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 Include guards mencegah definisi ganda saat header disertakan dari banyak tempat. Pola konvensional menggunakan makro unik untuk setiap berkas header, sedangkan \texttt{\#pragma once} menawarkan alternatif yang ringkas dengan dukungan luas. Pastikan strategi yang dipilih konsisten di seluruh proyek \parencite{gnu-c-manual,cpp-reference}.
 
 Gunakan alat analisis untuk mendeteksi siklus penyertaan dan header yang terlalu gemuk. Refaktor ke antarmuka yang lebih kecil dan spesifik agar unit kompilasi tidak memuat lebih banyak dependensi daripada yang dibutuhkan. Pendekatan ini mengurangi waktu build dan mempermudah pemeliharaan.
 
 \section{Organisasi Proyek Modular}
+\subsection{Diagram Kompilasi dan Linking}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.6cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.8cm, minimum height=0.9cm]
+    \node[b] (src) {Sumber (\texttt{.pas/.c/.cpp})};
+    \node[b, right=of src] (obj) {Objek (\texttt{.o})};
+    \node[b, right=of obj] (bin) {Biner (\texttt{.exe/.out})};
+    \draw[->] (src) -- node[above]{compile} (obj);
+    \draw[->] (obj) -- node[above]{link} (bin);
+  \end{tikzpicture}
+  \caption{Alur kompilasi dan linking}
+\end{figure}
+
+\subsection{Makefile dan CMake Sederhana}
+\begin{lstlisting}[language=make, caption={Makefile minimal}]
+CC=gcc
+CFLAGS=-std=c11 -O2 -Wall -Wextra
+all: app
+app: main.o math.o
+	$(CC) $(CFLAGS) -o $@ $^
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+clean:
+	rm -f *.o app
+\end{lstlisting}
+
+\begin{lstlisting}[language=cmake, caption={CMakeLists.txt minimal}]
+cmake_minimum_required(VERSION 3.20)
+project(Demo C CXX)
+add_executable(app main.c math.c)
+\end{lstlisting}
 Struktur proyek modular memfasilitasi kolaborasi dan penskalaan basis kode. Pisahkan kode aplikasi, pustaka bersama, dan pengujian ke dalam direktori yang jelas. Gunakan sistem build seperti Make atau CMake untuk mendeskripsikan target, dependensi, dan opsi kompilasi secara deklaratif \parencite{gnu-c-manual,cpp-reference}.
 
 Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar regresi dapat terdeteksi dini. Dokumentasi proyek harus memuat instruksi build, daftar dependensi, dan konvensi penamaan berkas. Praktik ini memastikan mahasiswa dapat mereproduksi dan memperluas contoh dengan konsisten di berbagai lingkungan.
