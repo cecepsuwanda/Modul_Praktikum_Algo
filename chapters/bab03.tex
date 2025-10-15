@@ -4,7 +4,7 @@
 \section{Operator Aritmetika, Relasional, Logika}
 Operator aritmetika (penjumlahan, pengurangan, perkalian, pembagian, dan sisa bagi) membentuk dasar evaluasi numerik di ketiga bahasa. Operator relasional dan logika memungkinkan penyusunan kondisi untuk pengambilan keputusan dan kontrol alur. Perhatikan domain dan aturan pembagian bilangan bulat versus pecahan, serta kebenaran logika yang berbeda antara Pascal dan C/C++ \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Semantik pembagian pada bilangan bulat dapat berbeda dengan pembagian pecahan, sehingga pemilihan tipe operan memengaruhi hasil. Evaluasi malas (short-circuit) pada operator logika \texttt{and}/\texttt{or} (Pascal) dan \texttt{&&}/\texttt{||} (C/C++) berdampak pada efek samping fungsi yang dipanggil di dalam kondisi. Hindari menempatkan panggilan yang mengubah keadaan pada sisi kanan operator yang mungkin tidak dievaluasi.
+Semantik pembagian pada bilangan bulat dapat berbeda dengan pembagian pecahan, sehingga pemilihan tipe operan memengaruhi hasil. Evaluasi malas (short-circuit) pada operator logika \texttt{and}/\texttt{or} (Pascal) dan \texttt{\&\&}/\texttt{||} (C/C++) berdampak pada efek samping fungsi yang dipanggil di dalam kondisi. Hindari menempatkan panggilan yang mengubah keadaan pada sisi kanan operator yang mungkin tidak dievaluasi.
 
 Uji ekspresi kompleks dengan memecahnya menjadi variabel perantara bernama untuk meningkatkan keterbacaan. Langkah ini juga mempermudah penulisan uji unit yang memverifikasi bagian-bagian ekspresi secara terisolasi. Dokumentasi referensi menguraikan tabel operator dan perilaku batas \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 

@@ -16,7 +16,7 @@ Dalam C, operasi berbasis buffer menuntut pengelolaan ukuran tujuan untuk menceg
 Pengukuran panjang perlu membedakan antara jumlah byte dan jumlah karakter ketika menggunakan enkode multibita. Untuk pemrosesan Unicode yang benar, gunakan pustaka khusus atau tipe yang sesuai di ekosistem masing-masing bahasa. Dokumentasi referensi menguraikan batasan representasi dan operasi yang tersedia \parencite{cpp-strings,iso-c-draft-n1570}.
 
 \section{Pengolahan Karakter \& escape sequences}
-Karakter diwakili oleh kode numerik yang ditafsirkan menurut set karakter aktif, dengan escape sequence untuk menyatakan simbol khusus. C/C++ mendefinisikan escape seperti \texttt{\n}, \texttt{\t}, dan \texttt{\\} dalam literal, sementara Pascal memiliki notasi yang sepadan tergantung dialeknya. Pemahaman aturan literal membantu mencegah kesalahan interpretasi string dan ketidakcocokan lintas platform \parencite{iso-c-draft-n1570,free-pascal-docs}.
+Karakter diwakili oleh kode numerik yang ditafsirkan menurut set karakter aktif, dengan escape sequence untuk menyatakan simbol khusus. C/C++ mendefinisikan escape seperti \texttt{\textbackslash n}, \texttt{\textbackslash t}, dan \texttt{\textbackslash\textbackslash} dalam literal, sementara Pascal memiliki notasi yang sepadan tergantung dialeknya. Pemahaman aturan literal membantu mencegah kesalahan interpretasi string dan ketidakcocokan lintas platform \parencite{iso-c-draft-n1570,free-pascal-docs}.
 
 Normalisasi baris baru dan pengkodean berkas mempengaruhi hasil I/O dan perbandingan string. Pada sistem yang berbeda, representasi baris baru dapat bervariasi sehingga perlu strategi konsisten saat membaca atau menulis file teks. Pengujian yang memverifikasi perilaku pada berbagai lingkungan sangat dianjurkan.
 

@@ -16,7 +16,7 @@ Keselamatan pointer mencakup inisialisasi ke nilai null yang jelas, validasi seb
 Pada Pascal, pointer digunakan untuk mengelola struktur dinamis dan interoperabilitas sistem. Kombinasi \texttt{new}/\texttt{dispose} atau fasilitas dialek modern perlu diiringi dengan kebijakan kepemilikan yang tegas. Dokumentasi referensi menyediakan panduan dan contoh idiomatik \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Pointer ke Record / Struct}
-Menggabungkan pointer dengan struktur memungkinkan pembentukan graf dan daftar tertaut. Di C, pola umum melibatkan alokasi dinamis dan fungsi pembungkus untuk konstruksi serta destruksi. Di C++, gunakan \texttt{std::unique_ptr} atau \texttt{std::shared_ptr} untuk mengekspresikan kepemilikan eksplisit dan menghindari kebocoran memori \parencite{cpp-reference}.
+Menggabungkan pointer dengan struktur memungkinkan pembentukan graf dan daftar tertaut. Di C, pola umum melibatkan alokasi dinamis dan fungsi pembungkus untuk konstruksi serta destruksi. Di C++, gunakan \texttt{std::unique\_ptr} atau \texttt{std::shared\_ptr} untuk mengekspresikan kepemilikan eksplisit dan menghindari kebocoran memori \parencite{cpp-reference}.
 
 Abstraksikan akses bidang melalui fungsi pembantu untuk menjaga invarian dan memudahkan pengujian. Untuk struktur yang sering berpindah kepemilikan, gunakan semantik pindah agar penyalinan tidak mahal. Pada Pascal, manfaatkan unit untuk memisahkan antarmuka dan implementasi struktur dinamis \parencite{free-pascal-docs}.
 

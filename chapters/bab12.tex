@@ -9,7 +9,7 @@ Dokumentasikan simbol yang diekspos pada bagian antarmuka dan sembunyikan detail
 \section{Header / Implementasi (C / C++)}
 Di C/C++, pemisahan berkas header (deklarasi) dan berkas sumber (definisi) memungkinkan kompilasi terpisah dan pengelolaan ketergantungan yang lebih baik. Sertakan include guard atau \texttt{\#pragma once} untuk mencegah duplikasi definisi. Untuk C++, pertimbangkan modul C++ modern bila toolchain mendukung untuk mempercepat kompilasi dan meningkatkan enkapsulasi \parencite{gnu-c-manual,cpp-reference}.
 
-Organisasi proyek yang baik meminimalkan \texttt{#include} yang tidak perlu dan menghindari ketergantungan siklik. Ekstraksi antarmuka minimal ke header membantu mempercepat waktu kompilasi dan memperkuat pemisahan tanggung jawab. Dokumentasi referensi memuat pola dan kontra-pola umum dalam pengelolaan header.
+Organisasi proyek yang baik meminimalkan \texttt{\#include} yang tidak perlu dan menghindari ketergantungan siklik. Ekstraksi antarmuka minimal ke header membantu mempercepat waktu kompilasi dan memperkuat pemisahan tanggung jawab. Dokumentasi referensi memuat pola dan kontra-pola umum dalam pengelolaan header.
 
 \section{Include Guards / \texttt{\#pragma once}}
 Include guards mencegah definisi ganda saat header disertakan dari banyak tempat. Pola konvensional menggunakan makro unik untuk setiap berkas header, sedangkan \texttt{\#pragma once} menawarkan alternatif yang ringkas dengan dukungan luas. Pastikan strategi yang dipilih konsisten di seluruh proyek \parencite{gnu-c-manual,cpp-reference}.
