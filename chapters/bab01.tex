@@ -2,21 +2,74 @@
 \begin{document}
 \chapter{Pengantar \& Persiapan Lingkungan}
 \section{Sejarah dan Posisi Pascal, C, C++}
-Pascal, C, dan C++ merupakan bahasa pemrograman prosedural dan sistem yang membentuk fondasi banyak perangkat lunak modern. Pascal diperkenalkan untuk pendidikan dengan penekanan pada struktur dan keterbacaan, sedangkan C dirancang untuk pemrograman sistem dengan kontrol memori yang presisi. C++ berevolusi dari C dengan menambahkan paradigma berorientasi objek dan generik untuk membangun sistem berskala besar. Lihat rangkuman historis dan konsep pada \textcite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Pascal, C, dan C++ adalah bahasa dasar yang banyak dipakai untuk belajar algoritma dan membangun perangkat lunak performa tinggi. Pascal awalnya dibuat untuk pendidikan dengan sintaks yang jelas; C dipakai luas untuk pemrograman sistem karena kontrol memori yang ketat; C++ menambah konsep berorientasi objek dan generik di atas C untuk proyek besar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Ketiga bahasa ini menempati posisi strategis dalam kurikulum Algoritma dan Pemrograman karena keseimbangan antara kedekatan ke perangkat keras dan kekayaan abstraksi. Mahasiswa yang memahami idiom dan batasan masing-masing bahasa akan lebih siap mempelajari struktur data, algoritme, dan rekayasa perangkat lunak lanjutan. Fokus praktikum diarahkan pada kompetensi menulis program yang benar, efisien, dan mudah diuji di tiga ekosistem tersebut.
+Ketiganya penting dalam kurikulum karena memberi keseimbangan antara kedekatan ke perangkat keras dan kemampuan abstraksi. Menguasai ketiga perspektif ini memudahkan mahasiswa melanjutkan ke struktur data, algoritme, dan rekayasa perangkat lunak. Fokus praktikum kita adalah menulis program yang benar, mudah diuji, dan cukup efisien \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
-Di ekosistem industri, C tetap dominan untuk firmware dan sistem tertanam, sedangkan C++ mendominasi perangkat lunak performa tinggi seperti gim dan mesin basis data. Pascal melalui Free Pascal/Lazarus masih relevan untuk pembelajaran dan aplikasi desktop tertentu. Referensi terbuka menyediakan dokumentasi resmi dan contoh yang konsisten untuk eksperimen \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+Dalam praktik industri, C umum untuk firmware dan sistem tertanam, C++ untuk aplikasi performa tinggi (gim, mesin basis data), sedangkan Pascal (melalui Free Pascal/Lazarus) tetap relevan untuk pembelajaran dan sebagian aplikasi desktop \parencite{free-pascal-docs}.
 
 \section{Menyiapkan Lingkungan Pengembangan}
-Lingkungan pengembangan minimal meliputi compiler, editor/IDE, dan alat pembangunan (build tools). Untuk Pascal, gunakan Free Pascal Compiler (FPC) dengan atau tanpa Lazarus IDE; untuk C/C++, gunakan GCC atau Clang yang tersedia pada Linux, macOS, dan Windows melalui distribusi seperti MSYS2 atau WSL. Editor modern seperti Visual Studio Code menyediakan ekstensi linting, debugging, dan integrasi kompilasi lintas platform.
+Lingkungan minimal: kompiler, editor/IDE, dan alat build.
+\begin{itemize}
+  \item \textbf{Kompiler}: FPC untuk Pascal; GCC/Clang untuk C/C++ \parencite{free-pascal-docs,gcc-docs,clang-docs}.
+  \item \textbf{Editor}: Visual Studio Code dengan ekstensi C/C++ untuk linting dan debugging \parencite{vscode-cpp}.
+  \item \textbf{Alat build (opsional)}: \texttt{make} atau CMake untuk proyek multi-berkas \parencite{gnu-make,cmake-docs}.
+\end{itemize}
 
-Pastikan variabel lingkungan telah dikonfigurasi sehingga perintah \texttt{fpc}, \texttt{gcc}, dan \texttt{g++} dapat diakses dari terminal. Susun struktur proyek sederhana dengan direktori untuk kode sumber, berkas header/unit, dan artefak build agar proses kompilasi dan pembersihan konsisten. Dokumentasi resmi memberikan petunjuk instalasi, opsi kompilasi, dan praktik terbaik lintas sistem operasi \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+\subsection{Instalasi Cepat}
+Contoh perintah di Linux/macOS/Windows (sesuaikan distro):
+\begin{lstlisting}[language=bash]
+# Debian/Ubuntu
+sudo apt update
+sudo apt install fpc gcc g++ make
+\end{lstlisting}
+\begin{lstlisting}[language=bash]
+# Fedora
+sudo dnf install fpc gcc gcc-c++ make
+\end{lstlisting}
+\begin{lstlisting}[language=bash]
+# macOS (Homebrew)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install fpc gcc make cmake
+\end{lstlisting}
+\begin{lstlisting}[language=bash]
+# Windows (Chocolatey; jalankan PowerShell sebagai Administrator)
+Set-ExecutionPolicy Bypass -Scope Process -Force
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+choco install mingw make cmake -y
+# Alternatif: MSYS2 (kompiler & tools)
+# https://www.msys2.org/
+\end{lstlisting}
+Untuk pengembangan C/C++ di Windows, alternatif lain adalah WSL \parencite{wsl} atau MSYS2 \parencite{msys2}. Untuk Pascal dengan GUI, Lazarus IDE tersedia lintas platform \parencite{lazarus}.
 
-Pengaturan kompilasi yang eksplisit sangat dianjurkan untuk reproducibility, misalnya menentukan standar bahasa (\texttt{-std=c11} atau \texttt{-std=c++17}) dan level peringatan (\texttt{-Wall -Wextra}). Pada tahap awal, gunakan kompilasi satu berkas untuk mempercepat siklus umpan balik; selanjutnya, pelajari sistem build seperti \texttt{make} atau CMake untuk proyek multi-berkas. Pendekatan bertahap ini menjaga fokus pada konsep algoritmik tanpa mengorbankan kualitas teknis lingkungan kerja.
+\subsection{Verifikasi dan Struktur Proyek}
+Pastikan perintah tersedia:
+\begin{lstlisting}[language=bash]
+fpc -v
+gcc --version
+g++ --version
+\end{lstlisting}
+Gunakan struktur direktori sederhana: \texttt{src/} untuk kode, \texttt{build/} untuk output. Tetapkan standar bahasa dan peringatan saat kompilasi (mis. \texttt{-std=c11}, \texttt{-std=c++17}, \texttt{-Wall -Wextra}) \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Arsitektur Kompilasi dan Eksekusi}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.8cm, >=Stealth]
+    \tikzstyle{box}=[rectangle, draw, rounded corners, align=center, minimum width=3.2cm, minimum height=1cm]
+    \node[box] (src) {Kode Sumber\\(\texttt{.pas}, \texttt{.c}, \texttt{.cpp})};
+    \node[box, right=of src] (compiler) {Kompiler\\FPC / GCC / Clang};
+    \node[box, right=of compiler] (exe) {Berkas Eksekusi\\(\texttt{.out}/\texttt{.exe})};
+    \node[box, right=of exe] (run) {Proses Berjalan\\Output ke Terminal};
+    \draw[->] (src) -- (compiler);
+    \draw[->] (compiler) -- node[above]{compile/link} (exe);
+    \draw[->] (exe) -- node[above]{run} (run);
+  \end{tikzpicture}
+  \caption{Alur kompilasi dan eksekusi program}
+  \label{fig:compile-run}
+\end{figure}
 
 \section{Hello, World! — Program Pertama}
-Program pertama berfungsi memverifikasi instalasi compiler dan alur kompilasi-\emph{run}. Contoh di bawah memperlihatkan cara menghasilkan keluaran teks sederhana pada ketiga bahasa. Perhatikan perbedaan model I/O: Pascal menggunakan prosedur \texttt{Writeln}, C menggunakan \texttt{printf}, dan C++ menggunakan \texttt{std::cout} dengan operator \texttt{<<} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+Program pertama memastikan instalasi dan alur kompilasi-pengejalan (\emph{run}) bekerja. Perbedaan I/O dasar: Pascal memakai \texttt{Writeln}, C memakai \texttt{printf}, C++ memakai \texttt{std::cout} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
 
 \begin{lstlisting}[language=Pascal, caption={Hello World pada Pascal}]
 program Hello;
@@ -40,5 +93,119 @@ int main() {
 }
 \end{lstlisting}
 
-Uji setiap program dengan cara kompilasi dan eksekusi pada terminal untuk memastikan seluruh rantai alat berfungsi. Jika terjadi kegagalan, baca pesan kesalahan kompilator secara teliti karena sering kali menunjukkan lokasi dan jenis masalah. Dokumentasi referensi membantu memetakan fungsi I/O dasar dan konvensi lingkungan eksekusi \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+Kompilasi dan jalankan dari terminal:
+\begin{lstlisting}[language=bash]
+# Pascal
+fpc Hello.pas && ./Hello
+
+# C
+gcc -std=c11 -Wall -Wextra hello.c -o hello && ./hello
+
+# C++
+g++ -std=c++17 -Wall -Wextra hello.cpp -o hello && ./hello
+\end{lstlisting}
+
+\subsection{Program Interaktif Sederhana}
+\begin{lstlisting}[language=Pascal, caption={Input nama pada Pascal}]
+program Greet;
+var name: string;
+begin
+  Write('Nama Anda? '); Readln(name);
+  Writeln('Halo, ', name, '!');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Input nama pada C}]
+#include <stdio.h>
+int main(void) {
+  char name[64];
+  printf("Nama Anda? ");
+  if (fgets(name, sizeof name, stdin)) {
+    printf("Halo, %s", name); // fgets menyertakan newline
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Input nama pada C++}]
+#include <iostream>
+#include <string>
+int main() {
+  std::string name;
+  std::cout << "Nama Anda? ";
+  std::getline(std::cin, name);
+  std::cout << "Halo, " << name << "!\n";
+}
+\end{lstlisting}
+
+\subsection{Ringkasan Peralatan}
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan peralatan dan perintah dasar}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Bahasa & Ekstensi & Kompiler & Perintah contoh \\
+    \midrule
+    Pascal & \texttt{.pas} & FPC & \texttt{fpc file.pas} \\
+    C & \texttt{.c} & GCC/Clang & \texttt{gcc -std=c11 file.c -o app} \\
+    C++ & \texttt{.cpp} & G++/Clang++ & \texttt{g++ -std=c++17 file.cpp -o app} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Toolchain Resmi untuk Buku Ini}
+\begin{itemize}
+  \item \textbf{Online}: OnlineGDB — jalankan Pascal, C, C++ di browser. Pilih bahasa, tempel kode, lalu \emph{Run}. Simpan berkas untuk berbagi tautan \parencite{onlinegdb}.
+  \item \textbf{Offline Pascal}: Lazarus IDE — buat proyek \texttt{Console Application}, tulis kode Pascal, \texttt{Run} untuk kompilasi dan eksekusi \parencite{lazarus}.
+  \item \textbf{Offline C/C++}: Code::Blocks — buat \texttt{Console Application}, pilih C atau C++, tulis kode di \texttt{main.c}/\texttt{main.cpp}, \texttt{Build \& Run} \parencite{codeblocks}.
+\end{itemize}
+
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan lingkungan rekomendasi}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Kebutuhan & Pascal & C & C++ \\
+    \midrule
+    Online & OnlineGDB & OnlineGDB & OnlineGDB \\
+    Offline & Lazarus & Code::Blocks & Code::Blocks \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Troubleshooting Cepat}
+\begin{itemize}
+  \item \textbf{Perintah tidak ditemukan}: pastikan instalasi selesai dan folder \texttt{bin} ada di \texttt{PATH} \parencite{gcc-docs,clang-docs,free-pascal-docs}.
+  \item \textbf{Hak eksekusi}: pada Linux/macOS gunakan \texttt{chmod +x app} bila perlu.
+  \item \textbf{Linker error}: tambahkan file sumber yang benar, atau opsi standar bahasa yang sesuai.
+\end{itemize}
 \end{document}
+% Toolchain resmi untuk buku ini
+\subsection{Toolchain Resmi: OnlineGDB, Lazarus, Code::Blocks}
+Untuk konsistensi praktikum:
+\begin{itemize}
+  \item \textbf{Online (semua bahasa)}: OnlineGDB — jalankan Pascal, C, C++ langsung di browser \parencite{onlinegdb}.
+  \item \textbf{Offline Pascal}: Lazarus IDE (berbasis Free Pascal) \parencite{lazarus}.
+  \item \textbf{Offline C/C++}: Code::Blocks IDE (dengan toolchain MinGW/Clang sesuai OS) \parencite{codeblocks}.
+\end{itemize}
+
+Langkah cepat:
+\begin{enumerate}
+  \item \textbf{OnlineGDB}: buka proyek baru, pilih bahasa (Pascal/C/C++), tempel kode, klik Run.
+  \item \textbf{Lazarus}: buat Project \textrightarrow{} Program; tambahkan unit bila perlu; Build \& Run.
+  \item \textbf{Code::Blocks}: buat Console Application (C atau C++), letakkan sumber di \texttt{src/}, Build \& Run.
+\end{enumerate}
+
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan toolchain praktikum}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Modus & Pascal & C/C++ \\
+    \midrule
+    Online & OnlineGDB & OnlineGDB \\
+    Offline & Lazarus & Code::Blocks \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+

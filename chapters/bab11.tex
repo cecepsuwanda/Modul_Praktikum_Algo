@@ -2,17 +2,72 @@
 \begin{document}
 \chapter{File \& Operasi I/O Lanjutan}
 \section{File Teks \& Biner}
+\subsection{Contoh Baca/Tulis Teks}
+\begin{lstlisting}[language=Pascal, caption={Tulis dan baca file teks (Pascal)}]
+var f: text; s: string; begin
+  Assign(f, 'out.txt'); Rewrite(f); Writeln(f, 'Halo'); Close(f);
+  Reset(f); Readln(f, s); Writeln(s); Close(f);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Tulis dan baca file teks (C)}]
+#include <stdio.h>
+FILE *fp = fopen("out.txt", "w"); fprintf(fp, "Halo\n"); fclose(fp);
+fp = fopen("out.txt", "r"); char buf[64]; fgets(buf, sizeof buf, fp); fclose(fp);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={fstream baca/tulis (C++)}]
+#include <fstream>
+std::ofstream ofs("out.txt"); ofs << "Halo\n"; ofs.close();
+std::ifstream ifs("out.txt"); std::string line; std::getline(ifs, line);
+\end{lstlisting}
 Berinteraksi dengan berkas memungkinkan program menyimpan dan memuat data secara persisten. Pascal menyediakan tipe \texttt{textfile} dan mekanisme serupa untuk berkas biner; C memakai API \texttt{FILE*} pada \texttt{<stdio.h>}; C++ menggunakan \texttt{std::ifstream}/\texttt{std::ofstream} pada \texttt{<fstream>}. Pilih mode dan representasi yang sesuai dengan kebutuhan portabilitas dan kinerja \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
 Pada berkas biner, pertimbangkan endianness, alignment, dan tata letak struktur untuk mencegah ketidakcocokan antar arsitektur. Gunakan format serialisasi yang terdokumentasi ketika interoperabilitas lintas platform dibutuhkan. Sertakan uji regresi yang memeriksa kompatibilitas baca/tulis antar versi.
 
 \section{Mode File, Seek, ftell}
+\subsection{Akses Acak dan Posisi}
+\begin{lstlisting}[language=C, caption={fseek/ftell di C}]
+FILE *fp = fopen("data.bin", "rb"); fseek(fp, 0, SEEK_END); long n = ftell(fp); rewind(fp);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={seekg/tellg di C++}]
+std::ifstream ifs("data.bin", std::ios::binary); ifs.seekg(0, std::ios::end); auto n = ifs.tellg(); ifs.seekg(0);
+\end{lstlisting}
+
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.6cm]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.6cm, minimum height=0.9cm]
+    \node[b] (open) {buka file};
+    \node[b, right=of open] (proc) {baca/olah/tulis};
+    \node[b, right=of proc] (close) {tutup file};
+    \draw[->] (open) -- (proc); \draw[->] (proc) -- (close);
+  \end{tikzpicture}
+  \caption{Alur sederhana pemrosesan berkas}
+\end{figure}
 Operasi posisi file seperti \texttt{fseek}/\texttt{ftell} (C) dan \texttt{seekg}/\texttt{tellg} (C++) memungkinkan akses acak yang efisien pada berkas besar. Pastikan mode buka berkas konsisten dengan operasi baca/tulis yang akan dilakukan. Tangani kesalahan I/O dengan memeriksa nilai kembali fungsi dan status stream sebelum memproses data \parencite{gnu-c-manual,cpp-reference}.
 
 Strategi buffering dapat meningkatkan throughput tetapi memerlukan sinkronisasi saat menggabungkan I/O dan perhitungan. Pada C++, manfaatkan \texttt{std::ios\_base::sync\_with\_stdio(false)} bila tidak memerlukan interoperabilitas dengan stdio untuk meningkatkan kinerja. Dokumentasi referensi memberikan pedoman pengaturan buffer dan mode sinkronisasi \parencite{cplusplus-io,cpp-reference}.
 
 \section{Penanganan Kesalahan File}
+\subsection{Tulis Atomik Sederhana}
+\begin{lstlisting}[language=C, caption={Menulis ke file sementara lalu ganti (C, POSIX)}]
+#include <stdio.h>
+int atomic_write(const char* path){
+  FILE* f = fopen("tmp.out", "w"); if (!f) return -1;
+  // ... tulis data ...
+  fclose(f);
+  return rename("tmp.out", path); // ganti atomik pada filesystem yang mendukung
+}
+\end{lstlisting}
 Kegagalan I/O umum meliputi berkas tidak ditemukan, izin ditolak, dan perangkat penuh. Tangani kondisi ini dengan pesan kesalahan yang jelas dan jalur pemulihan yang aman, seperti membuat direktori yang hilang atau meminta ulang lokasi berkas. Selalu hindari hilangnya data dengan menulis ke berkas sementara dan mengganti secara atomik bila diperlukan \parencite{gnu-c-manual}.
 
 Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data. Pada C++, pemeriksaan flag stream seperti \texttt{failbit} dan \texttt{eofbit} memberikan granularitas dalam diagnosis masalah. Rujuk dokumentasi standar untuk matriks kondisi kesalahan dan praktik terbaiknya.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run. Perhatikan path file relatif.
+  \item \textbf{Lazarus (Pascal)}: Console Application, jalankan dari direktori proyek agar path file sesuai.
+  \item \textbf{Code::Blocks (C/C++)}: Pastikan working directory benar (Project \textrightarrow{} Properties \textrightarrow{} Build targets) saat mengakses berkas.
+\end{itemize}
 \end{document}

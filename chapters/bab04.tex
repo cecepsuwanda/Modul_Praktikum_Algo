@@ -2,16 +2,92 @@
 \begin{document}
 \chapter{Struktur Kontrol Kondisional}
 \section{Pernyataan \texttt{if} / \texttt{else}}
-Pernyataan \texttt{if} / \texttt{else} memungkinkan program mengeksekusi cabang berbeda berdasarkan hasil evaluasi kondisi boolean. Di Pascal, ekspresi kondisi bertipe \texttt{boolean} wajib dipenuhi, sedangkan di C/C++ nilai bukan nol dianggap benar; perbedaan ini memengaruhi desain validasi input dan pengecekan kesalahan. Prinsip desain yang baik mencakup pemecahan kondisi kompleks menjadi variabel perantara bernama untuk meningkatkan keterbacaan \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Pernyataan \texttt{if} / \texttt{else} mengeksekusi cabang berdasarkan hasil kondisi boolean. Di Pascal, kondisi bertipe \texttt{boolean}; di C/C++, nilai bukan nol dianggap benar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Penggunaan kurung kurawal atau blok \texttt{begin\ldots end} secara konsisten mengurangi risiko kesalahan saat menambahkan pernyataan baru. Pola \emph{early return} dapat mengurangi kedalaman nesting dan membuat alur lebih mudah diikuti. Uji unit untuk setiap cabang penting agar regresi mudah terdeteksi, terutama saat kondisi bertambah kompleks.
+Gunakan blok yang jelas (\texttt{begin\ldots end} atau \{\}) dan pertimbangkan pola \emph{early return} untuk mengurangi nesting. Uji semua cabang agar regresi mudah terdeteksi.
 
-Selain bentuk dasar, C++ menyediakan inisialisasi di dalam \texttt{if} untuk membatasi cakupan variabel sementara dan meningkatkan keamanan. Teknik ini mencegah kebocoran variabel ke luar blok dan memudahkan analisis statis. Dokumentasi resmi memuat contoh idiomatik yang dapat diadaptasi pada berbagai konteks \parencite{cpp-reference}.
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=Pascal, caption={if/else di Pascal}]
+if n mod 2 = 0 then Writeln('Genap') else Writeln('Ganjil');
+\end{lstlisting}
+\begin{lstlisting}[language=C, caption={if/else di C}]
+if (n % 2 == 0) printf("Genap\n"); else printf("Ganjil\n");
+\end{lstlisting}
+\begin{lstlisting}[language=C++, caption={if dengan initializer di C++17}]
+if (int rem = n % 2; rem == 0) std::cout << "Genap\n"; else std::cout << "Ganjil\n";
+\end{lstlisting}
+
+\subsection{Pola Early Return}
+\begin{lstlisting}[language=C]
+int process(const char* path) {
+  if (!path) return -1;           // validasi awal
+  FILE* f = fopen(path, "r");
+  if (!f) return -2;              // gagal buka
+  // ... proses ...
+  fclose(f);
+  return 0;
+}
+\end{lstlisting}
 
 \section{Pernyataan \texttt{case} / \texttt{switch}}
-Konstruksi multi-cabang membantu memilih di antara beberapa alternatif diskret secara ringkas. Pascal menggunakan \texttt{case\ldots of} dengan dukungan rentang nilai, sementara C/C++ memakai \texttt{switch} dengan \texttt{case} berbasis konstanta integral. Sertakan klausa default (\texttt{else} atau \texttt{default}) untuk menangani nilai di luar enumerasi dan menjaga ketangguhan program \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Konstruksi multi-cabang merangkum pilihan diskret. Pascal: \texttt{case\ldots of} (mendukung rentang); C/C++: \texttt{switch} dengan \texttt{case} konstanta integral. Sertakan klausa default untuk ketangguhan \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference,cpp-switch,cpp-enum-class}.
 
-Waspadai \emph{fallthrough} pada \texttt{switch} di C/C++ dan gunakan \texttt{break} atau atribut khusus untuk menyatakan maksud eksplisit. Pada C++, \texttt{enum class} menyediakan ruang nama nilai yang kuat sehingga mengurangi risiko konflik dan meningkatkan keselamatan tipe. Uji kasus batas diperlukan untuk memastikan setiap label tertangani sesuai spesifikasi dan tidak terjadi kebocoran kontrol alur.
+\begin{lstlisting}[language=Pascal, caption={case of dengan rentang}]
+case score of
+  90..100: Writeln('A');
+  80..89:  Writeln('B');
+  70..79:  Writeln('C');
+  else     Writeln('D/E');
+end;
+\end{lstlisting}
 
-Pemilihan struktur kendali sebaiknya mengikuti kompleksitas domain: gunakan \texttt{if/else} untuk kondisi biner sederhana dan \texttt{case/switch} untuk enumerasi yang stabil. Untuk logika yang terus bertambah, pertimbangkan tabel keputusan atau pemetaan fungsi untuk menggantikan rantai kondisi yang panjang. Rujukan terbuka menyediakan variasi contoh dan batasan semantik di tiap bahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+\begin{lstlisting}[language=C, caption={switch di C dengan break}]
+switch (score/10) {
+  case 10: case 9: printf("A\n"); break;
+  case 8: printf("B\n"); break;
+  case 7: printf("C\n"); break;
+  default: printf("D/E\n");
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={switch modern dengan enum class dan [[fallthrough]]}]
+enum class Grade { A, B, C, Other };
+Grade fromScore(int s){
+  switch (s/10) {
+    case 10: [[fallthrough]];
+    case 9:  return Grade::A;
+    case 8:  return Grade::B;
+    case 7:  return Grade::C;
+    default: return Grade::Other;
+  }
+}
+\end{lstlisting}
+
+Untuk logika yang terus bertambah, pertimbangkan tabel keputusan atau pemetaan fungsi ketimbang rantai \texttt{if/else} panjang.
+
+\subsection{Diagram Alur Keputusan}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.7cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1cm]
+    \node[b] (start) {Mulai};
+    \node[b, below=of start] (cond) {n genap?};
+    \node[b, below left=1.2cm and 1.6cm of cond] (yes) {Cetak "Genap"};
+    \node[b, below right=1.2cm and 1.6cm of cond] (no) {Cetak "Ganjil"};
+    \node[b, below=2.2cm of cond] (end) {Selesai};
+    \draw[->] (start) -- (cond);
+    \draw[->] (cond) -- node[left]{Ya} (yes);
+    \draw[->] (cond) -- node[right]{Tidak} (no);
+    \draw[->] (yes) |- (end);
+    \draw[->] (no)  |- (end);
+  \end{tikzpicture}
+  \caption{Alur keputusan sederhana}
+\end{figure}
+
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
+  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
+  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}

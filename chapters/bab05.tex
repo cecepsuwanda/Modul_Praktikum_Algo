@@ -2,23 +2,96 @@
 \begin{document}
 \chapter{Struktur Kontrol Perulangan \& Lainnya}
 \section{Perulangan: \texttt{for}, \texttt{while}, \texttt{repeat} / \texttt{do\textendash while}}
-Bentuk perulangan berbeda digunakan tergantung apakah jumlah iterasi diketahui di muka dan apakah kondisi dievaluasi di awal atau akhir. Pascal menyediakan \texttt{for}, \texttt{while}, dan \texttt{repeat\ldots until}; C/C++ menyediakan \texttt{for}, \texttt{while}, dan \texttt{do\ldots while}. Pilihlah bentuk yang menyatakan niat dengan paling jelas sambil menjaga invarian batas \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan kondisi dievaluasi (awal/akhir). Pascal: \texttt{for}, \texttt{while}, \texttt{repeat\ldots until}; C/C++: \texttt{for}, \texttt{while}, \texttt{do\ldots while} \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
-Ketelitian terhadap off-by-one error sangat penting ketika beroperasi pada indeks array. Gunakan variabel penghitung yang bernama jelas dan batas eksplisit, serta pertimbangkan \texttt{range-based for} pada C++ untuk koleksi yang mendukung iterator. Uji unit yang memeriksa elemen pertama dan terakhir efektif mencegah regresi pada pengubahan batas iterasi.
+\subsection{Diagram Alur Loop}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.7cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1cm]
+    % while
+    \node[b] (start) {Mulai};
+    \node[b, below=of start] (cond) {kondisi?};
+    \node[b, below=of cond] (body) {badan loop};
+    \node[b, below=of body] (end) {Selesai};
+    \draw[->] (start) -- (cond);
+    \draw[->] (cond) -- node[right]{Ya} (body);
+    \draw[->] (body) -- +( -3.0, 0) |- (cond);
+    \draw[->] (cond.east) -- +(3.0,0) |- node[pos=0.25,right]{Tidak} (end);
+  \end{tikzpicture}
+  \caption{Skema \texttt{while}: cek di awal, mungkin 0 iterasi}
+\end{figure}
 
-Pada skenario di mana tubuh loop perlu dijalankan minimal satu kali, gunakan \texttt{repeat\ldots until} (Pascal) atau \texttt{do\ldots while} (C/C++). Dokumentasi resmi memuat contoh idiomatik dan peringatan terhadap pola yang rentan kesalahan. Hindari mutasi tak perlu di dalam loop untuk menjaga prediktabilitas kinerja \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=Pascal, caption={for dan repeat\ldots until (Pascal)}]
+var i: integer; begin
+  for i := 1 to 5 do Writeln(i);
+  repeat
+    Writeln('jalankan minimal sekali');
+  until SomeCondition;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={for, while, do\ldots while (C)}]
+for (int i=1; i<=5; ++i) printf("%d\n", i);
+int j=1; while (j<=5) { printf("%d\n", j++); }
+int k=0; do { ++k; } while (k<1); // jalan sekali
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Range-based for (C++)}]
+#include <vector>
+#include <iostream>
+int main(){
+  std::vector<int> v{1,2,3,4,5};
+  for (int x : v) std::cout << x << "\n"; // aman untuk koleksi
+}
+\end{lstlisting}
+
+Ketelitian terhadap \emph{off-by-one} penting pada indeks. Pilih batas eksplisit dan nama variabel penghitung yang jelas.
 
 \section{Penggunaan \texttt{break}, \texttt{continue}}
-Kata kunci \texttt{break} menghentikan loop lebih awal, sedangkan \texttt{continue} melompati sisa iterasi saat ini. Keduanya bermanfaat untuk menangani kondisi batas atau kesalahan lokal secara ringkas. Namun, penggunaan berlebihan dapat menyamarkan alur sehingga perlu ditakar dengan pertimbangan keterbacaan \parencite{gnu-c-manual,cpp-reference}.
+\texttt{break} menghentikan loop, \texttt{continue} melompati ke iterasi berikutnya. Gunakan seperlunya agar alur tetap jelas \parencite{gnu-c-manual,cpp-reference}.
 
-Ekstraksi kondisi kompleks ke fungsi predikat sering kali mengurangi kebutuhan \texttt{break}/\texttt{continue} dan membuat maksud lebih eksplisit. Untuk kasus banyak keluaran dini, pertimbangkan refaktor menjadi fungsi terpisah agar alur utama tetap linear. Pada C++, perhatikan status iterator ketika keluar dini agar tidak meninggalkan struktur data dalam keadaan tidak valid.
+\begin{lstlisting}[language=C, caption={break dan continue di C}]
+for (int i=0; i<100; ++i) {
+  if (i%2==1) continue; // lewati bilangan ganjil
+  if (i>10) break;      // batasi proses
+  printf("%d\n", i);
+}
+\end{lstlisting}
 
-Pada algoritme pencarian, \texttt{break} dapat menjaga kompleksitas waktu rata-rata dengan keluar begitu ditemukan kecocokan. Di sisi lain, \texttt{continue} efektif untuk menyaring input yang tidak relevan sebelum melakukan pekerjaan berat. Dokumentasi referensi memberikan rincian semantik dan contoh kasus penggunaan yang representatif \parencite{gnu-c-manual,cpp-reference}.
+Ekstrak predikat kompleks ke fungsi terpisah untuk menghindari banyak \texttt{break}/\texttt{continue}. Pada C++, pastikan iterator tetap valid saat keluar dini.
 
 \section{Operator Ternary / Conditional (C / C++)}
-Operator kondisional \texttt{?:} menyederhanakan pemilihan nilai berdasarkan kondisi dalam satu ekspresi. Gunakan dengan hemat dan pastikan kedua cabang mengembalikan tipe yang kompatibel untuk menghindari konversi implisit yang mengejutkan. Jika ekspresi menjadi panjang atau bersarang, kembali ke bentuk \texttt{if/else} untuk menjaga keterbacaan \parencite{cpp-reference}.
+Operator \texttt{?:} memilih nilai berbasis kondisi dalam satu ekspresi. Gunakan hemat; jika bercabang kompleks, kembali ke \texttt{if/else} \parencite{cpp-reference}.
 
-Pada C++, kombinasikan dengan inisialisasi terbraket dan \texttt{auto} dengan hati-hati agar inferensi tipe tetap jelas. Hindari efek samping di dalam operand untuk mencegah kerancuan evaluasi. Uji unit dengan nilai batas memastikan bahwa operator ternary tidak menyelundupkan perubahan perilaku yang sulit dilihat.
+\begin{lstlisting}[language=C++]
+int absVal = (x >= 0) ? x : -x;
+auto label = (score >= 90) ? "A" : (score >= 80) ? "B" : "C"; // hati-hati keterbacaan
+\end{lstlisting}
 
-Operator kondisional bermanfaat untuk definisi konstanta yang bergantung pada platform atau pra-kondisi kompilasi. Namun, untuk logika yang lebih kaya, pertimbangkan strategi pemetaan atau fungsi pembantu dibanding menumpuk operator ternary. Praktik modern C++ menekankan kesederhanaan dan ekspresivitas yang seimbang \parencite{cpp-reference}.
+Pastikan tipe kedua cabang kompatibel untuk mencegah konversi mengejutkan.
+
+\subsection{Ringkasan Pemilihan Bentuk Loop}
+\begin{table}[h]
+  \centering
+  \caption{Kapan memakai bentuk loop}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bentuk & Kapan dipakai & Catatan \\
+    \midrule
+    while & Iterasi tak diketahui, cek di awal & Bisa 0 iterasi \\
+    do-while/repeat-until & Harus jalan minimal sekali & Cek di akhir \\
+    for & Indeks berhingga, batas jelas & Hati-hati off-by-one \\
+    range-based for (C++) & Koleksi/iterator modern & Lebih aman dan ringkas \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih bahasa, tempel contoh, Run.
+  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
+  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}

@@ -2,26 +2,81 @@
 \begin{document}
 \chapter{Struktur Data Dasar \& Pointer Dasar}
 \section{Record / \texttt{struct}, Enumerasi, Set}
-Struktur data dasar menyediakan cara menyusun data kompleks dari tipe sederhana. Pascal menggunakan \texttt{record} untuk mengelompokkan bidang heterogen, sementara C dan C++ memakai \texttt{struct} dengan kendali tata letak memori yang eksplisit. Enumerasi menyatakan himpunan nilai terbatas yang membuat kode lebih jelas, dan pada C++ \texttt{enum class} menyediakan keselamatan tipe yang lebih kuat \parencite{pascal-structs,c-struct,cpp-struct-class}.
+Struktur data dasar menyusun data kompleks dari tipe sederhana. Pascal: \texttt{record}; C/C++: \texttt{struct} dengan kendali tata letak eksplisit. Enumerasi menyatakan himpunan nilai terbatas; di C++ \texttt{enum class} lebih aman \parencite{pascal-structs,c-struct,cpp-struct-class,cpp-enum-class}.
 
 Representasi terstruktur mengurangi jumlah parameter fungsi dan meningkatkan kohesi modul. Ketika kebutuhan berevolusi, dokumentasikan invarian dan pertimbangkan kompatibilitas biner untuk antarmuka publik. Sertakan pengujian konstruksi, penugasan, dan perbandingan agar regresi mudah dideteksi.
 
 Pada Pascal, \texttt{record} dapat bersarang dan memiliki varian untuk berbagi ruang memori; gunakan dengan hati-hati agar invarian tetap terjaga. Pada C, perhatikan alignment dan padding yang memengaruhi interoperabilitas dan serialisasi lintas mesin. Pada C++, integrasikan dengan fitur kelas untuk mendapatkan enkapsulasi yang lebih kuat \parencite{pascal-structs,c-struct,cpp-struct-class}.
 
 \section{Pointer \& Referensi Dasar}
-Pointer merepresentasikan alamat memori dan memungkinkan pembagian data antar fungsi tanpa penyalinan. Di C, pointer merupakan primitif yang kuat namun rawan kesalahan sehingga memerlukan disiplin ketat atas kepemilikan dan masa hidup. C++ menambahkan referensi (\texttt{\&}) dan referensi konstan sebagai alternatif yang lebih aman untuk parameter keluaran \parencite{gnu-c-manual,cpp-reference}.
+Pointer merepresentasikan alamat memori untuk berbagi data tanpa salin. Di C, pointer kuat namun rawan; di C++ ada referensi (\texttt{\&}) dan referensi konstan untuk API yang lebih aman \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Contoh Lintas Bahasa}
+\begin{lstlisting}[language=C, caption={Pointer dasar di C}]
+void set_to_zero(int *p){ if (p) *p = 0; }
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Referensi konstan di C++}]
+void print_len(const std::string& s){ std::cout << s.size() << "\n"; }
+\end{lstlisting}
 
 Keselamatan pointer mencakup inisialisasi ke nilai null yang jelas, validasi sebelum dereferensi, dan pembebasan memori tepat waktu. Pada antarmuka publik, preferensikan referensi konstan atau penunjuk non-null yang didokumentasikan agar niat terlihat. Sertakan uji yang mensimulasikan jalur kesalahan untuk memastikan tidak terjadi dereferensi null.
 
 Pada Pascal, pointer digunakan untuk mengelola struktur dinamis dan interoperabilitas sistem. Kombinasi \texttt{new}/\texttt{dispose} atau fasilitas dialek modern perlu diiringi dengan kebijakan kepemilikan yang tegas. Dokumentasi referensi menyediakan panduan dan contoh idiomatik \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Pointer ke Record / Struct}
-Menggabungkan pointer dengan struktur memungkinkan pembentukan graf dan daftar tertaut. Di C, pola umum melibatkan alokasi dinamis dan fungsi pembungkus untuk konstruksi serta destruksi. Di C++, gunakan \texttt{std::unique\_ptr} atau \texttt{std::shared\_ptr} untuk mengekspresikan kepemilikan eksplisit dan menghindari kebocoran memori \parencite{cpp-reference}.
+Menggabungkan pointer dengan struktur membangun graf/daftar tertaut. Di C, gunakan alokasi dinamis dan fungsi pembungkus; di C++ gunakan \texttt{std::unique\_ptr} / \texttt{std::shared\_ptr} untuk kepemilikan eksplisit \parencite{cpp-reference}.
+
+\subsection{Ilustrasi Daftar Tertaut}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.9cm, >=Stealth]
+    \tikzstyle{n}=[rectangle, draw, rounded corners, minimum width=2.4cm, minimum height=0.9cm, align=center]
+    \node[n] (n1) {data|next};
+    \node[n, right=of n1] (n2) {data|next};
+    \node[n, right=of n2] (n3) {data|NULL};
+    \draw[->] (n1) -- (n2);
+    \draw[->] (n2) -- (n3);
+  \end{tikzpicture}
+  \caption{Daftar tertaut sederhana}
+\end{figure}
+
+\begin{lstlisting}[language=C, caption={Node dan insert di depan (C)}]
+typedef struct Node { int value; struct Node* next; } Node;
+void push_front(Node** head, int v){ Node* n = malloc(sizeof *n); n->value=v; n->next=*head; *head=n; }
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={unique_ptr untuk daftar (C++)}]
+#include <memory>
+struct Node { int value; std::unique_ptr<Node> next; };
+void push_front(std::unique_ptr<Node>& head, int v){ auto n = std::make_unique<Node>(); n->value=v; n->next = std::move(head); head = std::move(n); }
+\end{lstlisting}
 
 Abstraksikan akses bidang melalui fungsi pembantu untuk menjaga invarian dan memudahkan pengujian. Untuk struktur yang sering berpindah kepemilikan, gunakan semantik pindah agar penyalinan tidak mahal. Pada Pascal, manfaatkan unit untuk memisahkan antarmuka dan implementasi struktur dinamis \parencite{free-pascal-docs}.
 
 \section{Akses anggota via pointer / referensi}
-Akses terhadap anggota melalui pointer atau referensi menuntut perhatian terhadap operator (\texttt{->} di C/C++ atau dereferensi eksplisit pada Pascal). Jaga agar dereferensi dilakukan setelah validasi dan tangani kemungkinan null secara sistematis. Untuk C++, operator panah dan referensi konstan memudahkan penulisan API yang jelas dan aman \parencite{gnu-c-manual,cpp-reference}.
+Akses anggota via pointer/ref memperhatikan operator (\texttt{->} di C/C++ atau dereferensi di Pascal). Validasi null sebelum dereferensi. Di C++, preferensikan referensi konstan bila objek dijamin ada \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Ringkasan Singkat}
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan representasi dan kepemilikan}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bahasa & Tetap & Dinamis \\
+    \midrule
+    Pascal & \texttt{record} biasa & pointer \texttt{new}/\texttt{dispose} \\
+    C & \texttt{struct} + alamat & \texttt{malloc}/\texttt{free} \\
+    C++ & \texttt{struct}/kelas & \texttt{unique\_ptr}/\texttt{shared\_ptr} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 Untuk kode portabel, hindari asumsi tentang packing dan urutan bidang; gunakan fungsi akses yang stabil untuk mengurangi ketergantungan terhadap tata letak memori. Uji regresi perlu memastikan bahwa perubahan pada struktur tidak mematahkan kode klien yang memanipulasi pointer ke struktur tersebut.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
+  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
+  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}

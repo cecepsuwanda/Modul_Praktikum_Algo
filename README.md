@@ -123,10 +123,10 @@ Modul_Praktikum_Algo/
   - Deteksi otomatis: `latexmk`, `pdflatex`, `biber`
 
 ### Compiler & IDE yang Didukung
-- **Pascal**: Free Pascal Compiler (FPC), Lazarus IDE
-- **C**: GCC, Clang
-- **C++**: G++, Clang++
-- **Editor**: Visual Studio Code, Vim, Emacs, atau IDE pilihan lainnya
+- **Online (resmi untuk buku ini)**: OnlineGDB — kompilasi dan debugging Pascal, C, C++ langsung di browser.
+- **Pascal (offline)**: Lazarus IDE (berbasis Free Pascal Compiler).
+- **C/C++ (offline)**: Code::Blocks (paket MinGW di Windows atau toolchain sistem di Linux/macOS).
+- **Alternatif**: GCC/Clang + editor pilihan (VS Code, Vim, Emacs) tetap dapat digunakan.
 
 ## Cara Menggunakan
 
@@ -160,6 +160,23 @@ Hasil: `build/bab01.pdf`
 #### 3. Membersihkan file build:
 ```bash
 make clean
+### Menjalankan Contoh Kode
+
+#### OnlineGDB (Pascal, C, C++)
+- Buka `https://www.onlinegdb.com/`.
+- Pilih bahasa: Pascal, C, atau C++.
+- Tempel salah satu contoh dari bab terkait, klik Run.
+
+#### Lazarus (Pascal)
+- Buat proyek baru: Console Application.
+- Salin kode Pascal ke `project1.lpr` atau unit utama.
+- Tekan Run untuk kompilasi dan menjalankan program.
+
+#### Code::Blocks (C/C++)
+- File → New → Project → Console application → pilih C atau C++.
+- Tempel kode ke `main.c` atau `main.cpp`.
+- Build & Run.
+
 ```
 
 ### Kompilasi Manual (tanpa Make)

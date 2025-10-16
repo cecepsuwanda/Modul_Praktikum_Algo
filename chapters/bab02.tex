@@ -2,30 +2,173 @@
 \begin{document}
 \chapter{Tipe Data, Variabel, Input / Output (Pascal, C, C++)}
 \section{Tipe Data Dasar}
-Tipe data menentukan domain nilai dan operasi yang sah, sehingga berpengaruh langsung terhadap ketepatan perhitungan dan penggunaan memori. Pascal menyediakan tipe skalar seperti \texttt{integer}, \texttt{real}, \texttt{char}, dan \texttt{boolean}, sedangkan C/C++ memiliki \texttt{int}, \texttt{double}, \texttt{char}, dan tipe logika modern seperti \texttt{bool}. Pemahaman ukuran dan rentang nilai pada tiap platform penting untuk mencegah overflow dan kesalahan representasi \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-reference}.
+Tipe data menentukan nilai apa yang bisa disimpan dan operasi apa yang sah. Pascal menyediakan \texttt{integer}, \texttt{real}, \texttt{char}, \texttt{boolean}; C/C++ menyediakan \texttt{int}, \texttt{double}, \texttt{char}, dan \texttt{bool}. Ukuran aktual tipe dapat berbeda antar platform, sehingga penting memahami model data yang digunakan \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-arithmetic-types,cpp-fundamental-types}.
 
-Penggunaan tipe yang tepat membantu menyatakan maksud program secara jelas dan memudahkan optimasi oleh kompilator. Pada C/C++, kualifikator seperti \texttt{signed/unsigned} serta \texttt{short/long} memengaruhi rentang dan kinerja, sedangkan pada Pascal rentang indeks yang eksplisit memperjelas invarian. Dokumentasi resmi menyediakan tabel korespondensi ukuran tipe serta ketentuan standar yang relevan \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
+Pemilihan tipe yang tepat memperjelas maksud program dan membantu optimasi. Pada C/C++, kualifikator \texttt{signed/unsigned} serta \texttt{short/long} mengubah rentang; pada Pascal, rentang indeks eksplisit memperjelas invarian. Dokumentasi resmi memberi ringkasan ukuran dan standar yang relevan \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
-Representasi memori dan aturan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral dalam C dapat mengubah hasil evaluasi ekspresi ketika tipe berbeda dicampurkan. Prinsip konservatif adalah memperjelas konversi dengan eksplisit \emph{cast} hanya ketika benar-benar diperlukan \parencite{gnu-c-manual,cpp-reference}.
+Representasi memori dan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral di C dapat mengubah hasil ekspresi ketika tipe berbeda dicampur. Prinsip konservatif: lakukan \emph{cast} eksplisit hanya bila perlu \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Ringkasan Kategori Tipe (Gambaran Singkat)}
+\begin{table}[h]
+  \centering
+  \caption{Kategori tipe dan contoh (ukuran tipikal; dapat bervariasi)}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Kategori & Pascal & C & C++ \\
+    \midrule
+    Integer & \texttt{integer}, \texttt{longint} & \texttt{int}, \texttt{long} & \texttt{int}, \texttt{long} \\
+    Pecahan & \texttt{real}, \texttt{double} & \texttt{float}, \texttt{double} & \texttt{float}, \texttt{double} \\
+    Karakter & \texttt{char} & \texttt{char} & \texttt{char}, \texttt{char8\_t} (C++20) \\
+    Boolean & \texttt{boolean} & (\texttt{_Bool}/\texttt{bool} di C99) & \texttt{bool} \\
+    \bottomrule
+  \end{tabular}
+  \\Sumber: \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-fundamental-types}
+\end{table}
 
 \section{Deklarasi \& Inisialisasi Variabel}
-Deklarasi variabel menetapkan nama, tipe, dan cakupan sehingga kompilator dapat memeriksa ketepatan penggunaan. Inisialisasi awal penting untuk menghindari kondisi tak terdefinisi, terutama pada C yang tidak menginisialisasi variabel lokal secara otomatis. Pascal dan C++ menawarkan inisialisasi yang lebih ekspresif, termasuk inisialisasi terbraket pada C++ \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Deklarasi menetapkan nama, tipe, cakupan; inisialisasi awal mencegah nilai sampah (khususnya di C). C++ mendukung inisialisasi terbraket yang lebih aman, sedangkan Pascal memiliki bagian \texttt{var} yang eksplisit \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Disiplin penamaan yang konsisten meningkatkan keterbacaan dan memudahkan penelusuran data melalui program. Ketika lingkup variabel terlalu panjang, pecahlah fungsi menjadi unit yang lebih kecil agar invarian lebih mudah dipertahankan. Praktik baik lain meliputi penggunaan \texttt{const} untuk menyatakan nilai yang tidak boleh berubah dan preferensi imutabilitas saat memungkinkan.
+\subsection{Contoh Deklarasi dan Inisialisasi}
+\begin{lstlisting}[language=Pascal, caption={Deklarasi dan inisialisasi di Pascal}]
+program Vars;
+var
+  count: integer = 0;
+  ratio: double = 0.5;
+  letter: char = 'A';
+  flag: boolean = true;
+begin
+  Writeln(count, ' ', ratio:0:2, ' ', letter, ' ', flag);
+end.
+\end{lstlisting}
 
-Pada C/C++, pertimbangkan aturan durasi penyimpanan seperti otomatis, statik, dan dinamis untuk mengelola siklus hidup variabel. Deklarasi pada titik penggunaan (\emph{declare near use}) meminimalkan rentang hidup dan menurunkan kompleksitas. Pada Pascal, penempatan deklarasi yang jelas di bagian \texttt{var} tetap menyediakan struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
+\begin{lstlisting}[language=C, caption={Deklarasi dan inisialisasi di C}]
+#include <stdio.h>
+int main(void) {
+  int count = 0;
+  double ratio = 0.5;
+  char letter = 'A';
+  _Bool flag = 1; // C99
+  printf("%d %.2f %c %s\n", count, ratio, letter, flag?"true":"false");
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Deklarasi dan inisialisasi di C++}]
+#include <iostream>
+int main() {
+  int count{0};
+  double ratio{0.5};
+  char letter{'A'};
+  bool flag{true};
+  std::cout << count << ' ' << ratio << ' ' << letter << ' ' << std::boolalpha << flag << '\n';
+}
+\end{lstlisting}
+
+Disiplin penamaan yang konsisten meningkatkan keterbacaan. Bila lingkup variabel terlalu panjang, pecahlah fungsi menjadi unit lebih kecil. Gunakan \texttt{const} (atau setara) untuk nilai yang tidak boleh berubah.
+
+Pada C/C++, pahami durasi penyimpanan (otomatis, statik, dinamis) untuk mengelola siklus hidup. Deklarasi dekat titik penggunaan menurunkan kompleksitas. Pada Pascal, bagian \texttt{var} menjaga struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Input / Output Dasar}
-Masukan/keluaran dasar menyediakan sarana interaksi program dengan pengguna atau berkas. Pascal menggunakan \texttt{Read/Readln} dan \texttt{Write/Writeln} dengan dukungan format sederhana, sementara C memakai keluarga fungsi \texttt{scanf/printf} dan C++ memakai \texttt{std::cin/std::cout}. Perbedaan model pemformatan berpengaruh pada cara mengendalikan presisi, lebar bidang, dan penanganan spasi \parencite{w3pascal-io,gnu-c-manual,cplusplus-io}.
+Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai \texttt{std::cin/std::cout} dan manipulator \texttt{<iomanip>} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
 
-Keluaran kesalahan sebaiknya dipisahkan dari keluaran normal untuk memudahkan automasi dan pengujian. Pada C, gunakan \texttt{stderr} untuk pesan kesalahan dan pertimbangkan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, manfaatkan manipulator seperti \texttt{std::setw} dan \texttt{std::setprecision} untuk menghasilkan keluaran yang konsisten secara visual \parencite{gnu-c-manual,cpp-reference}.
+Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudahkan otomasi. Pada C, gunakan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, gunakan \texttt{std::setw}, \texttt{std::setprecision} untuk keluaran yang rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
 
-Untuk masukan yang tangguh, pertimbangkan membaca baris teks lalu melakukan parsing eksplisit agar validasi lebih terkendali. Pada C/C++, menggabungkan \texttt{fgets}/\texttt{std::getline} dengan konversi numerik yang memeriksa kesalahan meningkatkan keandalan. Dokumentasi standar menguraikan spesifikasi lengkap format dan status stream untuk diagnosa \parencite{iso-c-draft-n1570,cpp-reference}.
+Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi lebih terkendali. Pada C/C++, gabungkan \texttt{fgets}/\texttt{std::getline} dengan pemeriksaan konversi numerik. Dokumentasi standar merinci format dan status stream untuk diagnosa \parencite{iso-c-draft-n1570,cpp-reference}.
+
+\subsection{Diagram Arus I/O}
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}[node distance=1.6cm, >=Stealth]
+    \tikzstyle{box}=[rectangle, draw, rounded corners, align=center, minimum width=3.1cm, minimum height=1cm]
+    \node[box] (kbd) {Keyboard/\newline Berkas Masuk};
+    \node[box, right=of kbd] (prog) {Program};
+    \node[box, right=of prog] (term) {Terminal/\newline Berkas Keluar};
+    \draw[->] (kbd) -- node[above]{input} (prog);
+    \draw[->] (prog) -- node[above]{output} (term);
+  \end{tikzpicture}
+  \caption{Arus I/O sederhana antara pengguna/berkas dan program}
+  \label{fig:io-flow}
+\end{figure}
+
+\subsection{Contoh I/O Angka dan Pemformatan}
+\begin{lstlisting}[language=Pascal, caption={Baca integer dan format keluaran (Pascal)}]
+program IOFmt;
+var n: integer;
+begin
+  Write('Masukkan angka: '); Readln(n);
+  Writeln('Kuadrat = ', n*n);
+  Writeln('Pi ~ ', 3.14159:0:2); // 2 digit desimal
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Baca integer dan format keluaran (C)}]
+#include <stdio.h>
+int main(void) {
+  int n;
+  printf("Masukkan angka: ");
+  if (scanf("%d", &n) == 1) {
+    printf("Kuadrat = %d\n", n*n);
+    printf("Pi ~ %.2f\n", 3.14159);
+  } else {
+    fprintf(stderr, "Input tidak valid\n");
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Baca integer dan format keluaran (C++)}]
+#include <iostream>
+#include <iomanip>
+int main() {
+  int n;
+  std::cout << "Masukkan angka: ";
+  if (std::cin >> n) {
+    std::cout << "Kuadrat = " << n*n << "\n";
+    std::cout << std::fixed << std::setprecision(2) << "Pi ~ " << 3.14159 << "\n";
+  } else {
+    std::cerr << "Input tidak valid\n";
+  }
+}
+\end{lstlisting}
+
+\subsection{Ringkasan Pemformatan}
+\begin{table}[h]
+  \centering
+  \caption{Ringkasan pemformatan angka}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bahasa & Contoh & Keterangan \\
+    \midrule
+    Pascal & \texttt{real:0:2} & 2 digit desimal \\
+    C & \texttt{"\\%.2f"} & 2 digit desimal (\texttt{printf}) \\
+    C++ & \texttt{std::fixed, std::setprecision(2)} & 2 digit desimal \\
+    \bottomrule
+  \end{tabular}
+  \\\parencite{w3pascal-io,gnu-c-manual,cpp-iomanip}
+\end{table}
 
 \section{Konversi Tipe dan Operasi Terkait}
-Konversi tipe dapat bersifat implisit atau eksplisit, dan keduanya memiliki konsekuensi terhadap presisi serta aturan evaluasi. Pada C, promosi aritmetika menstandarkan tipe operan sebelum evaluasi ekspresi; pada C++ konversi eksplisit seperti \texttt{static\_cast} memberikan niat yang lebih tegas. Pascal cenderung menolak pencampuran tipe yang ambigu sehingga mendorong penulisan konversi yang jelas \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Konversi dapat implisit atau eksplisit dan berdampak pada presisi serta aturan evaluasi. Di C, promosi aritmetika menstandarkan tipe operan sebelum evaluasi; di C++ gunakan \texttt{static\_cast} untuk niat yang tegas. Pascal cenderung menolak pencampuran tipe ambigu \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Pertimbangkan biaya konversi pada jalur panas eksekusi, terutama untuk koleksi besar atau perhitungan numerik intensif. Teknik seperti mempersempit titik konversi dan menggunakan tipe target sejak awal dapat menurunkan beban runtime. Unit uji sangat membantu untuk memastikan kesetaraan numerik sebelum dan sesudah refaktor konversi.
+Perhatikan biaya konversi pada jalur panas eksekusi. Persempit titik konversi dan gunakan tipe target sejak awal untuk menurunkan beban runtime. Uji unit membantu memverifikasi kesetaraan numerik.
 
-Dalam konteks I/O, konversi format ke representasi internal dan sebaliknya harus diperlakukan sebagai batas kepercayaan data. Validasi masukan dan sanitasi karakter membantu mencegah perilaku tak terduga. Standar bahasa dan dokumentasi referensi menyediakan aturan formal serta contoh idiomatik \parencite{iso-c-draft-n1570,cpp-reference}.
+Dalam konteks I/O, konversi format ke representasi internal harus diperlakukan sebagai batas kepercayaan data. Validasi dan sanitasi input mencegah perilaku tak terduga \parencite{iso-c-draft-n1570,cpp-reference}.
+
+\subsection{Contoh Dampak Promosi (C)}
+\begin{lstlisting}[language=C, caption={Promosi integral memengaruhi hasil di C}]
+#include <stdio.h>
+int main(void) {
+  unsigned char a = 250, b = 10; // masing-masing 8-bit
+  // Dipromosikan ke int sebelum dijumlahkan
+  printf("%d\n", a + b); // 260 pada implementasi umum
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: buka \url{https://www.onlinegdb.com/}, pilih Pascal/C/C++, tempel contoh dari bab ini, klik Run. Untuk beberapa berkas, gabungkan terlebih dahulu menjadi satu berkas.
+  \item \textbf{Lazarus (Pascal)}: File \textrightarrow{} New \textrightarrow{} Console Application, tempel kode ke program utama, tekan Run.
+  \item \textbf{Code::Blocks (C/C++)}: File \textrightarrow{} New \textrightarrow{} Project \textrightarrow{} Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}
