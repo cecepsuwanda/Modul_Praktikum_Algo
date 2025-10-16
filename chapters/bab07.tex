@@ -77,4 +77,10 @@ bool contains(std::string_view s, std::string_view sub){ return s.find(sub) != s
 Pemilihan API harus mempertimbangkan keselamatan, performa, dan kejelasan. Gunakan fungsi yang memerlukan ukuran buffer eksplisit atau objek yang mengelola memori otomatis untuk mengurangi risiko. Kombinasikan dengan pengujian properti untuk memastikan invarian seperti tidak adanya pemotongan senyap atau korupsi memori.
 
 Integrasi dengan I/O sering kali melibatkan konversi antara representasi internal dan bentuk terformat. Dokumentasi referensi memberikan contoh pola yang konsisten untuk pembentukan string, parsing, dan pemformatan. Sumber terbuka menyediakan contoh yang dapat direplikasi untuk setiap bahasa \parencite{c-strings-h,cpp-strings,free-pascal-docs}.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
+  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
+  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}

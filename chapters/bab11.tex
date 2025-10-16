@@ -64,4 +64,10 @@ int atomic_write(const char* path){
 Kegagalan I/O umum meliputi berkas tidak ditemukan, izin ditolak, dan perangkat penuh. Tangani kondisi ini dengan pesan kesalahan yang jelas dan jalur pemulihan yang aman, seperti membuat direktori yang hilang atau meminta ulang lokasi berkas. Selalu hindari hilangnya data dengan menulis ke berkas sementara dan mengganti secara atomik bila diperlukan \parencite{gnu-c-manual}.
 
 Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data. Pada C++, pemeriksaan flag stream seperti \texttt{failbit} dan \texttt{eofbit} memberikan granularitas dalam diagnosis masalah. Rujuk dokumentasi standar untuk matriks kondisi kesalahan dan praktik terbaiknya.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run. Perhatikan path file relatif.
+  \item \textbf{Lazarus (Pascal)}: Console Application, jalankan dari direktori proyek agar path file sesuai.
+  \item \textbf{Code::Blocks (C/C++)}: Pastikan working directory benar (Project \textrightarrow{} Properties \textrightarrow{} Build targets) saat mengakses berkas.
+\end{itemize}
 \end{document}

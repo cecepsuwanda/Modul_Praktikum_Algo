@@ -95,4 +95,10 @@ std::function<int(int,int)> op = [](int a,int b){ return a+b; };
 Pointer ke fungsi di C memungkinkan strategi callback dan tabel vektor, sedangkan C++ menyediakan alternatif modern seperti objek callable dan \texttt{std::function}. Penunjuk pintar mengekspresikan kepemilikan eksplisit: \texttt{unique\_ptr} untuk kepemilikan tunggal dan \texttt{shared\_ptr} untuk berbagi siklus hidup. Hindari siklus referensi dengan \texttt{weak\_ptr} jika hubungan graf tidak terarah \parencite{cpp-reference}.
 
 Evaluasi biaya overhead penunjuk pintar dalam jalur kritis dan gunakan penunjuk mentah hanya sebagai non-owner view bila dibenarkan. Dokumentasi modern menyediakan pola yang jelas untuk memilih jenis penunjuk sesuai kebutuhan kepemilikan dan performa. Sertakan uji untuk skenario penghancuran berurutan guna mencegah kebocoran dan dangling pointer.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih C/C++, tempel contoh satu berkas, Run.
+  \item \textbf{Lazarus (Pascal)}: tidak relevan untuk contoh lanjutan C/C++ di bab ini.
+  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+\end{itemize}
 \end{document}

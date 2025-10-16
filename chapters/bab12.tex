@@ -96,4 +96,10 @@ add_executable(app main.c math.c)
 Struktur proyek modular memfasilitasi kolaborasi dan penskalaan basis kode. Pisahkan kode aplikasi, pustaka bersama, dan pengujian ke dalam direktori yang jelas. Gunakan sistem build seperti Make atau CMake untuk mendeskripsikan target, dependensi, dan opsi kompilasi secara deklaratif \parencite{gnu-c-manual,cpp-reference}.
 
 Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar regresi dapat terdeteksi dini. Dokumentasi proyek harus memuat instruksi build, daftar dependensi, dan konvensi penamaan berkas. Praktik ini memastikan mahasiswa dapat mereproduksi dan memperluas contoh dengan konsisten di berbagai lingkungan.
+\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{itemize}
+  \item \textbf{OnlineGDB}: cocok untuk contoh satu berkas (Pascal/C/C++). Untuk multi-berkas, gunakan lingkungan offline.
+  \item \textbf{Lazarus (Pascal)}: tambahkan unit ke proyek, atur \texttt{uses}, Run.
+  \item \textbf{Code::Blocks (C/C++)}: tambahkan \texttt{.c/.cpp} dan \texttt{.h} ke proyek, pastikan dependensi benar, Build \& Run.
+\end{itemize}
 \end{document}
