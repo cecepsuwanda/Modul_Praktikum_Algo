@@ -10,6 +10,8 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
   \item Menggunakan IDE baik online (OnlineGDB) maupun offline (Lazarus, Code::Blocks)
   \item Menulis, mengkompilasi, dan menjalankan program "Hello World" dalam ketiga bahasa
   \item Memahami perbedaan dasar sintaks input/output antara Pascal, C, dan C++
+  \item Memahami alur kompilasi, linking, hingga eksekusi program \parencite{gnu-c-manual,free-pascal-docs}
+  \item Mengatasi kesalahan kompilasi/eksekusi umum pada lingkungan praktikum
 \end{itemize}
 
 \section{Sejarah dan Posisi Pascal, C, C++}
@@ -111,5 +113,121 @@ int main() {
 \end{lstlisting}
 
 Untuk menjalankan program di atas, gunakan salah satu IDE yang direkomendasikan (OnlineGDB, Lazarus, atau Code::Blocks). Cukup salin kode ke editor IDE, lalu klik tombol Run atau tekan F9.
+
+\section{Konsep Dasar: Kompilasi, Linking, dan Eksekusi}
+Secara garis besar, proses membangun program terdiri dari: menulis \emph{source code}, kompilasi menjadi \emph{object file}, menggabungkannya lewat linker menjadi \emph{binary}, lalu menjalankannya melalui sistem operasi. Pada Pascal prosesnya ditangani oleh FPC/Lazarus; pada C/C++ umumnya GCC atau Clang \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=1.8cm, >=Stealth]
+    \tikzstyle{block}=[draw, rounded corners, minimum width=3.2cm, minimum height=1cm, align=center]
+    \node[block] (src) {Source code \\\small(.pas, .c, .cpp)};
+    \node[block, right=of src] (cc) {Compiler \\\small(FPC/GCC/Clang)};
+    \node[block, right=of cc] (ld) {Linker};
+    \node[block, right=of ld] (bin) {Program \\\small(EXE/ELF)};
+    \node[block, below=of bin] (rt) {OS + Runtime};
+    \draw[->] (src) -- (cc);
+    \draw[->] (cc) -- (ld);
+    \draw[->] (ld) -- (bin);
+    \draw[->] (bin) -- (rt);
+  \end{tikzpicture}
+  \caption{Alur singkat build dan eksekusi}
+  \label{fig:build-run-flow}
+\end{figure}
+
+\paragraph{Implikasi Praktis.} Jika kompilasi gagal, periksa pesan kesalahan pada baris dan kolom yang disebutkan. Jika gagal saat menjalankan, periksa input, akses file, atau izin eksekusi. Dokumentasi resmi sangat membantu untuk memahami pesan kesalahan dan opsi kompilator \parencite{free-pascal-docs,gnu-c-manual}.
+
+\section{Struktur Program Dasar}
+Sebelum menulis program yang lebih kompleks, pahami kerangka minimal tiap bahasa.
+
+\begin{lstlisting}[language=Pascal, caption={Kerangka program Pascal}]
+program Main;
+begin
+  { kode dieksekusi di sini }
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Kerangka program C}]
+#include <stdio.h>
+
+int main(void) {
+  /* kode dieksekusi di sini */
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Kerangka program C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  // kode dieksekusi di sini
+  return 0;
+}
+\end{lstlisting}
+
+\section{Contoh Input/Output Dasar}
+Berikut contoh membaca dua bilangan bulat dan menampilkan hasil penjumlahannya. Perhatikan perbedaan I/O \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+
+\begin{lstlisting}[language=Pascal, caption={Menjumlah dua bilangan pada Pascal}]
+program SumTwo;
+var
+  a, b, total: integer;
+begin
+  Readln(a);
+  Readln(b);
+  total := a + b;
+  Writeln('Jumlah = ', total);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Menjumlah dua bilangan pada C}]
+#include <stdio.h>
+
+int main(void) {
+  int a, b;
+  if (scanf("%d %d", &a, &b) != 2) {
+    return 1; // input tidak valid
+  }
+  printf("Jumlah = %d\n", a + b);
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Menjumlah dua bilangan pada C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int a, b;
+  if (!(cin >> a >> b)) return 1; // input tidak valid
+  cout << "Jumlah = " << (a + b) << '\n';
+}
+\end{lstlisting}
+
+\section{Perbandingan Sintaks I/O Dasar}
+\begin{table}[H]
+  \centering
+  \caption{Perbandingan ringkas perintah I/O}
+  \label{tab:io-basic}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bahasa & Output & Input \\
+    \midrule
+    Pascal & \texttt{Writeln('...')} & \texttt{Readln(x)} \\
+    C      & \texttt{printf("...")} & \texttt{scanf("\%d", \&x)} \\
+    C++    & \texttt{std::cout << "..."} & \texttt{std::cin >> x} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Troubleshooting Umum}
+\begin{itemize}
+  \item \textbf{Kompilator tidak ditemukan}: pastikan FPC/GCC terpasang dan terdeteksi IDE.
+  \item \textbf{Karakter non-ASCII}: simpan berkas sebagai UTF-8 (lihat pengaturan editor).
+  \item \textbf{Path dengan spasi}: hindari spasi pada nama folder proyek.
+  \item \textbf{Kesalahan linker}: cek ulang nama fungsi/berkas sumber yang disertakan.
+  \item \textbf{I/O tidak tampil}: tambahkan karakter baris baru (\texttt{\n}) pada C/C++ atau gunakan \texttt{Writeln} pada Pascal.
+\end{itemize}
 \end{document}
 
