@@ -121,6 +121,21 @@ int main() {
 }
 \end{lstlisting}
 
+\begin{lstlisting}[language=C++, caption={Range-based for pada koleksi (C++11+)}]
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+  vector<int> data{1,2,3,4,5};
+  int total = 0;
+  for (int v : data) { // tidak perlu indeks eksplisit
+    total += v;
+  }
+  cout << total << "\n";
+}
+\end{lstlisting}
+
 \subsection{Contoh Loop \texttt{while}}
 \begin{lstlisting}[language=Pascal, caption={Input validasi dengan while (Pascal)}]
 program ValidasiInput;
@@ -153,6 +168,18 @@ int main(void) {
   printf("Jumlah digit: %d\n", digit);
   return 0;
 }
+\end{lstlisting}
+
+\begin{lstlisting}[language=Pascal, caption={Baca hingga EOF (Pascal)}]
+program ReadUntilEOF;
+var
+  x: integer;
+begin
+  while not EOF do begin
+    Readln(x);
+    Writeln('Baca: ', x);
+  end;
+end.
 \end{lstlisting}
 
 \begin{lstlisting}[language=C++, caption={Hitung bilangan prima dengan while (C++)}]
@@ -264,6 +291,14 @@ int main() {
 \end{lstlisting}
 
 Ketelitian terhadap \emph{off-by-one} penting pada indeks. Pilih batas eksplisit dan nama variabel penghitung yang jelas.
+
+\subsection{Pola Umum dan Anti-Pattern}
+\begin{itemize}
+  \item \textbf{Sentinel loop}: baca dulu, cek kondisi, lalu proses; hindari duplikasi kode.
+  \item \textbf{Loop kosong berbahaya}: hindari \texttt{while(...);}; pastikan ada badan loop atau komentar jelas.
+  \item \textbf{Mutasi koleksi saat iterasi}: pada C++, hati-hati menghapus elemen dari \texttt{vector} saat \texttt{for-range}; gunakan indeks atau iterator aman.
+  \item \textbf{Overflow penghitung}: gunakan tipe cukup besar untuk jumlah iterasi.
+\end{itemize}
 
 \section{Perulangan Bersarang (Nested Loop)}
 Perulangan bersarang adalah loop di dalam loop lainnya. Loop luar dieksekusi sekali, sementara loop dalam dieksekusi sepenuhnya untuk setiap iterasi loop luar. Nested loop umum digunakan untuk memproses struktur data multidimensi seperti matriks atau untuk menghasilkan kombinasi.
