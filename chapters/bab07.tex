@@ -31,6 +31,8 @@ Setiap bahasa pemrograman memiliki cara berbeda dalam merepresentasikan dan meng
   \item \textbf{C++:} Menyediakan dua pendekatan: array karakter gaya C dan kelas \texttt{std::\allowbreak string}. Kelas string mengelola memori otomatis, ukuran dinamis, dan menyediakan metode manipulasi yang kaya~\parencite{cpp-strings,cplusplus-string,yuliaagustin-string-cpp}.
 \end{itemize}
 
+\paragraph{Catatan Unicode dan UTF-8.} Encoding umum saat ini adalah UTF-8 yang kompatibel dengan ASCII dan efisien untuk teks multibahasa \parencite{rfc3629,utf8-everywhere}. Pada C++ modern tersedia tipe \texttt{char8\_t} (C++20) untuk byte UTF-8, serta literal \texttt{u8"..."} untuk menandai string literal UTF-8 \parencite{cpp-char8,cpp-string-literals}. Di C/Pascal, pastikan file sumber disimpan sebagai UTF-8 agar karakter non-ASCII muncul benar.
+
 \subsection{Keuntungan dan Pertimbangan}
 
 \textbf{Keuntungan menggunakan abstraksi string tingkat tinggi:}
@@ -133,8 +135,11 @@ char legacyStr[50] = "Hello";
 // Vector of strings
 std::vector<std::string> daftarNama;
 
-// String view (C++17, read-only)
+// String view (C++17, read-only, non-owning)
 std::string_view pesan = "Hello World";
+
+// UTF-8 literal (C++20): tipe char8_t const*
+auto hello8 = u8"Halo"; // byte UTF-8
 \end{lstlisting}
 
 \textbf{Keuntungan \texttt{std::string}:}
@@ -1557,6 +1562,13 @@ int main() {
   \item Gunakan \texttt{at()} bukan \texttt{[]} untuk bounds checking
   \item Manfaatkan range-based for loop untuk iterasi
   \item Gunakan \texttt{std::getline()} untuk input multi-kata
+\end{itemize}
+
+\subsection{Masalah Umum Encoding}
+\begin{itemize}
+  \item Pastikan file sumber disimpan dengan encoding UTF-8 tanpa BOM agar literal string non-ASCII konsisten.
+  \item Pada C/C++, literal seperti \texttt{u8"teks"} menghasilkan byte UTF-8; gunakan API I/O yang kompatibel.
+  \item Pada platform Windows lawas, konversi antara UTF-16 (wide) dan UTF-8 mungkin diperlukan sebelum I/O.
 \end{itemize}
 
 \subsection{Kesalahan Umum}
