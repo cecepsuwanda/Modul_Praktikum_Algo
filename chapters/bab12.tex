@@ -590,4 +590,15 @@ Operasi \texttt{rename} pada filesystem modern (POSIX, NTFS) bersifat atomik, ar
 
 Strategi buffering dapat meningkatkan throughput tetapi memerlukan sinkronisasi saat menggabungkan I/O dan perhitungan. Pada C++, nonaktifkan sinkronisasi dengan stdio (via \texttt{sync\_with\_stdio(false)}) bila tidak memerlukan interoperabilitas untuk meningkatkan kinerja. Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data \parencite{cplusplus-io,cpp-reference}.
 
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Perbedaan file teks vs biner, karakteristik, dan kasus penggunaan umum.
+  \item Mode pembukaan dan operasi dasar lintas Pascal/C/C++ untuk baca/tulis/append.
+  \item Akses acak dengan seek/tell; teknik menghitung ukuran dan memodifikasi record di posisi tertentu.
+  \item Portabilitas biner: endianness, padding/alignment, dan tipe lebar tetap untuk interoperabilitas.
+  \item Penanganan kesalahan: pemeriksaan status, exception pada C++, dan pembersihan sumber daya.
+  \item Tulis atomik menggunakan file sementara dan rename untuk mencegah korupsi data.
+  \item Praktik kinerja: buffering, sinkronisasi I/O, dan pengujian skenario error.
+\end{itemize}
+
 \end{document}
