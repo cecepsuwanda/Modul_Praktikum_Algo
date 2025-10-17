@@ -1,6 +1,18 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Tipe Data, Variabel, Input / Output (Pascal, C, C++)}
+\chapter{Tipe Data, Variabel, dan I/O}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami berbagai tipe data dasar (integer, real, char, boolean) di Pascal, C, dan C++
+  \item Mendeklarasikan dan menginisialisasi variabel dengan tipe data yang tepat
+  \item Memahami batasan dan rentang nilai setiap tipe data
+  \item Melakukan operasi input dan output data menggunakan fungsi/prosedur yang sesuai
+  \item Memformat output data dengan presisi dan lebar field yang diinginkan
+  \item Membuat program interaktif sederhana dengan input dari pengguna
+\end{itemize}
+
 \section{Tipe Data Dasar}
 Tipe data menentukan nilai apa yang bisa disimpan dan operasi apa yang sah. Pascal menyediakan \texttt{integer}, \texttt{real}, \texttt{char}, \texttt{boolean}; C/C++ menyediakan \texttt{int}, \texttt{double}, \texttt{char}, dan \texttt{bool}. Ukuran aktual tipe dapat berbeda antar platform, sehingga penting memahami model data yang digunakan \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-arithmetic-types,cpp-fundamental-types}.
 
@@ -9,7 +21,7 @@ Pemilihan tipe yang tepat memperjelas maksud program dan membantu optimasi. Pada
 Representasi memori dan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral di C dapat mengubah hasil ekspresi ketika tipe berbeda dicampur. Prinsip konservatif: lakukan \emph{cast} eksplisit hanya bila perlu \parencite{gnu-c-manual,cpp-reference}.
 
 \subsection{Ringkasan Kategori Tipe (Gambaran Singkat)}
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \caption{Kategori tipe dan contoh (ukuran tipikal; dapat bervariasi)}
   \begin{tabular}{@{}llll@{}}
@@ -19,9 +31,37 @@ Representasi memori dan konversi implisit perlu dipahami agar tidak terjadi kehi
     Integer & \texttt{integer}, \texttt{longint} & \texttt{int}, \texttt{long} & \texttt{int}, \texttt{long} \\
     Pecahan & \texttt{real}, \texttt{double} & \texttt{float}, \texttt{double} & \texttt{float}, \texttt{double} \\
     Karakter & \texttt{char} & \texttt{char} & \texttt{char}, \texttt{char8\_t} (C++20) \\
-    Boolean & \texttt{boolean} & (\texttt{_Bool}/\texttt{bool} di C99) & \texttt{bool} \\
+    Boolean & \texttt{boolean} & (\texttt{\_Bool}/\texttt{bool} di C99) & \texttt{bool} \\
+    String & \texttt{string} & \texttt{char[]} (array) & \texttt{std::string} \\
     \bottomrule
   \end{tabular}
+  \\Sumber: \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-fundamental-types}
+\end{table}
+
+\subsection{Batasan Daya Tampung Tipe Data}
+\begin{table}[H]
+  \centering
+  \caption{Ukuran dan rentang nilai tipe data (implementasi umum)}
+  \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Tipe & Bahasa & Ukuran & Rentang Nilai & Presisi \\
+    \midrule
+    \texttt{integer} & Pascal & 2 byte & $-32{,}768$ s.d. $32{,}767$ & - \\
+    \texttt{longint} & Pascal & 4 byte & $-2{,}147{,}483{,}648$ s.d. $2{,}147{,}483{,}647$ & - \\
+    \texttt{real} & Pascal & 6 byte & $2.9 \times 10^{-39}$ s.d. $1.7 \times 10^{38}$ & 6--7 digit \\
+    \texttt{char} & Pascal & 1 byte & ASCII (0--255) & - \\
+    \texttt{boolean} & Pascal & 1 byte & \texttt{true}, \texttt{false} & - \\
+    \midrule
+    \texttt{short} & C/C++ & 2 byte & $-32{,}768$ s.d. $32{,}767$ & - \\
+    \texttt{int} & C/C++ & 4 byte & $-2{,}147{,}483{,}648$ s.d. $2{,}147{,}483{,}647$ & - \\
+    \texttt{long} & C/C++ & 4--8 byte & bergantung platform & - \\
+    \texttt{float} & C/C++ & 4 byte & $\pm 3.4 \times 10^{\pm 38}$ & 6--7 digit \\
+    \texttt{double} & C/C++ & 8 byte & $\pm 1.7 \times 10^{\pm 308}$ & 15--16 digit \\
+    \texttt{char} & C/C++ & 1 byte & $-128$ s.d. $127$ (signed) & - \\
+    \texttt{bool} & C++ & 1 byte & \texttt{true}, \texttt{false} & - \\
+    \bottomrule
+  \end{tabular}
+  \\Catatan: Ukuran dan rentang dapat bervariasi bergantung implementasi compiler dan arsitektur.
   \\Sumber: \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-fundamental-types}
 \end{table}
 
@@ -55,12 +95,14 @@ int main(void) {
 
 \begin{lstlisting}[language=C++, caption={Deklarasi dan inisialisasi di C++}]
 #include <iostream>
+using namespace std;
+
 int main() {
   int count{0};
   double ratio{0.5};
   char letter{'A'};
   bool flag{true};
-  std::cout << count << ' ' << ratio << ' ' << letter << ' ' << std::boolalpha << flag << '\n';
+  cout << count << ' ' << ratio << ' ' << letter << ' ' << boolalpha << flag << '\n';
 }
 \end{lstlisting}
 
@@ -69,14 +111,33 @@ Disiplin penamaan yang konsisten meningkatkan keterbacaan. Bila lingkup variabel
 Pada C/C++, pahami durasi penyimpanan (otomatis, statik, dinamis) untuk mengelola siklus hidup. Deklarasi dekat titik penggunaan menurunkan kompleksitas. Pada Pascal, bagian \texttt{var} menjaga struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Input / Output Dasar}
-Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai \texttt{std::cin/std::cout} dan manipulator \texttt{<iomanip>} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
+Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai \texttt{std::cin/std::cout} dan manipulator \texttt{\textless iomanip\textgreater} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
 
 Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudahkan otomasi. Pada C, gunakan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, gunakan \texttt{std::setw}, \texttt{std::setprecision} untuk keluaran yang rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
 
 Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi lebih terkendali. Pada C/C++, gabungkan \texttt{fgets}/\texttt{std::getline} dengan pemeriksaan konversi numerik. Dokumentasi standar merinci format dan status stream untuk diagnosa \parencite{iso-c-draft-n1570,cpp-reference}.
 
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Instruksi Input/Output pada Pascal, C, dan C++}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Operasi & Pascal & C & C++ \\
+    \midrule
+    Input standar & \texttt{Read()}, \texttt{Readln()} & \texttt{scanf()}, \texttt{fgets()} & \texttt{cin >>}, \texttt{getline()} \\
+    Output standar & \texttt{Write()}, \texttt{Writeln()} & \texttt{printf()} & \texttt{cout <<} \\
+    Output error & - & \texttt{fprintf(stderr)} & \texttt{cerr <<} \\
+    Format output & \texttt{var:width:decimal} & \texttt{printf("\%format")} & manipulator \texttt{iomanip} \\
+    Input string & \texttt{Readln(str)} & \texttt{fgets(...)} & \texttt{getline(...)} \\
+    \bottomrule
+  \end{tabular}
+  \\\parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}
+\end{table}
+
 \subsection{Diagram Arus I/O}
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[node distance=1.6cm, >=Stealth]
     \tikzstyle{box}=[rectangle, draw, rounded corners, align=center, minimum width=3.1cm, minimum height=1cm]
@@ -93,11 +154,14 @@ Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi
 \subsection{Contoh I/O Angka dan Pemformatan}
 \begin{lstlisting}[language=Pascal, caption={Baca integer dan format keluaran (Pascal)}]
 program IOFmt;
-var n: integer;
+
+var
+  n: integer;
 begin
-  Write('Masukkan angka: '); Readln(n);
-  Writeln('Kuadrat = ', n*n);
-  Writeln('Pi ~ ', 3.14159:0:2); // 2 digit desimal
+  Write('Masukkan angka: ');
+  Readln(n);
+  Writeln('Kuadrat = ', n * n);
+  Writeln('Pi ~ ', 3.14159:0:2);  // 2 digit desimal
 end.
 \end{lstlisting}
 
@@ -119,20 +183,60 @@ int main(void) {
 \begin{lstlisting}[language=C++, caption={Baca integer dan format keluaran (C++)}]
 #include <iostream>
 #include <iomanip>
+using namespace std;
+
 int main() {
   int n;
-  std::cout << "Masukkan angka: ";
-  if (std::cin >> n) {
-    std::cout << "Kuadrat = " << n*n << "\n";
-    std::cout << std::fixed << std::setprecision(2) << "Pi ~ " << 3.14159 << "\n";
+  cout << "Masukkan angka: ";
+  if (cin >> n) {
+    cout << "Kuadrat = " << n*n << "\n";
+    cout << fixed << setprecision(2) << "Pi ~ " << 3.14159 << "\n";
   } else {
-    std::cerr << "Input tidak valid\n";
+    cerr << "Input tidak valid\n";
   }
 }
 \end{lstlisting}
 
+\subsection{Contoh I/O String (Program Interaktif)}
+\begin{lstlisting}[language=Pascal, caption={Input nama pada Pascal}]
+program Greet;
+
+var
+  name: string;
+begin
+  Write('Nama Anda? ');
+  Readln(name);
+  Writeln('Halo, ', name, '!');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Input nama pada C}]
+#include <stdio.h>
+int main(void) {
+  char name[64];
+  printf("Nama Anda? ");
+  if (fgets(name, sizeof name, stdin)) {
+    printf("Halo, %s", name); // fgets menyertakan newline
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Input nama pada C++}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string name;
+  cout << "Nama Anda? ";
+  getline(cin, name);
+  cout << "Halo, " << name << "!\n";
+}
+\end{lstlisting}
+
 \subsection{Ringkasan Pemformatan}
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \caption{Ringkasan pemformatan angka}
   \begin{tabular}{@{}lll@{}}
@@ -140,35 +244,10 @@ int main() {
     Bahasa & Contoh & Keterangan \\
     \midrule
     Pascal & \texttt{real:0:2} & 2 digit desimal \\
-    C & \texttt{"\\%.2f"} & 2 digit desimal (\texttt{printf}) \\
-    C++ & \texttt{std::fixed, std::setprecision(2)} & 2 digit desimal \\
+    C & \texttt{"\%.2f"} & 2 digit desimal (\texttt{printf}) \\
+    C++ & \texttt{std::fixed}, \texttt{std::setprecision(2)} & 2 digit desimal \\
     \bottomrule
   \end{tabular}
   \\\parencite{w3pascal-io,gnu-c-manual,cpp-iomanip}
 \end{table}
-
-\section{Konversi Tipe dan Operasi Terkait}
-Konversi dapat implisit atau eksplisit dan berdampak pada presisi serta aturan evaluasi. Di C, promosi aritmetika menstandarkan tipe operan sebelum evaluasi; di C++ gunakan \texttt{static\_cast} untuk niat yang tegas. Pascal cenderung menolak pencampuran tipe ambigu \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
-
-Perhatikan biaya konversi pada jalur panas eksekusi. Persempit titik konversi dan gunakan tipe target sejak awal untuk menurunkan beban runtime. Uji unit membantu memverifikasi kesetaraan numerik.
-
-Dalam konteks I/O, konversi format ke representasi internal harus diperlakukan sebagai batas kepercayaan data. Validasi dan sanitasi input mencegah perilaku tak terduga \parencite{iso-c-draft-n1570,cpp-reference}.
-
-\subsection{Contoh Dampak Promosi (C)}
-\begin{lstlisting}[language=C, caption={Promosi integral memengaruhi hasil di C}]
-#include <stdio.h>
-int main(void) {
-  unsigned char a = 250, b = 10; // masing-masing 8-bit
-  // Dipromosikan ke int sebelum dijumlahkan
-  printf("%d\n", a + b); // 260 pada implementasi umum
-  return 0;
-}
-\end{lstlisting}
-
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
-\begin{itemize}
-  \item \textbf{OnlineGDB}: buka \url{https://www.onlinegdb.com/}, pilih Pascal/C/C++, tempel contoh dari bab ini, klik Run. Untuk beberapa berkas, gabungkan terlebih dahulu menjadi satu berkas.
-  \item \textbf{Lazarus (Pascal)}: File \textrightarrow{} New \textrightarrow{} Console Application, tempel kode ke program utama, tekan Run.
-  \item \textbf{Code::Blocks (C/C++)}: File \textrightarrow{} New \textrightarrow{} Project \textrightarrow{} Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
-\end{itemize}
 \end{document}

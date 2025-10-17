@@ -1,73 +1,1115 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{File \& Operasi I/O Lanjutan}
-\section{File Teks \& Biner}
-\subsection{Contoh Baca/Tulis Teks}
-\begin{lstlisting}[language=Pascal, caption={Tulis dan baca file teks (Pascal)}]
-var f: text; s: string; begin
-  Assign(f, 'out.txt'); Rewrite(f); Writeln(f, 'Halo'); Close(f);
-  Reset(f); Readln(f, s); Writeln(s); Close(f);
-end.
-\end{lstlisting}
+\chapter{Alokasi Memori Dinamis}
 
-\begin{lstlisting}[language=C, caption={Tulis dan baca file teks (C)}]
-#include <stdio.h>
-FILE *fp = fopen("out.txt", "w"); fprintf(fp, "Halo\n"); fclose(fp);
-fp = fopen("out.txt", "r"); char buf[64]; fgets(buf, sizeof buf, fp); fclose(fp);
-\end{lstlisting}
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami perbedaan antara alokasi memori statis dan dinamis
+  \item Menggunakan fungsi malloc, calloc, realloc, dan free di C
+  \item Menggunakan operator new dan delete di C++
+  \item Memahami smart pointer (unique\_ptr, shared\_ptr) untuk manajemen memori otomatis
+  \item Mengimplementasikan struktur data dinamis (linked list, dynamic array)
+  \item Mendeteksi dan mencegah memory leak
+  \item Menerapkan RAII pattern untuk manajemen resource yang aman
+\end{itemize}
 
-\begin{lstlisting}[language=C++, caption={fstream baca/tulis (C++)}]
-#include <fstream>
-std::ofstream ofs("out.txt"); ofs << "Halo\n"; ofs.close();
-std::ifstream ifs("out.txt"); std::string line; std::getline(ifs, line);
-\end{lstlisting}
-Berinteraksi dengan berkas memungkinkan program menyimpan dan memuat data secara persisten. Pascal menyediakan tipe \texttt{textfile} dan mekanisme serupa untuk berkas biner; C memakai API \texttt{FILE*} pada \texttt{<stdio.h>}; C++ menggunakan \texttt{std::ifstream}/\texttt{std::ofstream} pada \texttt{<fstream>}. Pilih mode dan representasi yang sesuai dengan kebutuhan portabilitas dan kinerja \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+\section{Alokasi Memori Dinamis}
+Alokasi dinamis memungkinkan program memperoleh memori pada runtime untuk ukuran data yang tidak dapat diprediksi di awal. Di C, fungsi \texttt{malloc}/\texttt{calloc}/\texttt{realloc}/\texttt{free} menyediakan kontrol langsung atas siklus hidup memori. Di C++, operator \texttt{new}/\texttt{delete} dan penunjuk pintar seperti \texttt{std::unique\_ptr} mengenkapsulasi kepemilikan dan pembebasan otomatis \parencite{iso-c-draft-n1570,cpp-reference}.
 
-Pada berkas biner, pertimbangkan endianness, alignment, dan tata letak struktur untuk mencegah ketidakcocokan antar arsitektur. Gunakan format serialisasi yang terdokumentasi ketika interoperabilitas lintas platform dibutuhkan. Sertakan uji regresi yang memeriksa kompatibilitas baca/tulis antar versi.
+Strategi pengalokasian harus menyatakan dengan jelas pemilik data dan jalur pembebasan untuk setiap cabang eksekusi. Gunakan \emph{RAII} pada C++ untuk menjamin pembebasan meski terjadi pengecualian. Pada C, pola goto cleanup dan blok \texttt{defer}-like (dengan makro) membantu menjaga konsistensi pembebasan sumber daya \parencite{gnu-c-manual}.
 
-\section{Mode File, Seek, ftell}
-\subsection{Akses Acak dan Posisi}
-\begin{lstlisting}[language=C, caption={fseek/ftell di C}]
-FILE *fp = fopen("data.bin", "rb"); fseek(fp, 0, SEEK_END); long n = ftell(fp); rewind(fp);
-\end{lstlisting}
+Pertimbangkan dampak fragmentasi memori dan biaya realokasi pada struktur yang sering berubah ukuran. Di C++, \texttt{std::string} mengelola pertumbuhan kapasitas otomatis, namun untuk array dinamis dapat menggunakan operator \texttt{new}/\texttt{delete} dengan manajemen manual atau penunjuk pintar.
 
-\begin{lstlisting}[language=C++, caption={seekg/tellg di C++}]
-std::ifstream ifs("data.bin", std::ios::binary); ifs.seekg(0, std::ios::end); auto n = ifs.tellg(); ifs.seekg(0);
-\end{lstlisting}
+\subsection{Contoh C dan C++}
+\begin{lstlisting}[language=C, caption={Pola cleanup bertahap di C}]
+#include <stdlib.h>
 
-\begin{figure}[h]
-  \centering
-  \begin{tikzpicture}[node distance=1.6cm]
-    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.6cm, minimum height=0.9cm]
-    \node[b] (open) {buka file};
-    \node[b, right=of open] (proc) {baca/olah/tulis};
-    \node[b, right=of proc] (close) {tutup file};
-    \draw[->] (open) -- (proc); \draw[->] (proc) -- (close);
-  \end{tikzpicture}
-  \caption{Alur sederhana pemrosesan berkas}
-\end{figure}
-Operasi posisi file seperti \texttt{fseek}/\texttt{ftell} (C) dan \texttt{seekg}/\texttt{tellg} (C++) memungkinkan akses acak yang efisien pada berkas besar. Pastikan mode buka berkas konsisten dengan operasi baca/tulis yang akan dilakukan. Tangani kesalahan I/O dengan memeriksa nilai kembali fungsi dan status stream sebelum memproses data \parencite{gnu-c-manual,cpp-reference}.
-
-Strategi buffering dapat meningkatkan throughput tetapi memerlukan sinkronisasi saat menggabungkan I/O dan perhitungan. Pada C++, manfaatkan \texttt{std::ios\_base::sync\_with\_stdio(false)} bila tidak memerlukan interoperabilitas dengan stdio untuk meningkatkan kinerja. Dokumentasi referensi memberikan pedoman pengaturan buffer dan mode sinkronisasi \parencite{cplusplus-io,cpp-reference}.
-
-\section{Penanganan Kesalahan File}
-\subsection{Tulis Atomik Sederhana}
-\begin{lstlisting}[language=C, caption={Menulis ke file sementara lalu ganti (C, POSIX)}]
-#include <stdio.h>
-int atomic_write(const char* path){
-  FILE* f = fopen("tmp.out", "w"); if (!f) return -1;
-  // ... tulis data ...
-  fclose(f);
-  return rename("tmp.out", path); // ganti atomik pada filesystem yang mendukung
+int foo(size_t n) {
+  int rc = -1;
+  int *a = NULL, *b = NULL;
+  
+  a = malloc(n * sizeof *a);
+  if (!a)
+    goto done;
+  b = malloc(n * sizeof *b);
+  if (!b)
+    goto done;
+  // ... gunakan a dan b ...
+  rc = 0;
+done:
+  free(b);
+  free(a);
+  return rc;
 }
 \end{lstlisting}
-Kegagalan I/O umum meliputi berkas tidak ditemukan, izin ditolak, dan perangkat penuh. Tangani kondisi ini dengan pesan kesalahan yang jelas dan jalur pemulihan yang aman, seperti membuat direktori yang hilang atau meminta ulang lokasi berkas. Selalu hindari hilangnya data dengan menulis ke berkas sementara dan mengganti secara atomik bila diperlukan \parencite{gnu-c-manual}.
 
-Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data. Pada C++, pemeriksaan flag stream seperti \texttt{failbit} dan \texttt{eofbit} memberikan granularitas dalam diagnosis masalah. Rujuk dokumentasi standar untuk matriks kondisi kesalahan dan praktik terbaiknya.
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\begin{lstlisting}[language=C++, caption={RAII dengan unique\_ptr di C++}]
+#include <memory>
+using namespace std;
+
+int process(size_t n) {
+  auto buf = make_unique<int[]>(n);
+  // ... gunakan buf ... otomatis dibebaskan saat keluar scope
+  return 0;
+}
+\end{lstlisting}
+
+\section{Pointer \& Dereferensi}
+Manipulasi pointer yang aman menuntut inisialisasi eksplisit, larangan penggunaan setelah dibebaskan (use-after-free), dan validasi sebelum dereferensi. Gunakan pengenal null yang konsisten dan pertimbangkan \texttt{nonnull} pada kontrak API. Di C++, preferensikan referensi ketika non-null dijamin agar niat lebih terlihat \parencite{gnu-c-manual,cpp-reference}.
+
+Teknik seperti \emph{owner/raw pointer split} di C++ memisahkan peran pengelolaan dari akses non-kepemilikan. Untuk C, konvensi dokumenter tentang siapa yang bertanggung jawab membebaskan memori harus ditegakkan dengan uji dan tinjauan kode. Alat analisis statis dapat membantu mendeteksi kebocoran dan akses tidak valid.
+
+\subsection{Diagram Tata Letak Memori}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=1.4cm]
+    \tikzstyle{blk}=[rectangle, draw, rounded corners, minimum width=1.8cm, minimum height=0.9cm]
+    \node[blk] (p) {p: addr};
+    \node[blk, right=of p] (buf0) {buf[0]};
+    \node[blk, right=of buf0] (buf1) {buf[1]};
+    \node[blk, right=of buf1] (buf2) {buf[2]};
+    \draw[->] (p) -- (buf0);
+  \end{tikzpicture}
+  \caption{Pointer menunjuk ke awal buffer berurutan}
+\end{figure}
+
+Diagram di atas menunjukkan bagaimana pointer \texttt{p} menyimpan alamat memori yang menunjuk ke elemen pertama dari buffer berurutan. Dengan aritmetika pointer, kita dapat mengakses elemen-elemen berikutnya secara efisien.
+
+\section{Pointer ke Array / Pointer ke Pointer}
+\subsection{Contoh Alokasi 2D}
+\begin{lstlisting}[language=C, caption={Matriks dinamis 2D di C (pointer ganda)}]
+int **m = malloc(r * sizeof *m);
+for (int i = 0; i < r; ++i)
+  m[i] = malloc(c * sizeof *m[i]);
+// ... gunakan m[i][j] ...
+for (int i = 0; i < r; ++i)
+  free(m[i]);
+free(m);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={std::unique\_ptr\textless T[]\textgreater{} untuk buffer 2D datar}]
+#include <memory>
+using namespace std;
+
+unique_ptr<int[]> buf = make_unique<int[]>(r * c);
+auto at = [&](int i, int j) {
+  return buf[i * c + j];
+};
+\end{lstlisting}
+Pointer ke array dan pointer ganda digunakan untuk memanipulasi matriks dinamis dan buffer variabel. Di C, pola alokasi dua tingkat memerlukan pembebasan bertahap untuk mencegah kebocoran. Di C++, gunakan penampung standar atau \texttt{std::unique\_ptr} untuk menyederhanakan manajemen \parencite{iso-c-draft-n1570,cpp-reference}.
+
+Perhitungan offset harus memperhitungkan ukuran elemen untuk menjaga korektitas. Saat memaparkan API, gunakan ukuran eksplisit dan validasi untuk mencegah akses di luar batas. Uji yang memeriksa skenario ukuran nol dan pertumbuhan bertahap membantu menstabilkan implementasi.
+
+\section{Pointer ke Fungsi / Smart Pointers}
+\subsection{Callback dan std::function}
+\begin{lstlisting}[language=C, caption={Pointer ke fungsi di C}]
+typedef int (*cmp_t)(const void*, const void*);
+
+int cmp_int(const void* a, const void* b) {
+  return (*(const int*)a - *(const int*)b);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={std::function dan lambda di C++}]
+#include <functional>
+using namespace std;
+
+function<int(int, int)> op = [](int a, int b) {
+  return a + b;
+};
+\end{lstlisting}
+
+\subsection{Array Pointer ke Fungsi dan Virtual Tables}
+Array pointer ke fungsi memungkinkan dispatch dinamis dan implementasi polimorfisme sederhana di C. Pola ini mendasari vtable (virtual table) yang digunakan kompiler C++ untuk mengimplementasikan fungsi virtual \parencite{gnu-c-manual,cpp-reference}.
+
+\begin{lstlisting}[language=C, caption={Array pointer fungsi untuk dispatch}]
+#include <stdio.h>
+
+// Definisi operasi
+int add(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+int mul(int a, int b) { return a * b; }
+int divide(int a, int b) { return b ? a / b : 0; }
+
+// Array pointer ke fungsi
+typedef int (*op_func)(int, int);
+op_func operations[] = {add, sub, mul, divide};
+const char* op_names[] = {"+", "-", "*", "/"};
+
+int main() {
+  int x = 20, y = 5;
+  for (int i = 0; i < 4; i++) {
+    printf("%d %s %d = %d\n", x, op_names[i], y, 
+           operations[i](x, y));
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Ringkasan Smart Pointer}
+\begin{table}[H]
+  \centering
+  \caption{Ringkasan penunjuk pintar}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Jenis & Kepemilikan & Catatan \\
+    \midrule
+    unique\_ptr & tunggal & murah, tidak copyable \\
+    shared\_ptr & berbagi & hitung referensi; gunakan weak\_ptr untuk memutus siklus \\
+    weak\_ptr & pengamat & tidak memengaruhi umur objek \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+Pointer ke fungsi di C memungkinkan strategi callback dan tabel vektor, sedangkan C++ menyediakan alternatif modern seperti objek callable dan \texttt{std::function}. Penunjuk pintar mengekspresikan kepemilikan eksplisit: \texttt{unique\_ptr} untuk kepemilikan tunggal dan \texttt{shared\_ptr} untuk berbagi siklus hidup. Hindari siklus referensi dengan \texttt{weak\_ptr} jika hubungan graf tidak terarah \parencite{cpp-reference}.
+
+Evaluasi biaya overhead penunjuk pintar dalam jalur kritis dan gunakan penunjuk mentah hanya sebagai non-owner view bila dibenarkan. Dokumentasi modern menyediakan pola yang jelas untuk memilih jenis penunjuk sesuai kebutuhan kepemilikan dan performa. Sertakan uji untuk skenario penghancuran berurutan guna mencegah kebocoran dan dangling pointer.
+
+\subsection{Custom Deleters}
+Smart pointers dapat menerima custom deleter untuk menangani sumber daya non-standar seperti file handle, koneksi database, atau memori yang dialokasikan dengan cara khusus \parencite{cpp-reference}.
+
+\begin{lstlisting}[language=C++, caption={Custom deleter dengan unique\_ptr}]
+#include <memory>
+#include <cstdio>
+#include <cstdlib>
+
+// Custom deleter untuk FILE*
+struct FileDeleter {
+  void operator()(FILE* f) const {
+    if (f) {
+      printf("Menutup file\n");
+      fclose(f);
+    }
+  }
+};
+
+// Custom deleter untuk C-style malloc
+struct FreeDeleter {
+  void operator()(void* ptr) const {
+    printf("free() dipanggil\n");
+    free(ptr);
+  }
+};
+
+int main() {
+  // unique_ptr dengan custom deleter
+  {
+    std::unique_ptr<FILE, FileDeleter> file(
+      fopen("test.txt", "w")
+    );
+    if (file) {
+      fprintf(file.get(), "Hello\n");
+    }
+  } // File otomatis ditutup
+  
+  // unique_ptr dengan lambda deleter
+  {
+    std::unique_ptr<int, FreeDeleter> p(
+      static_cast<int*>(malloc(sizeof(int)))
+    );
+    *p = 42;
+  } // Memory dibebaskan dengan free()
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Memory Alignment dan Padding}
+Memory alignment adalah penataan data di memori pada boundary tertentu (biasanya kelipatan ukuran tipe data). CPU modern mengakses data aligned lebih efisien, dan beberapa arsitektur bahkan tidak mengizinkan akses unaligned \parencite{iso-c-draft-n1570,cpp-reference}.
+
+\subsection{Mengapa Alignment Penting}
 \begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run. Perhatikan path file relatif.
-  \item \textbf{Lazarus (Pascal)}: Console Application, jalankan dari direktori proyek agar path file sesuai.
-  \item \textbf{Code::Blocks (C/C++)}: Pastikan working directory benar (Project \textrightarrow{} Properties \textrightarrow{} Build targets) saat mengakses berkas.
+  \item \textbf{Performa:} Akses aligned bisa 2-10x lebih cepat
+  \item \textbf{Atomicity:} Operasi atomik biasanya memerlukan alignment
+  \item \textbf{Hardware requirement:} Beberapa instruksi SIMD mensyaratkan alignment
+  \item \textbf{Portabilitas:} Beberapa platform crash pada unaligned access
 \end{itemize}
+
+\subsection{Padding dalam Struct}
+Compiler menambahkan padding untuk memastikan setiap field aligned dengan benar.
+
+\begin{lstlisting}[language=C, caption={Padding dalam struct}]
+#include <stdio.h>
+#include <stddef.h>
+
+// Struct dengan padding
+struct Unoptimized {
+  char a;    // 1 byte
+  // 3 bytes padding
+  int b;     // 4 bytes
+  char c;    // 1 byte
+  // 3 bytes padding
+};  // Total: 12 bytes
+
+// Struct dioptimasi (field diurutkan)
+struct Optimized {
+  int b;     // 4 bytes
+  char a;    // 1 byte
+  char c;    // 1 byte
+  // 2 bytes padding
+};  // Total: 8 bytes
+
+int main() {
+  printf("Unoptimized size: %zu\n", sizeof(struct Unoptimized));
+  printf("Optimized size: %zu\n", sizeof(struct Optimized));
+  
+  // Offset field
+  printf("Unoptimized.a offset: %zu\n", 
+         offsetof(struct Unoptimized, a));
+  printf("Unoptimized.b offset: %zu\n", 
+         offsetof(struct Unoptimized, b));
+  printf("Unoptimized.c offset: %zu\n", 
+         offsetof(struct Unoptimized, c));
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Alignment Specification di C++11}
+\begin{lstlisting}[language=C++, caption={alignas dan alignof di C++11}]
+#include <iostream>
+#include <cstddef>
+
+struct alignas(16) AlignedStruct {
+  int a;
+  char b;
+};
+
+struct alignas(64) CacheLineAligned {
+  int data[8];
+};
+
+int main() {
+  std::cout << "Normal int alignment: " 
+            << alignof(int) << "\n";
+  std::cout << "AlignedStruct alignment: " 
+            << alignof(AlignedStruct) << "\n";
+  std::cout << "CacheLineAligned alignment: " 
+            << alignof(CacheLineAligned) << "\n";
+  
+  // Verifikasi alignment runtime
+  AlignedStruct s;
+  std::cout << "Address s: " << &s << "\n";
+  std::cout << "Address % 16: " 
+            << (reinterpret_cast<uintptr_t>(&s) % 16) << "\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Move Semantics dan Rvalue References}
+Move semantics adalah fitur C++11 yang memungkinkan transfer kepemilikan resource tanpa copy, menghasilkan performa lebih baik untuk objek besar. Ini fundamental untuk pemrograman modern C++ \parencite{cpp-reference}.
+
+\subsection{Lvalue vs Rvalue}
+\begin{itemize}
+  \item \textbf{Lvalue:} Ekspresi yang menempati lokasi memori teridentifikasi (memiliki address)
+  \item \textbf{Rvalue:} Ekspresi temporary yang tidak memiliki address persisten
+  \item \textbf{Lvalue reference:} \texttt{T\&} --- hanya bind ke lvalue
+  \item \textbf{Rvalue reference:} \texttt{T\&\&} --- hanya bind ke rvalue
+\end{itemize}
+
+\subsection{Move Constructor dan Move Assignment}
+\begin{lstlisting}[language=C++, caption={Implementasi move semantics}]
+#include <iostream>
+#include <cstring>
+#include <utility>
+
+class String {
+private:
+  char* data_;
+  size_t size_;
+  
+public:
+  // Constructor
+  String(const char* str = "") {
+    size_ = strlen(str);
+    data_ = new char[size_ + 1];
+    strcpy(data_, str);
+    std::cout << "Constructor: " << data_ << "\n";
+  }
+  
+  // Copy constructor (expensive)
+  String(const String& other) {
+    size_ = other.size_;
+    data_ = new char[size_ + 1];
+    strcpy(data_, other.data_);
+    std::cout << "Copy constructor: " << data_ << "\n";
+  }
+  
+  // Move constructor (cheap)
+  String(String&& other) noexcept {
+    data_ = other.data_;
+    size_ = other.size_;
+    other.data_ = nullptr;
+    other.size_ = 0;
+    std::cout << "Move constructor: " << data_ << "\n";
+  }
+  
+  // Copy assignment
+  String& operator=(const String& other) {
+    if (this != &other) {
+      delete[] data_;
+      size_ = other.size_;
+      data_ = new char[size_ + 1];
+      strcpy(data_, other.data_);
+      std::cout << "Copy assignment: " << data_ << "\n";
+    }
+    return *this;
+  }
+  
+  // Move assignment
+  String& operator=(String&& other) noexcept {
+    if (this != &other) {
+      delete[] data_;
+      data_ = other.data_;
+      size_ = other.size_;
+      other.data_ = nullptr;
+      other.size_ = 0;
+      std::cout << "Move assignment: " << data_ << "\n";
+    }
+    return *this;
+  }
+  
+  ~String() {
+    std::cout << "Destructor: " 
+              << (data_ ? data_ : "null") << "\n";
+    delete[] data_;
+  }
+  
+  const char* c_str() const { return data_; }
+};
+
+String createString() {
+  return String("temporary");
+}
+
+int main() {
+  String s1("hello");
+  String s2 = s1;              // Copy
+  String s3 = std::move(s1);   // Move (s1 sekarang kosong)
+  String s4 = createString();  // Move (RVO mungkin terjadi)
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Perfect Forwarding}
+Perfect forwarding mempertahankan value category (lvalue/rvalue) saat meneruskan parameter ke fungsi lain, penting untuk template dan wrapper functions \parencite{cpp-reference}.
+
+\begin{lstlisting}[language=C++, caption={Perfect forwarding dengan std::forward}]
+#include <iostream>
+#include <utility>
+
+void process(int& x) {
+  std::cout << "Lvalue processed: " << x << "\n";
+}
+
+void process(int&& x) {
+  std::cout << "Rvalue processed: " << x << "\n";
+}
+
+// Template dengan perfect forwarding
+template<typename T>
+void wrapper(T&& arg) {
+  // std::forward mempertahankan value category
+  process(std::forward<T>(arg));
+}
+
+int main() {
+  int a = 42;
+  
+  wrapper(a);       // Lvalue -> memanggil process(int&)
+  wrapper(10);      // Rvalue -> memanggil process(int&&)
+  wrapper(std::move(a)); // Rvalue -> memanggil process(int&&)
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Placement New dan Memory Management Lanjutan}
+Placement new adalah fitur C++ yang memungkinkan konstruksi objek pada alamat memori yang sudah dialokasikan, memberikan kontrol penuh atas alokasi dan konstruksi \parencite{cpp-reference}.
+
+\subsection{Dasar Placement New}
+\begin{lstlisting}[language=C++, caption={Penggunaan placement new}]
+#include <iostream>
+#include <new>
+#include <cstdlib>
+
+class Widget {
+  int id_;
+public:
+  Widget(int id) : id_(id) {
+    std::cout << "Widget " << id_ << " constructed\n";
+  }
+  ~Widget() {
+    std::cout << "Widget " << id_ << " destroyed\n";
+  }
+  int id() const { return id_; }
+};
+
+int main() {
+  // Alokasi raw memory
+  void* buffer = malloc(sizeof(Widget));
+  
+  // Construct objek di buffer dengan placement new
+  Widget* w = new(buffer) Widget(42);
+  
+  std::cout << "Widget id: " << w->id() << "\n";
+  
+  // PENTING: Destructor harus dipanggil manual
+  w->~Widget();
+  
+  // Lalu bebaskan memory
+  free(buffer);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Memory Pool dengan Placement New}
+\begin{lstlisting}[language=C++, caption={Simple memory pool}]
+#include <iostream>
+#include <cstddef>
+#include <new>
+
+template<typename T, size_t PoolSize>
+class MemoryPool {
+private:
+  alignas(T) char pool_[PoolSize * sizeof(T)];
+  bool used_[PoolSize];
+  
+public:
+  MemoryPool() {
+    for (size_t i = 0; i < PoolSize; ++i)
+      used_[i] = false;
+  }
+  
+  template<typename... Args>
+  T* allocate(Args&&... args) {
+    for (size_t i = 0; i < PoolSize; ++i) {
+      if (!used_[i]) {
+        used_[i] = true;
+        void* addr = &pool_[i * sizeof(T)];
+        return new(addr) T(std::forward<Args>(args)...);
+      }
+    }
+    throw std::bad_alloc();
+  }
+  
+  void deallocate(T* ptr) {
+    if (!ptr) return;
+    
+    // Hitung index
+    char* p = reinterpret_cast<char*>(ptr);
+    size_t idx = (p - pool_) / sizeof(T);
+    
+    if (idx < PoolSize && used_[idx]) {
+      ptr->~T();  // Destructor
+      used_[idx] = false;
+    }
+  }
+  
+  ~MemoryPool() {
+    // Cleanup objek yang masih ada
+    for (size_t i = 0; i < PoolSize; ++i) {
+      if (used_[i]) {
+        T* ptr = reinterpret_cast<T*>(&pool_[i * sizeof(T)]);
+        ptr->~T();
+      }
+    }
+  }
+};
+
+int main() {
+  MemoryPool<int, 10> pool;
+  
+  int* p1 = pool.allocate(42);
+  int* p2 = pool.allocate(100);
+  
+  std::cout << "*p1 = " << *p1 << "\n";
+  std::cout << "*p2 = " << *p2 << "\n";
+  
+  pool.deallocate(p1);
+  pool.deallocate(p2);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Type Punning dan Strict Aliasing}
+Type punning adalah praktek membaca memory yang ditulis dengan satu tipe menggunakan tipe yang berbeda. C dan C++ memiliki aturan strict aliasing yang membatasi praktek ini untuk optimisasi \parencite{iso-c-draft-n1570,cpp-reference}.
+
+\subsection{Strict Aliasing Rules}
+Compiler mengasumsikan pointer ke tipe berbeda tidak alias (menunjuk memori yang sama) kecuali:
+\begin{itemize}
+  \item Pointer ke \texttt{char}, \texttt{signed char}, atau \texttt{unsigned char}
+  \item Tipe yang compatible
+  \item Struct/union yang memiliki salah satu tipe tersebut sebagai member
+\end{itemize}
+
+Melanggar aturan ini adalah undefined behavior dan dapat menghasilkan bug subtle!
+
+\subsection{Cara Aman: Union}
+\begin{lstlisting}[language=C, caption={Type punning dengan union}]
+#include <stdio.h>
+#include <stdint.h>
+
+// Union untuk type punning yang aman
+union FloatInt {
+  float f;
+  uint32_t i;
+};
+
+void printFloatBits(float f) {
+  union FloatInt fi;
+  fi.f = f;
+  
+  printf("Float: %f\n", f);
+  printf("Bits:  0x%08X\n", fi.i);
+  printf("Binary: ");
+  for (int i = 31; i >= 0; i--) {
+    printf("%d", (fi.i >> i) & 1);
+    if (i % 8 == 0) printf(" ");
+  }
+  printf("\n");
+}
+
+int main() {
+  printFloatBits(3.14159f);
+  printFloatBits(-0.0f);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Cara Aman: memcpy}
+\begin{lstlisting}[language=C, caption={Type punning dengan memcpy}]
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+
+uint32_t floatToInt(float f) {
+  uint32_t result;
+  memcpy(&result, &f, sizeof(float));
+  return result;
+}
+
+float intToFloat(uint32_t i) {
+  float result;
+  memcpy(&result, &i, sizeof(uint32_t));
+  return result;
+}
+
+int main() {
+  float f = 3.14159f;
+  uint32_t bits = floatToInt(f);
+  float f2 = intToFloat(bits);
+  
+  printf("Original: %f\n", f);
+  printf("Bits: 0x%08X\n", bits);
+  printf("Restored: %f\n", f2);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Cara yang SALAH (undefined behavior):}
+\begin{lstlisting}[language=C, caption={Type punning yang salah --- JANGAN LAKUKAN INI}]
+// WRONG! Melanggar strict aliasing
+float f = 3.14f;
+uint32_t i = *(uint32_t*)&f;  // UB!
+
+// Compiler dapat mengoptimisasi dengan asumsi
+// f dan pointer ke uint32_t tidak alias
+\end{lstlisting}
+
+\section{Tagged Pointers dan Opaque Pointers}
+
+\subsection{Tagged Pointers}
+Tagged pointer menyimpan data tambahan dalam bit yang tidak digunakan dari pointer. Pada arsitektur 64-bit dengan 48-bit address space, 16 bit teratas dapat digunakan untuk menyimpan metadata \parencite{cpp-reference}.
+
+\begin{lstlisting}[language=C++, caption={Tagged pointer sederhana}]
+#include <iostream>
+#include <cstdint>
+#include <cassert>
+
+// Asumsi: pointer aligned ke 8 bytes
+// 3 bit bawah selalu 0, bisa digunakan untuk tag
+class TaggedPointer {
+private:
+  uintptr_t data_;
+  
+  static constexpr uintptr_t TAG_MASK = 0x7;
+  static constexpr uintptr_t PTR_MASK = ~TAG_MASK;
+  
+public:
+  TaggedPointer(void* ptr, uint8_t tag) {
+    assert(tag < 8 && "Tag must fit in 3 bits");
+    assert((reinterpret_cast<uintptr_t>(ptr) & TAG_MASK) == 0 
+           && "Pointer must be 8-byte aligned");
+    
+    data_ = reinterpret_cast<uintptr_t>(ptr) | tag;
+  }
+  
+  void* getPointer() const {
+    return reinterpret_cast<void*>(data_ & PTR_MASK);
+  }
+  
+  uint8_t getTag() const {
+    return data_ & TAG_MASK;
+  }
+  
+  void setTag(uint8_t tag) {
+    assert(tag < 8);
+    data_ = (data_ & PTR_MASK) | tag;
+  }
+};
+
+struct alignas(8) Node {
+  int value;
+  Node* next;
+};
+
+int main() {
+  Node* node = new Node{42, nullptr};
+  
+  // Tag 0 = unused, 1 = marked, 2 = root, etc.
+  TaggedPointer tp(node, 1);
+  
+  std::cout << "Pointer: " << tp.getPointer() << "\n";
+  std::cout << "Tag: " << (int)tp.getTag() << "\n";
+  
+  Node* retrieved = static_cast<Node*>(tp.getPointer());
+  std::cout << "Value: " << retrieved->value << "\n";
+  
+  delete node;
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Opaque Pointers}
+Opaque pointer adalah pointer ke tipe yang tidak didefinisikan di header, digunakan untuk menyembunyikan detail implementasi (information hiding) dan mengurangi coupling \parencite{gnu-c-manual}.
+
+\begin{lstlisting}[language=C, caption={Opaque pointer pattern --- Header}]
+// widget.h
+#ifndef WIDGET_H
+#define WIDGET_H
+
+// Forward declaration - detail tidak terlihat
+typedef struct Widget Widget;
+
+// Public API
+Widget* widget_create(int width, int height);
+void widget_destroy(Widget* w);
+void widget_draw(const Widget* w);
+int widget_get_width(const Widget* w);
+
+#endif
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Opaque pointer pattern --- Implementation}]
+// widget.c
+#include "widget.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+// Definisi lengkap hanya di implementation
+struct Widget {
+  int width;
+  int height;
+  void* internal_data;
+  // ... detail implementasi lainnya
+};
+
+Widget* widget_create(int width, int height) {
+  Widget* w = malloc(sizeof(Widget));
+  if (w) {
+    w->width = width;
+    w->height = height;
+    w->internal_data = NULL;
+  }
+  return w;
+}
+
+void widget_destroy(Widget* w) {
+  if (w) {
+    // Cleanup internal data
+    free(w);
+  }
+}
+
+void widget_draw(const Widget* w) {
+  printf("Drawing widget %dx%d\n", w->width, w->height);
+}
+
+int widget_get_width(const Widget* w) {
+  return w ? w->width : 0;
+}
+\end{lstlisting}
+
+\textbf{Keuntungan opaque pointer:}
+\begin{itemize}
+  \item \textbf{Enkapsulasi:} Client tidak bisa akses internal
+  \item \textbf{ABI stability:} Implementasi bisa berubah tanpa recompile client
+  \item \textbf{Reduced coupling:} Header tidak perlu include dependencies implementasi
+  \item \textbf{Faster compilation:} Perubahan implementasi tidak trigger recompile client
+\end{itemize}
+
+\section{Cache-Friendly Data Structures}
+Organisasi data yang mempertimbangkan cache hierarchy CPU dapat meningkatkan performa secara signifikan. Pointer dapat membantu atau menghambat cache performance tergantung pola akses \parencite{cpp-reference}.
+
+\subsection{Cache Basics}
+\begin{itemize}
+  \item \textbf{Cache line:} Unit transfer antara RAM dan cache (typically 64 bytes)
+  \item \textbf{Spatial locality:} Akses data yang berdekatan di memori
+  \item \textbf{Temporal locality:} Akses data yang sama berulang kali
+  \item \textbf{Cache miss:} Penalty 100-300 cycles untuk memory access
+\end{itemize}
+
+\subsection{Array of Structures vs Structure of Arrays}
+\begin{lstlisting}[language=C++, caption={AoS vs SoA comparison}]
+#include <iostream>
+#include <chrono>
+#include <vector>
+
+const size_t N = 1000000;
+
+// Array of Structures (AoS) - poor cache utilization
+struct ParticleAoS {
+  float x, y, z;      // position
+  float vx, vy, vz;   // velocity
+  float mass;
+  float charge;
+};
+
+// Structure of Arrays (SoA) - better cache utilization
+struct ParticlesSoA {
+  std::vector<float> x, y, z;
+  std::vector<float> vx, vy, vz;
+  std::vector<float> mass;
+  std::vector<float> charge;
+  
+  ParticlesSoA(size_t n) 
+    : x(n), y(n), z(n), vx(n), vy(n), vz(n), 
+      mass(n), charge(n) {}
+};
+
+void updateAoS(std::vector<ParticleAoS>& particles, float dt) {
+  for (auto& p : particles) {
+    // Hanya update posisi
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.z += p.vz * dt;
+    // Banyak data lain (mass, charge) dimuat ke cache tapi tidak dipakai
+  }
+}
+
+void updateSoA(ParticlesSoA& particles, float dt) {
+  for (size_t i = 0; i < particles.x.size(); ++i) {
+    // Sequential access, optimal cache usage
+    particles.x[i] += particles.vx[i] * dt;
+    particles.y[i] += particles.vy[i] * dt;
+    particles.z[i] += particles.vz[i] * dt;
+  }
+}
+
+int main() {
+  std::vector<ParticleAoS> aos(N);
+  ParticlesSoA soa(N);
+  
+  // Initialize
+  for (size_t i = 0; i < N; ++i) {
+    aos[i] = {1, 1, 1, 0.1f, 0.1f, 0.1f, 1.0f, 1.0f};
+    soa.x[i] = soa.y[i] = soa.z[i] = 1;
+    soa.vx[i] = soa.vy[i] = soa.vz[i] = 0.1f;
+  }
+  
+  // Benchmark AoS
+  auto start = std::chrono::high_resolution_clock::now();
+  updateAoS(aos, 0.01f);
+  auto end = std::chrono::high_resolution_clock::now();
+  auto aos_time = std::chrono::duration_cast<
+    std::chrono::microseconds>(end - start).count();
+  
+  // Benchmark SoA
+  start = std::chrono::high_resolution_clock::now();
+  updateSoA(soa, 0.01f);
+  end = std::chrono::high_resolution_clock::now();
+  auto soa_time = std::chrono::duration_cast<
+    std::chrono::microseconds>(end - start).count();
+  
+  std::cout << "AoS time: " << aos_time << " us\n";
+  std::cout << "SoA time: " << soa_time << " us\n";
+  std::cout << "Speedup: " << (float)aos_time / soa_time << "x\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{False Sharing}
+False sharing terjadi ketika thread berbeda mengakses data berbeda yang berada di cache line yang sama, menyebabkan cache invalidation dan degradasi performa.
+
+\begin{lstlisting}[language=C++, caption={False sharing dan solusinya}]
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <chrono>
+
+const int ITERATIONS = 100000000;
+
+// BAD: False sharing
+struct CounterBad {
+  int count;
+};
+
+// GOOD: Padding untuk menghindari false sharing
+struct alignas(64) CounterGood {
+  int count;
+  char padding[60];  // Pad to cache line size (64 bytes)
+};
+
+template<typename T>
+void increment(T& counter) {
+  for (int i = 0; i < ITERATIONS; ++i) {
+    counter.count++;
+  }
+}
+
+int main() {
+  // Test dengan false sharing
+  {
+    std::vector<CounterBad> counters(4);
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 4; ++i) {
+      threads.emplace_back(increment<CounterBad>, 
+                           std::ref(counters[i]));
+    }
+    for (auto& t : threads) t.join();
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    auto bad_time = std::chrono::duration_cast<
+      std::chrono::milliseconds>(end - start).count();
+    std::cout << "With false sharing: " << bad_time << " ms\n";
+  }
+  
+  // Test tanpa false sharing
+  {
+    std::vector<CounterGood> counters(4);
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 4; ++i) {
+      threads.emplace_back(increment<CounterGood>, 
+                           std::ref(counters[i]));
+    }
+    for (auto& t : threads) t.join();
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    auto good_time = std::chrono::duration_cast<
+      std::chrono::milliseconds>(end - start).count();
+    std::cout << "Without false sharing: " << good_time << " ms\n";
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Advanced Error Patterns}
+
+\subsection{Stale Pointer Bug}
+Stale pointer bug terjadi ketika beberapa pointer menunjuk ke memori yang sama, dan salah satu pointer membebaskan memory sementara pointer lain masih menggunakannya. Ini lebih subtle dari dangling pointer biasa karena melibatkan aliasing.
+
+\begin{lstlisting}[language=C, caption={Stale pointer bug}]
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef struct {
+  int* data;
+  size_t size;
+} Buffer;
+
+void dangerousAlias() {
+  Buffer b1, b2;
+  
+  // Alokasi
+  b1.data = malloc(10 * sizeof(int));
+  b1.size = 10;
+  
+  // BAHAYA: Alias pointer
+  b2.data = b1.data;  // b2 dan b1 menunjuk memory yang sama
+  b2.size = b1.size;
+  
+  // b1 dibebaskan
+  free(b1.data);
+  b1.data = NULL;
+  
+  // STALE: b2.data sekarang stale pointer!
+  // Akses ke b2.data adalah undefined behavior
+  // b2.data[0] = 42;  // CRASH atau corrupt memory
+}
+
+// Solusi: Deep copy atau reference counting
+void safeCopy() {
+  Buffer b1, b2;
+  
+  b1.data = malloc(10 * sizeof(int));
+  b1.size = 10;
+  
+  // Deep copy
+  b2.size = b1.size;
+  b2.data = malloc(b2.size * sizeof(int));
+  memcpy(b2.data, b1.data, b2.size * sizeof(int));
+  
+  // Sekarang aman
+  free(b1.data);
+  // b2.data masih valid
+  
+  free(b2.data);
+}
+
+int main() {
+  safeCopy();
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Use-After-Move di C++}
+\begin{lstlisting}[language=C++, caption={Use-after-move error}]
+#include <iostream>
+#include <vector>
+#include <string>
+
+void demonstrateUseAfterMove() {
+  std::vector<int> v1 = {1, 2, 3, 4, 5};
+  
+  std::cout << "v1 size: " << v1.size() << "\n";
+  
+  // Move v1 ke v2
+  std::vector<int> v2 = std::move(v1);
+  
+  // BAHAYA: v1 sekarang dalam "valid but unspecified state"
+  std::cout << "v1 size after move: " << v1.size() << "\n";
+  
+  // JANGAN lakukan operasi pada v1 selain:
+  // - Assign nilai baru
+  // - Destroy
+  // v1.push_back(6);  // Teknisnya OK tapi confusing
+  
+  // Lebih baik: assign atau clear
+  v1 = {};  // atau v1.clear();
+  v1.push_back(6);  // Sekarang jelas
+}
+
+int main() {
+  demonstrateUseAfterMove();
+  return 0;
+}
+\end{lstlisting}
+
+\section{Performance Considerations}
+
+\subsection{Overhead Smart Pointers}
+\begin{table}[H]
+  \centering
+  \caption{Overhead smart pointers}
+  \begin{tabular}{@{}lccl@{}}
+    \toprule
+    Tipe & Ukuran & Overhead & Catatan \\
+    \midrule
+    Raw pointer & 8 bytes & - & Baseline \\
+    unique\_ptr & 8 bytes & 0 & Zero overhead \\
+    shared\_ptr & 16 bytes & Atomic ops & Control block \\
+    weak\_ptr & 16 bytes & Minimal & Tidak akses data \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Benchmark: Pointer Indirection}
+\begin{lstlisting}[language=C++, caption={Impact of pointer indirection}]
+#include <iostream>
+#include <chrono>
+#include <vector>
+#include <memory>
+
+const size_t N = 10000000;
+const int ITERATIONS = 100;
+
+// Direct access
+void testDirect(std::vector<int>& data) {
+  int sum = 0;
+  for (int val : data) {
+    sum += val;
+  }
+}
+
+// One level indirection
+void testIndirect(std::vector<int*>& ptrs) {
+  int sum = 0;
+  for (int* p : ptrs) {
+    sum += *p;
+  }
+}
+
+// Smart pointer
+void testShared(std::vector<std::shared_ptr<int>>& ptrs) {
+  int sum = 0;
+  for (auto& p : ptrs) {
+    sum += *p;
+  }
+}
+
+template<typename Func>
+long long benchmark(Func f) {
+  auto start = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < ITERATIONS; ++i) {
+    f();
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>
+    (end - start).count() / ITERATIONS;
+}
+
+int main() {
+  std::vector<int> direct(N, 42);
+  
+  std::vector<int*> indirect;
+  for (auto& v : direct) indirect.push_back(&v);
+  
+  std::vector<std::shared_ptr<int>> shared;
+  for (size_t i = 0; i < N; ++i) {
+    shared.push_back(std::make_shared<int>(42));
+  }
+  
+  std::cout << "Direct access: " 
+            << benchmark([&]() { testDirect(direct); }) 
+            << " us\n";
+  std::cout << "Indirect (raw ptr): " 
+            << benchmark([&]() { testIndirect(indirect); }) 
+            << " us\n";
+  std::cout << "Shared pointer: " 
+            << benchmark([&]() { testShared(shared); }) 
+            << " us\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Rangkuman}
+Bab ini membahas aspek lanjutan dari pointer dan manajemen memori yang melengkapi fondasi dari bab sebelumnya. Topik-topik seperti move semantics, placement new, memory alignment, dan cache-aware programming adalah essential untuk pemrograman sistem modern dan aplikasi high-performance.
+
+\textbf{Poin-poin kunci:}
+\begin{itemize}
+  \item Move semantics mengurangi overhead copy untuk objek besar
+  \item Memory alignment memengaruhi performa dan portabilitas
+  \item Placement new memberikan kontrol penuh atas konstruksi objek
+  \item Strict aliasing rules harus dipahami untuk menghindari UB
+  \item Tagged dan opaque pointers menawarkan teknik optimisasi dan enkapsulasi
+  \item Cache-friendly data structures meningkatkan performa signifikan
+  \item Smart pointers memiliki tradeoff antara safety dan performa
+  \item Pemahaman mendalam tentang error patterns membantu debugging
+\end{itemize}
+
+Prinsip RAII dan ownership yang jelas tetap menjadi fondasi manajemen memori yang aman, namun pemahaman teknik lanjutan memungkinkan optimisasi dan desain yang lebih sophisticated untuk aplikasi complex dan performance-critical.
 \end{document}

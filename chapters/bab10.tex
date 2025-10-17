@@ -1,104 +1,1050 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Alokasi Dinamis \& Pointer Lanjutan}
-\section{Alokasi Memori Dinamis}
-\subsection{Contoh C dan C++}
-\begin{lstlisting}[language=C, caption={Pola cleanup bertahap di C}]
-#include <stdlib.h>
-int foo(size_t n){
-  int rc = -1; int *a = NULL, *b = NULL;
-  a = malloc(n*sizeof *a); if (!a) goto done;
-  b = malloc(n*sizeof *b); if (!b) goto done;
-  // ... gunakan a dan b ...
-  rc = 0;
-done:
-  free(b); free(a); return rc;
-}
+\chapter{Fungsi dan Prosedur}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami perbedaan antara fungsi (mengembalikan nilai) dan prosedur (tanpa nilai kembali)
+  \item Mendeklarasikan dan mendefinisikan fungsi/prosedur dengan benar
+  \item Menggunakan parameter untuk komunikasi data dengan fungsi/prosedur
+  \item Memahami perbedaan passing by value, by reference, dan by pointer
+  \item Membuat fungsi rekursif untuk menyelesaikan masalah tertentu
+  \item Menerapkan prinsip modularitas dengan memecah program menjadi fungsi-fungsi kecil
+  \item Memahami scope dan lifetime variabel lokal vs global
+\end{itemize}
+
+Abstraksi fungsi dan prosedur memungkinkan dekomposisi masalah ke unit yang dapat diuji dan digunakan ulang. Pascal membedakan dengan jelas antara \texttt{procedure} (tidak mengembalikan nilai) dan \texttt{function} (mengembalikan nilai), sementara C/C++ menggunakan fungsi sebagai konstruksi utama dengan tipe kembalian \texttt{void} untuk prosedur. Pemahaman mendalam tentang kedua konsep ini sangat penting dalam desain program terstruktur \parencite{pascal-procedure-function,c-functions,cpp-functions}.
+
+Bab ini dibagi menjadi dua bagian utama: pertama membahas \textbf{Fungsi} yang mengembalikan nilai, kedua membahas \textbf{Prosedur} yang melakukan aksi tanpa pengembalian nilai eksplisit. Setiap bagian mencakup deklarasi, definisi, cara penggunaan, strategi passing parameter, serta contoh implementasi lintas bahasa pemrograman.
+
+\section{Fungsi}
+
+\subsection{Konsep Dasar Fungsi}
+Fungsi adalah blok kode independen yang dirancang untuk melakukan tugas tertentu dan \textbf{mengembalikan nilai} sebagai hasil komputasinya. Fungsi menerima input (parameter), memproses data, dan menghasilkan output melalui pernyataan \texttt{return}. Karakteristik utama fungsi adalah adanya nilai kembalian yang dapat digunakan dalam ekspresi atau disimpan dalam variabel \parencite{cpp-reference,gnu-c-manual}.
+
+Keuntungan menggunakan fungsi meliputi:
+\begin{itemize}
+  \item \textbf{Reusabilitas}: Kode dapat dipanggil berulang kali dari berbagai lokasi
+  \item \textbf{Modularitas}: Memecah program kompleks menjadi unit-unit kecil yang mudah dipahami
+  \item \textbf{Testabilitas}: Setiap fungsi dapat diuji secara independen
+  \item \textbf{Abstraksi}: Menyembunyikan detail implementasi dari pemanggil
+\end{itemize}
+
+\subsection{Deklarasi dan Definisi Fungsi}
+\subsubsection{Sintaks Umum}
+Deklarasi fungsi menyatakan eksistensi fungsi kepada kompilator, sedangkan definisi menyediakan implementasi aktual. Dalam beberapa kasus, deklarasi dan definisi dapat digabung.
+
+\textbf{Bentuk umum:}
+\begin{verbatim}
+tipe_kembalian nama_fungsi(tipe_param1 param1, tipe_param2 param2, ...);
+\end{verbatim}
+
+\subsubsection{Contoh dalam Pascal}
+\begin{lstlisting}[language=Pascal, caption={Deklarasi dan definisi fungsi (Pascal)}]
+// Fungsi yang mengembalikan jumlah dua bilangan
+function Tambah(a, b: integer): integer;
+begin
+  Tambah := a + b;  // Penugasan ke nama fungsi
+end;
+
+// Fungsi yang menghitung kuadrat
+function Kuadrat(x: real): real;
+begin
+  Kuadrat := x * x;
+end;
+
+// Fungsi dengan beberapa pernyataan
+function Faktorial(n: integer): integer;
+var
+  i, hasil: integer;
+begin
+  hasil := 1;
+  for i := 2 to n do
+    hasil := hasil * i;
+  Faktorial := hasil;
+end;
+
+// Pemanggilan fungsi
+var
+  hasil, angka: integer;
+  kuadratNilai: real;
+begin
+  hasil := Tambah(5, 3);           // hasil = 8
+  angka := Faktorial(5);            // angka = 120
+  kuadratNilai := Kuadrat(3.5);     // kuadratNilai = 12.25
+  Writeln('Hasil: ', hasil);
+end.
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={RAII dengan unique_ptr di C++}]
-#include <memory>
-int process(size_t n){
-  auto buf = std::make_unique<int[]>(n);
-  // ... gunakan buf ... otomatis dibebaskan saat keluar scope
+\subsubsection{Contoh dalam C}
+\begin{lstlisting}[language=C, caption={Deklarasi dan definisi fungsi (C)}]
+#include <stdio.h>
+
+// Deklarasi fungsi (function prototype)
+int tambah(int a, int b);
+double kuadrat(double x);
+unsigned int faktorial(unsigned int n);
+
+// Definisi fungsi
+int tambah(int a, int b) {
+  return a + b;
+}
+
+double kuadrat(double x) {
+  return x * x;
+}
+
+unsigned int faktorial(unsigned int n) {
+  unsigned int hasil = 1;
+  for (unsigned int i = 2; i <= n; i++) {
+    hasil *= i;
+  }
+  return hasil;
+}
+
+int main() {
+  int hasil = tambah(5, 3);            // hasil = 8
+  unsigned int angka = faktorial(5);   // angka = 120
+  double kuadratNilai = kuadrat(3.5);  // kuadratNilai = 12.25
+  
+  printf("Hasil: %d\n", hasil);
+  printf("Faktorial: %u\n", angka);
+  printf("Kuadrat: %.2f\n", kuadratNilai);
+  
   return 0;
 }
 \end{lstlisting}
-Alokasi dinamis memungkinkan program memperoleh memori pada runtime untuk ukuran data yang tidak dapat diprediksi di awal. Di C, fungsi \texttt{malloc}/\texttt{calloc}/\texttt{realloc}/\texttt{free} menyediakan kontrol langsung atas siklus hidup memori. Di C++, operator \texttt{new}/\texttt{delete} dan penunjuk pintar seperti \texttt{std::unique\_ptr} mengenkapsulasi kepemilikan dan pembebasan otomatis \parencite{iso-c-draft-n1570,cpp-reference}.
 
-Strategi pengalokasian harus menyatakan dengan jelas pemilik data dan jalur pembebasan untuk setiap cabang eksekusi. Gunakan \emph{RAII} pada C++ untuk menjamin pembebasan meski terjadi pengecualian. Pada C, pola goto cleanup dan blok \texttt{defer}-like (dengan makro) membantu menjaga konsistensi pembebasan sumber daya \parencite{gnu-c-manual}.
+\subsubsection{Contoh dalam C++}
+\begin{lstlisting}[language=C++, caption={Deklarasi dan definisi fungsi (C++)}]
+#include <iostream>
+#include <string>
+using namespace std;
 
-Pertimbangkan dampak fragmentasi memori dan biaya realokasi pada struktur yang sering berubah ukuran. Di C++, \texttt{std::vector} dan \texttt{std::string} mengelola pertumbuhan kapasitas, namun tetap butuh kewaspadaan pada invalidasi iterator saat re-alokasi.
+// Fungsi sederhana
+int tambah(int a, int b) {
+  return a + b;
+}
 
-\section{Pointer \& Dereferensi}
-\subsection{Diagram Tata Letak Memori}
-\begin{figure}[h]
+// Fungsi dengan tipe data kompleks
+double hitungRataRata(double nilai[], int jumlah) {
+  double total = 0.0;
+  for (int i = 0; i < jumlah; i++) {
+    total += nilai[i];
+  }
+  return total / jumlah;
+}
+
+// Fungsi dengan string
+string gabungkanString(const string &s1, const string &s2) {
+  return s1 + " " + s2;
+}
+
+// Fungsi dengan return type auto (C++11)
+auto kali(int x, int y) -> int {
+  return x * y;
+}
+
+int main() {
+  cout << "Tambah: " << tambah(10, 20) << endl;
+  
+  double nilai[] = {85.5, 90.0, 78.5, 92.0};
+  cout << "Rata-rata: " << hitungRataRata(nilai, 4) << endl;
+  
+  string hasil = gabungkanString("Hello", "World");
+  cout << hasil << endl;
+  
+  cout << "Kali: " << kali(6, 7) << endl;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Pass by Value pada Fungsi}
+Pada mekanisme \emph{pass by value}, nilai argumen disalin ke parameter fungsi. Fungsi bekerja dengan salinan data, sehingga perubahan pada parameter \textbf{tidak mempengaruhi} variabel asli di pemanggil.
+
+\subsubsection{Karakteristik Pass by Value}
+\begin{itemize}
+  \item Data asli terlindungi dari modifikasi
+  \item Overhead penyalinan untuk objek besar
+  \item Cocok untuk tipe data primitif dan objek kecil
+  \item Default di C dan C++
+\end{itemize}
+
+\subsubsection{Contoh Implementasi}
+\begin{lstlisting}[language=Pascal, caption={Pass by value (Pascal)}]
+function TambahSepuluh(x: integer): integer;
+begin
+  x := x + 10;  // Mengubah salinan lokal
+  TambahSepuluh := x;
+end;
+
+var
+  angka: integer;
+begin
+  angka := 5;
+  Writeln('Hasil fungsi: ', TambahSepuluh(angka));  // 15
+  Writeln('Nilai asli: ', angka);                    // 5 (tidak berubah)
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Pass by value (C)}]
+#include <stdio.h>
+
+int kuadratkanDanTambah(int x, int penambah) {
+  x = x * x;  // Mengubah salinan lokal
+  return x + penambah;
+}
+
+int main() {
+  int angka = 5;
+  int hasil = kuadratkanDanTambah(angka, 10);
+  
+  printf("Hasil: %d\n", hasil);     // 35 (5*5 + 10)
+  printf("Angka asli: %d\n", angka); // 5 (tidak berubah)
+  
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Pass by value dengan objek (C++)}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+string ubahString(string teks) {
+  teks += " - Dimodifikasi";  // Mengubah salinan
+  return teks;
+}
+
+int main() {
+  string asli = "Teks Asli";
+  string hasil = ubahString(asli);
+  
+  cout << "Hasil: " << hasil << endl;    // Teks Asli - Dimodifikasi
+  cout << "Asli: " << asli << endl;      // Teks Asli (tidak berubah)
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Pass by Reference pada Fungsi}
+Pada mekanisme \emph{pass by reference}, fungsi menerima referensi (alamat) ke variabel asli. Perubahan pada parameter \textbf{akan mempengaruhi} variabel asli di pemanggil. Ini efisien untuk objek besar dan memungkinkan fungsi menghasilkan beberapa output.
+
+\subsubsection{Karakteristik Pass by Reference}
+\begin{itemize}
+  \item Tidak ada penyalinan data (efisien untuk objek besar)
+  \item Fungsi dapat memodifikasi argumen asli
+  \item Di Pascal: gunakan kata kunci \texttt{var}
+  \item Di C: gunakan pointer dengan operator \texttt{\&} dan \texttt{*}
+  \item Di C++: gunakan referensi dengan tanda \texttt{\&}
+\end{itemize}
+
+\subsubsection{Contoh Implementasi}
+\begin{lstlisting}[language=Pascal, caption={Pass by reference (Pascal)}]
+function TukarDanJumlah(var a, b: integer): integer;
+var
+  temp: integer;
+begin
+  temp := a;
+  a := b;
+  b := temp;
+  TukarDanJumlah := a + b;
+end;
+
+var
+  x, y, jumlah: integer;
+begin
+  x := 10;
+  y := 20;
+  jumlah := TukarDanJumlah(x, y);
+  Writeln('x = ', x, ', y = ', y);  // x = 20, y = 10
+  Writeln('Jumlah = ', jumlah);     // 30
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Pass by reference via pointer (C)}]
+#include <stdio.h>
+
+int tukarDanJumlah(int *a, int *b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
+  return *a + *b;
+}
+
+int main() {
+  int x = 10, y = 20;
+  int jumlah = tukarDanJumlah(&x, &y);  // Kirim alamat
+  
+  printf("x = %d, y = %d\n", x, y);      // x = 20, y = 10
+  printf("Jumlah = %d\n", jumlah);       // 30
+  
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Pass by reference (C++)}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Referensi non-const untuk modifikasi
+int tukarDanJumlah(int &a, int &b) {
+  int temp = a;
+  a = b;
+  b = temp;
+  return a + b;
+}
+
+// Referensi const untuk efisiensi tanpa modifikasi
+int hitungPanjangTotal(const string &s1, const string &s2) {
+  return s1.length() + s2.length();
+}
+
+int main() {
+  int x = 10, y = 20;
+  int jumlah = tukarDanJumlah(x, y);
+  
+  cout << "x = " << x << ", y = " << y << endl;  // x = 20, y = 10
+  cout << "Jumlah = " << jumlah << endl;         // 30
+  
+  string kata1 = "Hello", kata2 = "World";
+  cout << "Total panjang: " << hitungPanjangTotal(kata1, kata2) << endl;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Fungsi Rekursif}
+Fungsi rekursif adalah fungsi yang memanggil dirinya sendiri untuk memecahkan masalah menjadi submasalah yang lebih kecil. Setiap fungsi rekursif harus memiliki \textbf{basis} (kondisi berhenti) dan \textbf{langkah rekursif} yang mengarah ke basis.
+
+\subsubsection{Diagram Tumpukan Panggilan}
+\begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=1.4cm]
-    \tikzstyle{blk}=[rectangle, draw, rounded corners, minimum width=1.8cm, minimum height=0.9cm]
-    \node[blk] (p) {p: addr};
-    \node[blk, right=of p] (buf0) {buf[0]};
-    \node[blk, right=of buf0] (buf1) {buf[1]};
-    \node[blk, right=of buf1] (buf2) {buf[2]};
-    \draw[->] (p) -- (buf0);
+  \begin{tikzpicture}[node distance=1.2cm]
+    \tikzstyle{f}=[rectangle, draw, rounded corners, minimum width=3.0cm, align=center, fill=blue!10]
+    \node[f] (f1) {fact(4) = 4 × fact(3)};
+    \node[f, below=of f1, fill=green!10] (f2) {fact(3) = 3 × fact(2)};
+    \node[f, below=of f2, fill=yellow!10] (f3) {fact(2) = 2 × fact(1)};
+    \node[f, below=of f3, fill=red!10] (f4) {fact(1) = 1 (basis)};
+    \draw[->, thick] (f1) -- (f2);
+    \draw[->, thick] (f2) -- (f3);
+    \draw[->, thick] (f3) -- (f4);
   \end{tikzpicture}
-  \caption{Pointer menunjuk ke awal buffer berurutan}
+  \caption{Tumpukan panggilan saat menghitung faktorial secara rekursif}
 \end{figure}
-Manipulasi pointer yang aman menuntut inisialisasi eksplisit, larangan penggunaan setelah dibebaskan (use-after-free), dan validasi sebelum dereferensi. Gunakan pengenal null yang konsisten dan pertimbangkan \texttt{nonnull} pada kontrak API. Di C++, preferensikan referensi ketika non-null dijamin agar niat lebih terlihat \parencite{gnu-c-manual,cpp-reference}.
 
-Teknik seperti \emph{owner/raw pointer split} di C++ memisahkan peran pengelolaan dari akses non-kepemilikan. Untuk C, konvensi dokumenter tentang siapa yang bertanggung jawab membebaskan memori harus ditegakkan dengan uji dan tinjauan kode. Alat analisis statis dapat membantu mendeteksi kebocoran dan akses tidak valid.
+\subsubsection{Contoh Rekursi}
+\begin{lstlisting}[language=Pascal, caption={Fungsi rekursif (Pascal)}]
+function Faktorial(n: integer): integer;
+begin
+  if n <= 1 then
+    Faktorial := 1    // Basis
+  else
+    Faktorial := n * Faktorial(n - 1);  // Rekursi
+end;
 
-\section{Pointer ke Array / Pointer ke Pointer}
-\subsection{Contoh Alokasi 2D}
-\begin{lstlisting}[language=C, caption={Matriks dinamis 2D di C (pointer ganda)}]
-int **m = malloc(r*sizeof *m);
-for (int i=0;i<r;++i) m[i] = malloc(c*sizeof *m[i]);
-// ... gunakan m[i][j] ...
-for (int i=0;i<r;++i) free(m[i]); free(m);
+function Fibonacci(n: integer): integer;
+begin
+  if n <= 1 then
+    Fibonacci := n
+  else
+    Fibonacci := Fibonacci(n - 1) + Fibonacci(n - 2);
+end;
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={std::unique_ptr<T[]> untuk buffer 2D datar}]
-#include <memory>
-std::unique_ptr<int[]> buf = std::make_unique<int[]>(r*c);
-auto at = [&](int i,int j){ return buf[i*c + j]; };
+\begin{lstlisting}[language=C, caption={Fungsi rekursif vs iteratif (C)}]
+// Faktorial rekursif
+unsigned int fact_rec(unsigned int n) {
+  return (n <= 1) ? 1 : n * fact_rec(n - 1);
+}
+
+// Faktorial iteratif (lebih efisien)
+unsigned int fact_it(unsigned int n) {
+  unsigned int hasil = 1;
+  for (unsigned int i = 2; i <= n; i++)
+    hasil *= i;
+  return hasil;
+}
+
+// Pangkat rekursif
+double pangkat(double base, int exp) {
+  if (exp == 0)
+    return 1.0;
+  if (exp < 0)
+    return 1.0 / pangkat(base, -exp);
+  return base * pangkat(base, exp - 1);
+}
 \end{lstlisting}
-Pointer ke array dan pointer ganda digunakan untuk memanipulasi matriks dinamis dan buffer variabel. Di C, pola alokasi dua tingkat memerlukan pembebasan bertahap untuk mencegah kebocoran. Di C++, preferensikan penampung standar atau \texttt{std::unique\_ptr<T[]>} untuk menyederhanakan manajemen \parencite{iso-c-draft-n1570,cpp-reference}.
 
-Perhitungan offset harus memperhitungkan ukuran elemen untuk menjaga korektitas. Saat memaparkan API, gunakan ukuran eksplisit dan validasi untuk mencegah akses di luar batas. Uji yang memeriksa skenario ukuran nol dan pertumbuhan bertahap membantu menstabilkan implementasi.
+\begin{lstlisting}[language=C++, caption={Rekursi dengan optimasi (C++)}]
+#include <iostream>
+using namespace std;
 
-\section{Pointer ke Fungsi / Smart Pointers}
-\subsection{Callback dan std::function}
-\begin{lstlisting}[language=C, caption={Pointer ke fungsi di C}]
-typedef int (*cmp_t)(const void*, const void*);
-int cmp_int(const void* a, const void* b){ return (*(const int*)a - *(const int*)b); }
+// Tail recursion (dapat dioptimasi kompilator)
+int sumTailRec(int n, int akumulator = 0) {
+  if (n == 0)
+    return akumulator;
+  return sumTailRec(n - 1, akumulator + n);
+}
+
+// Non-tail recursion
+int sumRec(int n) {
+  return (n == 0) ? 0 : n + sumRec(n - 1);
+}
+
+// Pencarian biner rekursif
+int binarySearch(int arr[], int left, int right, int target) {
+  if (left > right)
+    return -1;
+  
+  int mid = left + (right - left) / 2;
+  
+  if (arr[mid] == target)
+    return mid;
+  else if (arr[mid] > target)
+    return binarySearch(arr, left, mid - 1, target);
+  else
+    return binarySearch(arr, mid + 1, right, target);
+}
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={std::function dan lambda di C++}]
-#include <functional>
-std::function<int(int,int)> op = [](int a,int b){ return a+b; };
+Rekursi efektif untuk masalah yang memiliki struktur rekursif alami seperti traversal pohon, divide-and-conquer, dan backtracking. Namun, perhatikan overhead memori stack dan pertimbangkan solusi iteratif untuk input besar \parencite{cpp-reference,gnu-c-manual}.
+
+\subsection{Fitur Lanjutan Fungsi C++}
+\subsubsection{Function Overloading}
+\begin{lstlisting}[language=C++, caption={Overloading fungsi}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Overload berdasarkan jumlah parameter
+int maksimum(int a, int b) {
+  return (a > b) ? a : b;
+}
+
+int maksimum(int a, int b, int c) {
+  return maksimum(maksimum(a, b), c);
+}
+
+// Overload berdasarkan tipe parameter
+double maksimum(double a, double b) {
+  return (a > b) ? a : b;
+}
+
+string maksimum(const string &a, const string &b) {
+  return (a > b) ? a : b;
+}
+
+int main() {
+  cout << maksimum(5, 10) << endl;          // int (2 param)
+  cout << maksimum(5, 10, 15) << endl;      // int (3 param)
+  cout << maksimum(5.5, 3.2) << endl;       // double
+  cout << maksimum("abc", "xyz") << endl;   // string
+  return 0;
+}
 \end{lstlisting}
 
-\subsection{Ringkasan Smart Pointer}
-\begin{table}[h]
+\subsubsection{Default Arguments}
+\begin{lstlisting}[language=C++, caption={Default argument}]
+#include <iostream>
+using namespace std;
+
+int pangkat(int base, int eksponen = 2) {
+  int hasil = 1;
+  for (int i = 0; i < eksponen; i++)
+    hasil *= base;
+  return hasil;
+}
+
+void cetakPesan(string pesan, int ulang = 1) {
+  for (int i = 0; i < ulang; i++)
+    cout << pesan << endl;
+}
+
+int main() {
+  cout << pangkat(5) << endl;        // 25 (5^2, default)
+  cout << pangkat(5, 3) << endl;     // 125 (5^3)
+  
+  cetakPesan("Hello");               // Cetak 1x
+  cetakPesan("World", 3);            // Cetak 3x
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Prosedur}
+
+\subsection{Konsep Dasar Prosedur}
+Prosedur adalah blok kode yang dirancang untuk melakukan serangkaian aksi atau operasi tertentu \textbf{tanpa mengembalikan nilai eksplisit}. Dalam Pascal, prosedur dideklarasikan dengan kata kunci \texttt{procedure}, sedangkan dalam C/C++, prosedur diimplementasikan sebagai fungsi dengan tipe kembalian \texttt{void} \parencite{pascal-procedure-function,c-functions}.
+
+Perbedaan utama prosedur dengan fungsi:
+\begin{itemize}
+  \item Prosedur tidak memiliki nilai kembalian (atau \texttt{void})
+  \item Prosedur dipanggil sebagai pernyataan mandiri, bukan sebagai bagian dari ekspresi
+  \item Prosedur biasanya digunakan untuk efek samping: mencetak output, memodifikasi parameter, mengubah state global
+  \item Prosedur fokus pada \emph{aksi} bukan pada \emph{komputasi nilai}
+\end{itemize}
+
+\subsection{Deklarasi dan Definisi Prosedur}
+\subsubsection{Sintaks Umum}
+\textbf{Pascal:}
+\begin{verbatim}
+procedure nama_prosedur(parameter1: tipe1; parameter2: tipe2; ...);
+begin
+  // Blok kode
+end;
+\end{verbatim}
+
+\textbf{C/C++:}
+\begin{verbatim}
+void nama_prosedur(tipe1 param1, tipe2 param2, ...) {
+  // Blok kode
+}
+\end{verbatim}
+
+\subsubsection{Contoh dalam Pascal}
+\begin{lstlisting}[language=Pascal, caption={Deklarasi dan definisi prosedur (Pascal)}]
+// Prosedur tanpa parameter
+procedure CetakGaris;
+begin
+  Writeln('=========================');
+end;
+
+// Prosedur dengan parameter
+procedure CetakPesan(pesan: string; ulang: integer);
+var
+  i: integer;
+begin
+  for i := 1 to ulang do
+    Writeln(pesan);
+end;
+
+// Prosedur dengan parameter rujukan
+procedure TukarNilai(var a, b: integer);
+var
+  temp: integer;
+begin
+  temp := a;
+  a := b;
+  b := temp;
+end;
+
+// Prosedur kompleks
+procedure CetakInfo(nama: string; umur: integer; var status: string);
+begin
+  Writeln('Nama: ', nama);
+  Writeln('Umur: ', umur);
+  if umur >= 18 then
+    status := 'Dewasa'
+  else
+    status := 'Anak-anak';
+end;
+
+// Penggunaan
+var
+  x, y: integer;
+  statusOrang: string;
+begin
+  CetakGaris;
+  CetakPesan('Hello World', 3);
+  
+  x := 10;
+  y := 20;
+  TukarNilai(x, y);
+  Writeln('x = ', x, ', y = ', y);  // x = 20, y = 10
+  
+  CetakInfo('Budi', 25, statusOrang);
+  Writeln('Status: ', statusOrang);  // Dewasa
+end.
+\end{lstlisting}
+
+\subsubsection{Contoh dalam C}
+\begin{lstlisting}[language=C, caption={Definisi prosedur (C)}]
+#include <stdio.h>
+#include <string.h>
+
+// Prosedur sederhana
+void cetakGaris(void) {
+  printf("=========================\n");
+}
+
+// Prosedur dengan parameter
+void cetakPesan(const char *pesan, int ulang) {
+  for (int i = 0; i < ulang; i++) {
+    printf("%s\n", pesan);
+  }
+}
+
+// Prosedur dengan pointer (pass by reference)
+void tukarNilai(int *a, int *b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+// Prosedur kompleks dengan multiple outputs via pointer
+void hitungStatistik(int arr[], int size, int *min, int *max, double *avg) {
+  *min = arr[0];
+  *max = arr[0];
+  int sum = 0;
+  
+  for (int i = 0; i < size; i++) {
+    if (arr[i] < *min) *min = arr[i];
+    if (arr[i] > *max) *max = arr[i];
+    sum += arr[i];
+  }
+  
+  *avg = (double)sum / size;
+}
+
+int main() {
+  cetakGaris();
+  cetakPesan("Hello C", 2);
+  
+  int x = 10, y = 20;
+  tukarNilai(&x, &y);
+  printf("x = %d, y = %d\n", x, y);
+  
+  int data[] = {5, 2, 8, 1, 9};
+  int min, max;
+  double avg;
+  hitungStatistik(data, 5, &min, &max, &avg);
+  printf("Min: %d, Max: %d, Avg: %.2f\n", min, max, avg);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsubsection{Contoh dalam C++}
+\begin{lstlisting}[language=C++, caption={Definisi prosedur (C++)}]
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Prosedur sederhana
+void cetakGaris() {
+  cout << "=========================" << endl;
+}
+
+// Prosedur dengan parameter
+void cetakArray(const vector<int> &arr) {
+  cout << "[ ";
+  for (int val : arr) {
+    cout << val << " ";
+  }
+  cout << "]" << endl;
+}
+
+// Prosedur dengan referensi untuk modifikasi
+void tukarNilai(int &a, int &b) {
+  int temp = a;
+  a = b;
+  b = temp;
+}
+
+// Prosedur dengan multiple outputs
+void pisahkanNama(const string &namaLengkap, string &namaDepan, 
+                  string &namaBelakang) {
+  size_t pos = namaLengkap.find(' ');
+  if (pos != string::npos) {
+    namaDepan = namaLengkap.substr(0, pos);
+    namaBelakang = namaLengkap.substr(pos + 1);
+  } else {
+    namaDepan = namaLengkap;
+    namaBelakang = "";
+  }
+}
+
+// Prosedur dengan objek
+void sortirVector(vector<int> &vec) {
+  // Bubble sort sederhana
+  for (size_t i = 0; i < vec.size(); i++) {
+    for (size_t j = 0; j < vec.size() - 1 - i; j++) {
+      if (vec[j] > vec[j + 1]) {
+        tukarNilai(vec[j], vec[j + 1]);
+      }
+    }
+  }
+}
+
+int main() {
+  cetakGaris();
+  
+  vector<int> angka = {5, 2, 8, 1, 9};
+  cout << "Sebelum sortir: ";
+  cetakArray(angka);
+  
+  sortirVector(angka);
+  cout << "Setelah sortir: ";
+  cetakArray(angka);
+  
+  string depan, belakang;
+  pisahkanNama("John Doe", depan, belakang);
+  cout << "Nama depan: " << depan << endl;
+  cout << "Nama belakang: " << belakang << endl;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Pass by Value pada Prosedur}
+Pada prosedur dengan \emph{pass by value}, parameter menerima salinan nilai argumen. Modifikasi pada parameter tidak mempengaruhi variabel asli. Mekanisme ini cocok ketika prosedur hanya perlu membaca data tanpa mengubahnya.
+
+\subsubsection{Contoh Implementasi}
+\begin{lstlisting}[language=Pascal, caption={Pass by value pada prosedur (Pascal)}]
+procedure CetakDanTambah(x: integer; penambah: integer);
+begin
+  x := x + penambah;  // Mengubah salinan lokal
+  Writeln('Dalam prosedur: ', x);
+end;
+
+var
+  angka: integer;
+begin
+  angka := 10;
+  CetakDanTambah(angka, 5);
+  Writeln('Setelah prosedur: ', angka);  // Tetap 10
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Pass by value pada prosedur (C)}]
+#include <stdio.h>
+
+void cetakDanKali(int x, int pengali) {
+  x = x * pengali;  // Mengubah salinan
+  printf("Dalam prosedur: %d\n", x);
+}
+
+int main() {
+  int angka = 10;
+  cetakDanKali(angka, 5);
+  printf("Setelah prosedur: %d\n", angka);  // Tetap 10
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Pass by value pada prosedur (C++)}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+void ubahDanCetak(string teks, string tambahan) {
+  teks += tambahan;  // Mengubah salinan
+  cout << "Dalam prosedur: " << teks << endl;
+}
+
+int main() {
+  string asli = "Hello";
+  ubahDanCetak(asli, " World");
+  cout << "Setelah prosedur: " << asli << endl;  // Tetap "Hello"
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Pass by Reference pada Prosedur}
+Mekanisme \emph{pass by reference} memungkinkan prosedur memodifikasi variabel asli yang dilewatkan sebagai argumen. Ini adalah cara utama prosedur menghasilkan output atau efek samping.
+
+\subsubsection{Karakteristik}
+\begin{itemize}
+  \item Prosedur dapat mengubah nilai variabel pemanggil
+  \item Efisien untuk objek besar (tidak ada penyalinan)
+  \item Memungkinkan multiple outputs
+  \item Harus hati-hati dengan efek samping yang tidak diinginkan
+\end{itemize}
+
+\subsubsection{Contoh Implementasi}
+\begin{lstlisting}[language=Pascal, caption={Pass by reference pada prosedur (Pascal)}]
+// Prosedur mengubah nilai melalui var parameter
+procedure IncByOne(var x: integer);
+begin
+  x := x + 1;
+end;
+
+procedure ResetArray(var arr: array of integer; size: integer);
+var
+  i: integer;
+begin
+  for i := 0 to size - 1 do
+    arr[i] := 0;
+end;
+
+procedure HitungLuasKeliling(panjang, lebar: real; 
+                             var luas, keliling: real);
+begin
+  luas := panjang * lebar;
+  keliling := 2 * (panjang + lebar);
+end;
+
+var
+  n: integer;
+  l, k: real;
+begin
+  n := 10;
+  IncByOne(n);
+  Writeln(n);  // 11
+  
+  HitungLuasKeliling(5.0, 3.0, l, k);
+  Writeln('Luas: ', l:0:1, ', Keliling: ', k:0:1);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Pass by reference via pointer (C)}]
+#include <stdio.h>
+#include <math.h>
+
+void incByOne(int *p) {
+  if (p)
+    (*p)++;
+}
+
+void resetArray(int *arr, int size) {
+  for (int i = 0; i < size; i++)
+    arr[i] = 0;
+}
+
+void hitungLingkaran(double radius, double *luas, double *keliling) {
+  *luas = M_PI * radius * radius;
+  *keliling = 2 * M_PI * radius;
+}
+
+void pisahkanBilanganReal(double angka, int *bagianBulat, 
+                          double *bagianDesimal) {
+  *bagianBulat = (int)angka;
+  *bagianDesimal = angka - *bagianBulat;
+}
+
+int main() {
+  int n = 10;
+  incByOne(&n);
+  printf("n = %d\n", n);  // 11
+  
+  int data[] = {1, 2, 3, 4, 5};
+  resetArray(data, 5);
+  printf("data[0] = %d\n", data[0]);  // 0
+  
+  double luas, keliling;
+  hitungLingkaran(7.0, &luas, &keliling);
+  printf("Luas: %.2f, Keliling: %.2f\n", luas, keliling);
+  
+  int bulat;
+  double desimal;
+  pisahkanBilanganReal(3.14159, &bulat, &desimal);
+  printf("Bulat: %d, Desimal: %.5f\n", bulat, desimal);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Pass by reference (C++)}]
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void inc(int &x) {
+  x++;
+}
+
+void resetVector(vector<int> &vec) {
+  for (int &val : vec)
+    val = 0;
+}
+
+void hitungStatistik(const vector<int> &data, int &min, int &max, 
+                     double &avg) {
+  min = *min_element(data.begin(), data.end());
+  max = *max_element(data.begin(), data.end());
+  
+  int sum = 0;
+  for (int val : data)
+    sum += val;
+  avg = (double)sum / data.size();
+}
+
+void kaliMatriks(int &a, int &b, int &c, int &d, int skalar) {
+  a *= skalar;
+  b *= skalar;
+  c *= skalar;
+  d *= skalar;
+}
+
+int main() {
+  int n = 10;
+  inc(n);
+  cout << "n = " << n << endl;  // 11
+  
+  vector<int> angka = {5, 2, 8, 1, 9};
+  int minVal, maxVal;
+  double avgVal;
+  hitungStatistik(angka, minVal, maxVal, avgVal);
+  cout << "Min: " << minVal << ", Max: " << maxVal 
+       << ", Avg: " << avgVal << endl;
+  
+  int a = 1, b = 2, c = 3, d = 4;
+  kaliMatriks(a, b, c, d, 10);
+  cout << "Matriks: [" << a << ", " << b << "; " 
+       << c << ", " << d << "]" << endl;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Prosedur Rekursif}
+Prosedur juga dapat memanggil dirinya sendiri untuk menyelesaikan masalah secara rekursif. Prosedur rekursif sering digunakan untuk traversal struktur data atau menghasilkan efek samping berulang.
+
+\begin{lstlisting}[language=Pascal, caption={Prosedur rekursif (Pascal)}]
+procedure CetakMundur(n: integer);
+begin
+  if n > 0 then
+  begin
+    Writeln(n);
+    CetakMundur(n - 1);
+  end;
+end;
+
+procedure HanoiTower(n: integer; asal, tujuan, bantu: char);
+begin
+  if n = 1 then
+    Writeln('Pindah disk dari ', asal, ' ke ', tujuan)
+  else
+  begin
+    HanoiTower(n - 1, asal, bantu, tujuan);
+    Writeln('Pindah disk dari ', asal, ' ke ', tujuan);
+    HanoiTower(n - 1, bantu, tujuan, asal);
+  end;
+end;
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Prosedur rekursif (C)}]
+#include <stdio.h>
+
+void cetakMundur(int n) {
+  if (n > 0) {
+    printf("%d ", n);
+    cetakMundur(n - 1);
+  }
+}
+
+void cetakBiner(unsigned int n) {
+  if (n > 1)
+    cetakBiner(n / 2);
+  printf("%d", n % 2);
+}
+
+void hanoiTower(int n, char asal, char tujuan, char bantu) {
+  if (n == 1) {
+    printf("Pindah disk dari %c ke %c\n", asal, tujuan);
+  } else {
+    hanoiTower(n - 1, asal, bantu, tujuan);
+    printf("Pindah disk dari %c ke %c\n", asal, tujuan);
+    hanoiTower(n - 1, bantu, tujuan, asal);
+  }
+}
+
+int main() {
+  cetakMundur(5);
+  printf("\n");
+  
+  printf("15 dalam biner: ");
+  cetakBiner(15);
+  printf("\n");
+  
+  printf("Solusi Hanoi Tower (3 disk):\n");
+  hanoiTower(3, 'A', 'C', 'B');
+  
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Prosedur rekursif (C++)}]
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void cetakMundur(int n) {
+  if (n > 0) {
+    cout << n << " ";
+    cetakMundur(n - 1);
+  }
+}
+
+void generatePermutasi(vector<int> &arr, int l, int r) {
+  if (l == r) {
+    for (int val : arr)
+      cout << val << " ";
+    cout << endl;
+  } else {
+    for (int i = l; i <= r; i++) {
+      swap(arr[l], arr[i]);
+      generatePermutasi(arr, l + 1, r);
+      swap(arr[l], arr[i]);  // Backtrack
+    }
+  }
+}
+
+void cetakPohonAngka(int n, int level = 0) {
+  if (n > 0) {
+    for (int i = 0; i < level; i++)
+      cout << "  ";
+    cout << n << endl;
+    cetakPohonAngka(n - 1, level + 1);
+    cetakPohonAngka(n - 1, level + 1);
+  }
+}
+
+int main() {
+  cout << "Mundur: ";
+  cetakMundur(5);
+  cout << endl;
+  
+  vector<int> arr = {1, 2, 3};
+  cout << "Permutasi {1,2,3}:" << endl;
+  generatePermutasi(arr, 0, arr.size() - 1);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Perbandingan Fungsi dan Prosedur}
+\begin{table}[H]
   \centering
-  \caption{Ringkasan penunjuk pintar}
+  \caption{Perbandingan fungsi dan prosedur}
   \begin{tabular}{@{}lll@{}}
     \toprule
-    Jenis & Kepemilikan & Catatan \\
+    Aspek & Fungsi & Prosedur \\
     \midrule
-    unique\_ptr & tunggal & murah, tidak copyable \\
-    shared\_ptr & berbagi & hitung referensi; gunakan weak\_ptr untuk memutus siklus \\
-    weak\_ptr & pengamat & tidak memengaruhi umur objek \\
+    Nilai kembalian & Ya (tipe tertentu) & Tidak (void) \\
+    Pemanggilan & Dalam ekspresi & Sebagai pernyataan \\
+    Tujuan utama & Komputasi nilai & Efek samping/aksi \\
+    Return statement & Wajib (kecuali void) & Opsional \\
+    Contoh Pascal & function & procedure \\
+    Contoh C/C++ & int, double, dll. & void \\
     \bottomrule
   \end{tabular}
 \end{table}
-Pointer ke fungsi di C memungkinkan strategi callback dan tabel vektor, sedangkan C++ menyediakan alternatif modern seperti objek callable dan \texttt{std::function}. Penunjuk pintar mengekspresikan kepemilikan eksplisit: \texttt{unique\_ptr} untuk kepemilikan tunggal dan \texttt{shared\_ptr} untuk berbagi siklus hidup. Hindari siklus referensi dengan \texttt{weak\_ptr} jika hubungan graf tidak terarah \parencite{cpp-reference}.
 
-Evaluasi biaya overhead penunjuk pintar dalam jalur kritis dan gunakan penunjuk mentah hanya sebagai non-owner view bila dibenarkan. Dokumentasi modern menyediakan pola yang jelas untuk memilih jenis penunjuk sesuai kebutuhan kepemilikan dan performa. Sertakan uji untuk skenario penghancuran berurutan guna mencegah kebocoran dan dangling pointer.
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
-\begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih C/C++, tempel contoh satu berkas, Run.
-  \item \textbf{Lazarus (Pascal)}: tidak relevan untuk contoh lanjutan C/C++ di bab ini.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
-\end{itemize}
+\subsection{Ringkasan Strategi Parameter}
+\begin{table}[H]
+  \centering
+  \caption{Ringkasan strategi parameter untuk fungsi dan prosedur}
+  \small
+  \begin{tabular}{@{}p{4cm}p{5cm}p{4.5cm}@{}}
+    \toprule
+    Strategi & Kapan dipakai & Catatan \\
+    \midrule
+    Pass by value & Argumen kecil, tidak perlu diubah & Aman, data terlindungi \\
+    Pass by reference & Perlu modifikasi atau objek besar & Efisien, hati-hati efek samping \\
+    Const reference (C++) & Baca saja, objek besar & Optimal: aman dan efisien \\
+    Pointer (C) & Opsional/nullable, array & Jelaskan ownership dengan jelas \\
+    Var (Pascal) & Parameter output/inout & Eksplisit, jelas intent \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Pemilihan strategi parameter memengaruhi performa dan kebenaran program. Gunakan \emph{pass by value} untuk keamanan dan \emph{pass by reference} untuk efisiensi atau multiple outputs. Pada C++, preferensi \texttt{const T\&} untuk parameter baca-saja dan \texttt{T\&} untuk parameter yang dimodifikasi. Dokumentasikan kontrak parameter dengan jelas untuk maintainability jangka panjang \parencite{cpp-functions,gnu-c-manual,free-pascal-docs}.
+
 \end{document}

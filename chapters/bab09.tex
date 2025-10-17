@@ -1,96 +1,1140 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Fungsi \& Prosedur / Metode}
-\section{Deklarasi \& Definisi Fungsi / Prosedur}
-Abstraksi fungsi dan prosedur memungkinkan dekomposisi masalah ke unit yang dapat diuji dan digunakan ulang. Pascal membedakan \texttt{procedure} dan \texttt{function}, sementara C/C++ menggunakan fungsi dengan nilai kembali sebagai sarana utama. Penempatan deklarasi di header/unit dan definisi di berkas implementasi memudahkan kompilasi terpisah \parencite{pascal-procedure-function,c-functions,cpp-functions}.
+\chapter{Pointer dan Alamat Memori}
 
-Kontrak fungsi yang baik mencakup prasyarat, pascakondisi, dan efek samping yang terdokumentasi. Minimalkan jumlah parameter dan gunakan struktur untuk mengelompokkan data terkait agar tanda tangan tetap ringkas. Sertakan uji unit yang memverifikasi perilaku normal dan jalur kesalahan.
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami konsep pointer sebagai variabel yang menyimpan alamat memori
+  \item Mendeklarasikan dan menginisialisasi pointer dengan benar
+  \item Melakukan operasi dereferencing untuk mengakses nilai di alamat yang ditunjuk
+  \item Memahami hubungan antara pointer dan array
+  \item Menggunakan pointer untuk parameter passing by reference
+  \item Memahami pointer aritmetika dan operasinya
+  \item Menghindari kesalahan umum pointer (null pointer, dangling pointer, memory leak)
+\end{itemize}
 
-Pada C++, metode anggota mengikat perilaku dengan data, memungkinkan enkapsulasi dan invarian kelas. Gunakan kata kunci seperti \texttt{const} pada metode yang tidak memodifikasi keadaan dan pertimbangkan \texttt{noexcept} untuk menyatakan jaminan pengecualian. Dokumentasi modern memuat praktik terbaik untuk menjaga keterbacaan dan keamanan \parencite{cpp-functions,cpp-reference}.
+\section{Pengantar Pointer}
 
-\section{Parameter — by value / by reference}
-\subsection{Contoh Lintas Bahasa}
-\begin{lstlisting}[language=Pascal, caption={Parameter by value vs var (Pascal)}]
-procedure IncByOne(var x: integer); begin x := x + 1; end;
-var n: integer = 10; begin IncByOne(n); Writeln(n); end.
-\end{lstlisting}
+\subsection{Konsep Dasar Pointer}
+Pointer adalah variabel khusus yang menyimpan alamat memori dari variabel lain atau objek. Berbeda dengan variabel biasa yang menyimpan nilai data, pointer menyimpan lokasi di mana data tersebut berada di memori \parencite{gnu-c-manual,cpp-reference,tutorialspoint-c-pointers,geeksforgeeks-pointers}.
 
-\begin{lstlisting}[language=C, caption={By value dan via pointer (C)}]
-void inc_by_one(int *p){ if (p) (*p)++; }
-int n = 10; inc_by_one(&n);
-\end{lstlisting}
+\textbf{Mengapa pointer penting?}
+\begin{itemize}
+  \item \textbf{Efisiensi:} Menghindari copy data besar dengan passing address
+  \item \textbf{Dynamic memory:} Alokasi memori runtime untuk ukuran yang tidak diketahui
+  \item \textbf{Data structures:} Membangun linked list, tree, graph, dan struktur kompleks
+  \item \textbf{Function modification:} Mengubah variabel di luar fungsi
+  \item \textbf{Array handling:} Pointer dan array sangat terkait erat
+  \item \textbf{Low-level access:} Akses langsung ke hardware dan memory-mapped I/O
+\end{itemize}
 
-\begin{lstlisting}[language=C++, caption={Referensi dan referensi konstan (C++)}]
-void inc(int &x){ ++x; }
-int sum_len(const std::string &a, const std::string &b){ return (int)(a.size()+b.size()); }
-\end{lstlisting}
-Strategi passing parameter memengaruhi biaya penyalinan dan kemampuan fungsi memodifikasi argumen. Di C, passing by value adalah default, dengan efek referensi dicapai melalui pointer; di C++ gunakan referensi atau referensi konstan untuk efisiensi dan kejelasan. Pada Pascal, \texttt{var} menandakan parameter rujukan yang dapat diubah \parencite{gnu-c-manual,free-pascal-docs}.
+\subsection{Visualisasi Memori dan Pointer}
 
-Gunakan referensi konstan untuk argumen besar yang hanya dibaca demi menghindari penyalinan. Untuk pengembalian banyak nilai, pertimbangkan struktur hasil atau tipe pasangan alih-alih parameter keluaran, menjaga tanda tangan tetap jelas. Uji beban membantu menilai dampak strategi passing pada performa jalur panas.
-
-Semantik kepemilikan harus ditegaskan ketika pointer dipakai, termasuk siapa yang bertanggung jawab membebaskan sumber daya. Pada C++, konvensi \emph{caller-allocates/caller-frees} atau penggunaan penunjuk pintar membuat kontrak eksplisit. Dokumentasikan kebijakan ini agar interaksi antarmuka stabil jangka panjang.
-
-\section{Fungsi Rekursif}
-\subsection{Diagram Tumpukan Panggilan}
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=1.2cm]
-    \tikzstyle{f}=[rectangle, draw, rounded corners, minimum width=3.0cm, align=center]
-    \node[f] (f1) {fact(4)};
-    \node[f, below=of f1] (f2) {fact(3)};
-    \node[f, below=of f2] (f3) {fact(2)};
-    \node[f, below=of f3] (f4) {fact(1)};
-    \draw (f1) -- (f2); \draw (f2) -- (f3); \draw (f3) -- (f4);
+  \begin{tikzpicture}[node distance=0.5cm]
+    \tikzstyle{mem}=[rectangle, draw, minimum width=2cm, minimum height=0.8cm, align=center]
+    
+    % Variable
+    \node[mem] (var) {5};
+    \node[left=0.1cm of var] {var:};
+    \node[right=0.1cm of var, anchor=west] (addr1) {\texttt{0x1000}};
+    
+    % Pointer
+    \node[mem, below=of var] (ptr) {\texttt{0x1000}};
+    \node[left=0.1cm of ptr] {ptr:};
+    \node[right=0.1cm of ptr, anchor=west] (addr2) {\texttt{0x2000}};
+    
+    % Arrow from pointer to variable
+    \draw[->, thick, blue] (ptr.north) to[out=90,in=0] (var.east);
   \end{tikzpicture}
-  \caption{Tumpukan panggilan saat menghitung faktorial}
+  \caption{Pointer menyimpan alamat variabel}
 \end{figure}
 
-\subsection{Contoh Rekursi dan Iterasi}
-\begin{lstlisting}[language=C, caption={Faktorial rekursif dan iteratif (C)}]
-unsigned fact_rec(unsigned n){ return (n<=1)?1:n*fact_rec(n-1); }
-unsigned fact_it(unsigned n){ unsigned r=1; for(unsigned i=2;i<=n;++i) r*=i; return r; }
-\end{lstlisting}
+\subsection{Analogi Pointer}
 
-\begin{lstlisting}[language=C++, caption={Tail-recursion vs loop (C++)}]
-int sum_rec(int n){ return n==0?0:n+sum_rec(n-1); }
-int sum_loop(int n){ int s=0; while(n>0) s+=n--; return s; }
-\end{lstlisting}
-Rekursi memecah masalah menjadi submasalah yang serupa, dengan basis dan langkah rekursif yang jelas. Terapkan kondisi berhenti yang tepat untuk mencegah rekursi tak hingga dan gunakan strategi memoization bila submasalah tumpang tindih. Analisis kompleksitas dan kedalaman tumpukan diperlukan untuk memastikan kelayakan pada input besar \parencite{cpp-reference,gnu-c-manual}.
-
-Untuk performa, pertimbangkan konversi ke iterasi jika rekursi terlalu dalam atau jika kompilator tidak melakukan optimisasi tail-call. Pada C++, gunakan struktur data standar untuk menggantikan tumpukan rekursif manual jika diperlukan. Sertakan uji batas dan input acak untuk memverifikasi ketahanan implementasi rekursif.
-
-Rekursi sering menjadi landasan implementasi algoritme klasik seperti pencarian biner, traversals pohon, dan divide-and-conquer. Pastikan invarian terjaga di setiap panggilan dan hasil digabung sesuai spesifikasi. Dokumentasi referensi menyediakan contoh idiomatik yang dapat diadaptasi \parencite{cpp-reference,gnu-c-manual}.
-
-\section{Metode \& Fungsi dalam C++}
-\subsection{Overload dan Default Argument}
-\begin{lstlisting}[language=C++, caption={Overload dan default argument}]
-int area(int w, int h){ return w*h; }
-int area(int side){ return area(side, side); }
-int connect(std::string host, int port = 80);
-\end{lstlisting}
-
-\subsection{Ringkasan Strategi Parameter}
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan strategi parameter}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Strategi & Kapan dipakai & Catatan \\
-    \midrule
-    Nilai (value) & argumen kecil/imutabel & salin murah \\
-    Referensi konstan & baca- saja, objek besar & hindari salin \\
-    Referensi non-const & perlu modifikasi & jelas dan aman \\
-    Pointer & opsional/null, antarmuka C & dokumentasikan kepemilikan \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-C++ memperkaya fungsi dengan overloading, default argument, templat, dan objek panggil (functor, lambda). Fitur ini memungkinkan gaya pemrograman yang ekspresif dan generik tanpa mengorbankan performa. Gunakan pedoman modern seperti pembuatan nilai kembali melalui RVO/NRVO dan preferensi \texttt{auto} saat inferensi tipe meningkatkan kejelasan \parencite{cpp-functions,cpp-reference}.
-
-Pertimbangkan aturan visibilitas dan linkage saat fungsi didefinisikan di beberapa berkas, serta pisahkan antarmuka dari implementasi untuk mempercepat kompilasi. Uji unit yang kaya kasus memastikan kompatibilitas saat evolusi tanda tangan dan perilaku fungsi berlangsung. Sumber terbuka menyediakan contoh komprehensif dan praktik terbaik terkini.
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+Bayangkan alamat rumah:
 \begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
-  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+  \item \textbf{Variabel} = Rumah (berisi data)
+  \item \textbf{Alamat memori} = Alamat rumah (misalnya "Jl. Merdeka No. 10")
+  \item \textbf{Pointer} = Kertas yang menulis alamat rumah
+  \item \textbf{Dereferensi} = Pergi ke alamat tersebut dan masuk ke rumah
 \end{itemize}
+
+\section{Deklarasi dan Inisialisasi Pointer}
+
+\subsection{Pointer di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={Deklarasi pointer di Pascal}]
+var
+  x: integer;
+  p: ^integer;        // Pointer to integer
+  
+  str: string;
+  pStr: ^string;      // Pointer to string
+  
+  arr: array[1..10] of real;
+  pArr: ^real;        // Pointer to real
+  
+  pNil: ^integer;     // Uninitialized pointer
+
+begin
+  x := 42;
+  p := @x;            // @ adalah address-of operator
+  
+  // Dereferencing menggunakan ^
+  Writeln('Nilai x: ', x);           // 42
+  Writeln('Nilai via pointer: ', p^); // 42
+  
+  // Mengubah nilai melalui pointer
+  p^ := 100;
+  Writeln('Nilai x sekarang: ', x);  // 100
+  
+  // Nil pointer (equivalent to NULL)
+  pNil := nil;
+  if pNil = nil then
+    Writeln('Pointer is nil');
+end.
+\end{lstlisting}
+
+\subsection{Pointer di C}
+
+\begin{lstlisting}[language=C, caption={Deklarasi pointer di C}]
+#include <stdio.h>
+
+int main() {
+  int x = 42;
+  int *p;             // Pointer to int (uninitialized!)
+  int *q = NULL;      // Null pointer (good practice)
+  
+  // Inisialisasi pointer dengan address
+  p = &x;             // & adalah address-of operator
+  
+  // Dereferencing menggunakan *
+  printf("Nilai x: %d\n", x);          // 42
+  printf("Alamat x: %p\n", (void*)&x); // Address
+  printf("Nilai p: %p\n", (void*)p);   // Same address
+  printf("Nilai via pointer: %d\n", *p); // 42
+  
+  // Mengubah nilai melalui pointer
+  *p = 100;
+  printf("Nilai x sekarang: %d\n", x);  // 100
+  
+  // Multiple pointers to same variable
+  int *r = &x;
+  *r = 200;
+  printf("x = %d, *p = %d, *r = %d\n", x, *p, *r);
+  
+  // NULL pointer check
+  if (q == NULL) {
+    printf("q is NULL\n");
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Operator penting:}
+\begin{itemize}
+  \item \texttt{\&} --- address-of operator: mengambil alamat variabel
+  \item \texttt{*} --- dereference operator: mengakses nilai yang ditunjuk
+  \item \texttt{*} dalam deklarasi: menandakan tipe pointer
+\end{itemize}
+
+\subsection{Pointer di C++}
+
+\begin{lstlisting}[language=C++, caption={Pointer dan reference di C++}]
+#include <iostream>
+
+int main() {
+  int x = 42;
+  
+  // Raw pointer (seperti C)
+  int *p = &x;
+  std::cout << "Nilai x: " << x << "\n";
+  std::cout << "Nilai via pointer: " << *p << "\n";
+  
+  // Reference (alias untuk variabel)
+  int &ref = x;  // HARUS diinisialisasi saat deklarasi
+  std::cout << "Nilai via reference: " << ref << "\n";
+  
+  // Mengubah nilai
+  *p = 100;
+  std::cout << "x = " << x << "\n";  // 100
+  
+  ref = 200;
+  std::cout << "x = " << x << "\n";  // 200
+  
+  // Nullptr (C++11, lebih aman dari NULL)
+  int *q = nullptr;
+  if (q == nullptr) {
+    std::cout << "q is nullptr\n";
+  }
+  
+  // Const pointer dan pointer to const
+  const int *pc = &x;       // Pointer to const int
+  // *pc = 5;               // ERROR! Tidak bisa ubah nilai
+  pc = &x;                  // OK, bisa ubah pointer
+  
+  int * const cp = &x;      // Const pointer to int
+  *cp = 5;                  // OK, bisa ubah nilai
+  // cp = &x;               // ERROR! Tidak bisa ubah pointer
+  
+  const int * const cpc = &x;  // Const pointer to const int
+  // *cpc = 5;             // ERROR!
+  // cpc = &x;             // ERROR!
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Reference vs Pointer di C++:}
+\begin{itemize}
+  \item Reference harus diinisialisasi, pointer boleh NULL/nullptr
+  \item Reference tidak bisa di-reassign, pointer bisa
+  \item Reference lebih aman (tidak ada NULL reference)
+  \item Syntax reference lebih bersih (tidak perlu \texttt{*} dan \texttt{\&})
+\end{itemize}
+
+\section{Pointer Arithmetic}
+
+Pointer arithmetic memungkinkan navigasi melalui memori menggunakan operasi aritmatika.
+
+\subsection{Operasi Pointer di C}
+
+\begin{lstlisting}[language=C, caption={Pointer arithmetic di C}]
+#include <stdio.h>
+
+int main() {
+  int arr[] = {10, 20, 30, 40, 50};
+  int *p = arr;  // arr is pointer to first element
+  
+  // Akses elemen dengan pointer arithmetic
+  printf("*p = %d\n", *p);       // 10
+  printf("*(p+1) = %d\n", *(p+1)); // 20
+  printf("*(p+2) = %d\n", *(p+2)); // 30
+  
+  // Increment pointer
+  p++;  // Pindah ke elemen berikutnya
+  printf("*p setelah p++: %d\n", *p);  // 20
+  
+  // Decrement pointer
+  p--;
+  printf("*p setelah p--: %d\n", *p);  // 10
+  
+  // Pointer subtraction
+  int *p1 = &arr[1];
+  int *p2 = &arr[4];
+  printf("Jarak p2 - p1: %ld\n", p2 - p1);  // 3
+  
+  // Comparison
+  if (p < p1) {
+    printf("p sebelum p1\n");
+  }
+  
+  // Array notation vs pointer notation
+  for (int i = 0; i < 5; i++) {
+    printf("arr[%d] = %d, *(arr+%d) = %d\n", 
+           i, arr[i], i, *(arr+i));
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Operasi yang valid:}
+\begin{itemize}
+  \item \texttt{ptr + n}, \texttt{ptr - n}: geser pointer
+  \item \texttt{ptr++}, \texttt{ptr--}: increment/decrement
+  \item \texttt{ptr2 - ptr1}: jarak antar pointer (dalam elemen)
+  \item \texttt{ptr1 < ptr2}, \texttt{ptr1 == ptr2}: comparison
+\end{itemize}
+
+\textbf{Catatan penting:}
+\begin{itemize}
+  \item Pointer increment: \texttt{ptr + 1} menambah \texttt{sizeof(type)} bytes
+  \item \texttt{int} 4 bytes: \texttt{ptr + 1} skip 4 bytes
+  \item \texttt{double} 8 bytes: \texttt{ptr + 1} skip 8 bytes
+  \item Jangan lakukan arithmetic pada pointer yang tidak menunjuk array!
+\end{itemize}
+
+\section{Pointer dan Array}
+
+Array dan pointer sangat terkait erat dalam C/C++.
+
+\subsection{Hubungan Array dan Pointer}
+
+\begin{lstlisting}[language=C, caption={Array dan pointer di C}]
+#include <stdio.h>
+
+int main() {
+  int arr[5] = {10, 20, 30, 40, 50};
+  
+  // arr adalah pointer to first element
+  printf("arr = %p\n", (void*)arr);
+  printf("&arr[0] = %p\n", (void*)&arr[0]);
+  // arr == &arr[0]
+  
+  // Array notation vs pointer notation
+  printf("arr[0] = %d\n", arr[0]);     // 10
+  printf("*arr = %d\n", *arr);         // 10
+  printf("arr[2] = %d\n", arr[2]);     // 30
+  printf("*(arr+2) = %d\n", *(arr+2)); // 30
+  
+  // Pointer dapat digunakan seperti array
+  int *p = arr;
+  printf("p[0] = %d\n", p[0]);         // 10
+  printf("p[2] = %d\n", p[2]);         // 30
+  
+  // Iterasi dengan pointer
+  printf("Iterasi dengan pointer:\n");
+  for (int *ptr = arr; ptr < arr + 5; ptr++) {
+    printf("%d ", *ptr);
+  }
+  printf("\n");
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Perbedaan array dan pointer:}
+\begin{itemize}
+  \item \texttt{sizeof(arr)} memberikan ukuran seluruh array
+  \item \texttt{sizeof(ptr)} memberikan ukuran pointer (8 bytes di 64-bit)
+  \item Array name adalah constant pointer (tidak bisa di-reassign)
+  \item Pointer variable bisa di-reassign
+\end{itemize}
+
+\subsection{Passing Array ke Fungsi}
+
+\begin{lstlisting}[language=C, caption={Array sebagai parameter fungsi}]
+#include <stdio.h>
+
+// Array decay to pointer
+void printArray1(int arr[], int size) {
+  for (int i = 0; i < size; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+}
+
+// Equivalent: explicit pointer
+void printArray2(int *arr, int size) {
+  for (int i = 0; i < size; i++) {
+    printf("%d ", *(arr + i));
+  }
+  printf("\n");
+}
+
+// Modify array through pointer
+void doubleValues(int *arr, int size) {
+  for (int i = 0; i < size; i++) {
+    arr[i] *= 2;
+  }
+}
+
+int main() {
+  int numbers[] = {1, 2, 3, 4, 5};
+  int size = sizeof(numbers) / sizeof(numbers[0]);
+  
+  printArray1(numbers, size);
+  printArray2(numbers, size);
+  
+  doubleValues(numbers, size);
+  printf("After doubling: ");
+  printArray1(numbers, size);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Pointer ke Struct}
+
+Pointer sangat berguna untuk bekerja dengan struct, terutama untuk struktur data dinamis.
+
+\subsection{Pointer ke Struct di C}
+
+\begin{lstlisting}[language=C, caption={Pointer to struct di C}]
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+  char nama[50];
+  int umur;
+  float ipk;
+} Mahasiswa;
+
+void printMahasiswa(const Mahasiswa *m) {
+  // Akses dengan ->
+  printf("Nama: %s\n", m->nama);
+  printf("Umur: %d\n", m->umur);
+  printf("IPK: %.2f\n", m->ipk);
+  
+  // Equivalent dengan (*m).field
+  printf("IPK (syntax alt): %.2f\n", (*m).ipk);
+}
+
+void updateIPK(Mahasiswa *m, float ipkBaru) {
+  m->ipk = (m->ipk + ipkBaru) / 2.0;
+}
+
+int main() {
+  Mahasiswa mhs = {"John Doe", 20, 3.5};
+  Mahasiswa *ptr = &mhs;
+  
+  // Akses melalui pointer
+  printf("Nama via pointer: %s\n", ptr->nama);
+  
+  // Modifikasi melalui pointer
+  ptr->umur = 21;
+  ptr->ipk = 3.7;
+  
+  // Passing pointer ke fungsi
+  printMahasiswa(ptr);
+  updateIPK(ptr, 3.9);
+  printMahasiswa(ptr);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Operator \texttt{->}:}
+\begin{itemize}
+  \item \texttt{ptr->field} adalah shorthand untuk \texttt{(*ptr).field}
+  \item Lebih ringkas dan lebih mudah dibaca
+  \item Standard practice dalam C programming
+\end{itemize}
+
+\subsection{Array of Pointers}
+
+\begin{lstlisting}[language=C, caption={Array of pointers di C}]
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+  // Array of string pointers
+  const char *hari[] = {
+    "Senin", "Selasa", "Rabu", "Kamis",
+    "Jumat", "Sabtu", "Minggu"
+  };
+  
+  printf("Hari ke-3: %s\n", hari[2]);  // Rabu
+  
+  // Iterate
+  for (int i = 0; i < 7; i++) {
+    printf("%d. %s\n", i+1, hari[i]);
+  }
+  
+  // Array of int pointers
+  int a = 10, b = 20, c = 30;
+  int *arr[] = {&a, &b, &c};
+  
+  printf("Nilai via array of pointers:\n");
+  for (int i = 0; i < 3; i++) {
+    printf("*arr[%d] = %d\n", i, *arr[i]);
+  }
+  
+  // Modify through pointer
+  *arr[0] = 100;
+  printf("a = %d\n", a);  // 100
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Dynamic Memory Allocation}
+
+Alokasi memori dinamis memungkinkan program mengalokasikan memori saat runtime.
+
+\subsection{Alokasi Dinamis di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={New dan Dispose di Pascal}]
+type
+  PInteger = ^integer;
+  
+  PMahasiswa = ^TMahasiswa;
+  TMahasiswa = record
+    nama: string;
+    nim: string;
+    ipk: real;
+  end;
+
+var
+  p: PInteger;
+  mhs: PMahasiswa;
+
+begin
+  // Alokasi memori
+  New(p);
+  p^ := 42;
+  Writeln('Nilai: ', p^);
+  
+  // Dealokasi
+  Dispose(p);
+  
+  // Alokasi untuk struct
+  New(mhs);
+  mhs^.nama := 'John Doe';
+  mhs^.nim := '123';
+  mhs^.ipk := 3.75;
+  
+  Writeln('Mahasiswa: ', mhs^.nama);
+  
+  // Jangan lupa dealokasi!
+  Dispose(mhs);
+end.
+\end{lstlisting}
+
+\subsection{Alokasi Dinamis di C}
+
+\begin{lstlisting}[language=C, caption={malloc, calloc, realloc, free di C}]
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  // malloc - allocate uninitialized memory
+  int *p = (int*)malloc(sizeof(int));
+  if (p == NULL) {
+    printf("Alokasi gagal!\n");
+    return 1;
+  }
+  *p = 42;
+  printf("*p = %d\n", *p);
+  free(p);  // PENTING: dealokasi
+  
+  // calloc - allocate zero-initialized memory
+  int *arr = (int*)calloc(5, sizeof(int));
+  if (arr == NULL) {
+    printf("Alokasi gagal!\n");
+    return 1;
+  }
+  for (int i = 0; i < 5; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);  // Semua 0
+  }
+  
+  // realloc - resize memory
+  arr = (int*)realloc(arr, 10 * sizeof(int));
+  if (arr == NULL) {
+    printf("Realloc gagal!\n");
+    return 1;
+  }
+  for (int i = 5; i < 10; i++) {
+    arr[i] = i;
+  }
+  
+  free(arr);
+  
+  // Alokasi struct
+  typedef struct {
+    char nama[50];
+    int umur;
+  } Person;
+  
+  Person *person = (Person*)malloc(sizeof(Person));
+  if (person != NULL) {
+    strcpy(person->nama, "John");
+    person->umur = 25;
+    printf("Person: %s, %d\n", person->nama, person->umur);
+    free(person);
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Fungsi alokasi memori:}
+\begin{itemize}
+  \item \texttt{malloc(size)}: alokasi \texttt{size} bytes (uninitialized)
+  \item \texttt{calloc(n, size)}: alokasi \texttt{n*size} bytes (zero-initialized)
+  \item \texttt{realloc(ptr, size)}: resize memori yang sudah dialokasi
+  \item \texttt{free(ptr)}: dealokasi memori (WAJIB!)
+\end{itemize}
+
+\textbf{Aturan penting:}
+\begin{itemize}
+  \item Selalu cek return value (NULL = gagal)
+  \item Setiap \texttt{malloc}/\texttt{calloc} harus paired dengan \texttt{free}
+  \item Jangan akses memory setelah \texttt{free} (dangling pointer)
+  \item Jangan \texttt{free} dua kali (double free)
+  \item Jangan \texttt{free} pointer yang tidak dari \texttt{malloc/calloc}
+\end{itemize}
+
+\subsection{Smart Pointers di C++}
+
+\begin{lstlisting}[language=C++, caption={Smart pointers di C++}]
+#include <iostream>
+#include <memory>
+#include <string>
+
+struct Person {
+  std::string nama;
+  int umur;
+  
+  Person(const std::string& n, int u) : nama(n), umur(u) {
+    std::cout << "Person " << nama << " created\n";
+  }
+  
+  ~Person() {
+    std::cout << "Person " << nama << " destroyed\n";
+  }
+};
+
+int main() {
+  // unique_ptr - exclusive ownership
+  {
+    std::unique_ptr<int> p1 = std::make_unique<int>(42);
+    std::cout << "*p1 = " << *p1 << "\n";
+    
+    // std::unique_ptr<int> p2 = p1;  // ERROR! Tidak bisa copy
+    std::unique_ptr<int> p2 = std::move(p1);  // OK, transfer ownership
+    // p1 is now nullptr
+    
+    std::unique_ptr<Person> person = 
+      std::make_unique<Person>("John", 25);
+    std::cout << person->nama << ", " << person->umur << "\n";
+  }  // Automatic deallocation!
+  
+  // shared_ptr - shared ownership
+  {
+    std::shared_ptr<Person> p1 = 
+      std::make_shared<Person>("Jane", 30);
+    std::cout << "Use count: " << p1.use_count() << "\n";  // 1
+    
+    {
+      std::shared_ptr<Person> p2 = p1;  // Copy OK
+      std::cout << "Use count: " << p1.use_count() << "\n";  // 2
+      // Both p1 and p2 point to same Person
+    }  // p2 destroyed, count decreases
+    
+    std::cout << "Use count: " << p1.use_count() << "\n";  // 1
+  }  // p1 destroyed, count = 0, Person deallocated
+  
+  // weak_ptr - non-owning observer
+  std::weak_ptr<Person> weak;
+  {
+    std::shared_ptr<Person> shared = 
+      std::make_shared<Person>("Bob", 35);
+    weak = shared;
+    
+    if (auto locked = weak.lock()) {
+      std::cout << "Observed: " << locked->nama << "\n";
+    }
+  }  // shared destroyed, Person deallocated
+  
+  if (weak.expired()) {
+    std::cout << "weak pointer expired\n";
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Smart pointer types:}
+\begin{itemize}
+  \item \texttt{unique\_ptr}: exclusive ownership, tidak bisa copy, otomatis dealokasi
+  \item \texttt{shared\_ptr}: shared ownership dengan reference counting
+  \item \texttt{weak\_ptr}: non-owning observer untuk mencegah circular reference
+\end{itemize}
+
+\textbf{Kapan menggunakan:}
+\begin{itemize}
+  \item Prefer \texttt{unique\_ptr} untuk single ownership
+  \item Gunakan \texttt{shared\_ptr} jika ownership shared diperlukan
+  \item Gunakan \texttt{weak\_ptr} untuk break circular dependencies
+  \item Avoid raw pointers di modern C++ kecuali untuk observing
+\end{itemize}
+
+\section{Pointer to Pointer}
+
+Pointer dapat menunjuk ke pointer lain, membentuk multiple levels of indirection.
+
+\subsection{Double Pointer di C}
+
+\begin{lstlisting}[language=C, caption={Pointer to pointer di C}]
+#include <stdio.h>
+
+void changeValue(int **pp, int newValue) {
+  **pp = newValue;  // Mengubah nilai yang ditunjuk
+}
+
+void changePointer(int **pp, int *newTarget) {
+  *pp = newTarget;  // Mengubah ke mana pointer menunjuk
+}
+
+int main() {
+  int x = 10, y = 20;
+  int *p = &x;
+  int **pp = &p;  // Pointer to pointer
+  
+  printf("x = %d\n", x);         // 10
+  printf("*p = %d\n", *p);       // 10
+  printf("**pp = %d\n", **pp);   // 10
+  
+  // Mengubah nilai melalui double pointer
+  **pp = 30;
+  printf("x = %d\n", x);         // 30
+  
+  // Mengubah pointer melalui double pointer
+  *pp = &y;
+  printf("*p = %d\n", *p);       // 20 (now points to y)
+  
+  // Melalui fungsi
+  p = &x;
+  changeValue(&p, 100);
+  printf("x = %d\n", x);         // 100
+  
+  changePointer(&p, &y);
+  printf("*p = %d\n", *p);       // 20
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Aplikasi Double Pointer}
+
+\begin{lstlisting}[language=C, caption={Double pointer untuk 2D array}]
+#include <stdio.h>
+#include <stdlib.h>
+
+// Alokasi 2D array dinamis
+int** allocate2DArray(int rows, int cols) {
+  int **arr = (int**)malloc(rows * sizeof(int*));
+  for (int i = 0; i < rows; i++) {
+    arr[i] = (int*)malloc(cols * sizeof(int));
+  }
+  return arr;
+}
+
+void free2DArray(int **arr, int rows) {
+  for (int i = 0; i < rows; i++) {
+    free(arr[i]);
+  }
+  free(arr);
+}
+
+int main() {
+  int rows = 3, cols = 4;
+  int **matrix = allocate2DArray(rows, cols);
+  
+  // Isi matrix
+  int value = 1;
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      matrix[i][j] = value++;
+    }
+  }
+  
+  // Print matrix
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      printf("%3d ", matrix[i][j]);
+    }
+    printf("\n");
+  }
+  
+  free2DArray(matrix, rows);
+  return 0;
+}
+\end{lstlisting}
+
+\section{Linked List - Aplikasi Pointer}
+
+Linked list adalah struktur data dinamis yang menggunakan pointer untuk menghubungkan node.
+
+\subsection{Singly Linked List di C}
+
+\begin{lstlisting}[language=C, caption={Linked list implementation di C}]
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int data;
+  struct Node *next;
+} Node;
+
+// Create new node
+Node* createNode(int data) {
+  Node *newNode = (Node*)malloc(sizeof(Node));
+  if (newNode != NULL) {
+    newNode->data = data;
+    newNode->next = NULL;
+  }
+  return newNode;
+}
+
+// Insert at beginning
+void pushFront(Node **head, int data) {
+  Node *newNode = createNode(data);
+  if (newNode != NULL) {
+    newNode->next = *head;
+    *head = newNode;
+  }
+}
+
+// Insert at end
+void pushBack(Node **head, int data) {
+  Node *newNode = createNode(data);
+  if (newNode == NULL) return;
+  
+  if (*head == NULL) {
+    *head = newNode;
+    return;
+  }
+  
+  Node *current = *head;
+  while (current->next != NULL) {
+    current = current->next;
+  }
+  current->next = newNode;
+}
+
+// Print list
+void printList(Node *head) {
+  Node *current = head;
+  printf("List: ");
+  while (current != NULL) {
+    printf("%d ", current->data);
+    current = current->next;
+  }
+  printf("\n");
+}
+
+// Free list
+void freeList(Node **head) {
+  Node *current = *head;
+  while (current != NULL) {
+    Node *next = current->next;
+    free(current);
+    current = next;
+  }
+  *head = NULL;
+}
+
+// Delete node with value
+void deleteValue(Node **head, int value) {
+  Node *current = *head;
+  Node *prev = NULL;
+  
+  // If head needs to be deleted
+  if (current != NULL && current->data == value) {
+    *head = current->next;
+    free(current);
+    return;
+  }
+  
+  // Search for the node
+  while (current != NULL && current->data != value) {
+    prev = current;
+    current = current->next;
+  }
+  
+  // If not found
+  if (current == NULL) return;
+  
+  // Delete node
+  prev->next = current->next;
+  free(current);
+}
+
+int main() {
+  Node *head = NULL;
+  
+  // Build list
+  pushFront(&head, 3);
+  pushFront(&head, 2);
+  pushFront(&head, 1);
+  pushBack(&head, 4);
+  pushBack(&head, 5);
+  
+  printList(head);  // 1 2 3 4 5
+  
+  // Delete a value
+  deleteValue(&head, 3);
+  printList(head);  // 1 2 4 5
+  
+  // Clean up
+  freeList(&head);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Linked List di C++}
+
+\begin{lstlisting}[language=C++, caption={Linked list dengan smart pointers di C++}]
+#include <iostream>
+#include <memory>
+
+struct Node {
+  int data;
+  std::unique_ptr<Node> next;
+  
+  Node(int d) : data(d), next(nullptr) {}
+};
+
+class LinkedList {
+private:
+  std::unique_ptr<Node> head;
+  
+public:
+  LinkedList() : head(nullptr) {}
+  
+  void pushFront(int data) {
+    auto newNode = std::make_unique<Node>(data);
+    newNode->next = std::move(head);
+    head = std::move(newNode);
+  }
+  
+  void pushBack(int data) {
+    auto newNode = std::make_unique<Node>(data);
+    
+    if (!head) {
+      head = std::move(newNode);
+      return;
+    }
+    
+    Node *current = head.get();
+    while (current->next) {
+      current = current->next.get();
+    }
+    current->next = std::move(newNode);
+  }
+  
+  void print() const {
+    std::cout << "List: ";
+    Node *current = head.get();
+    while (current) {
+      std::cout << current->data << " ";
+      current = current->next.get();
+    }
+    std::cout << "\n";
+  }
+  
+  void deleteValue(int value) {
+    if (!head) return;
+    
+    // If head needs to be deleted
+    if (head->data == value) {
+      head = std::move(head->next);
+      return;
+    }
+    
+    Node *current = head.get();
+    while (current->next && current->next->data != value) {
+      current = current->next.get();
+    }
+    
+    if (current->next) {
+      current->next = std::move(current->next->next);
+    }
+  }
+  
+  // Destructor automatic with unique_ptr!
+};
+
+int main() {
+  LinkedList list;
+  
+  list.pushFront(3);
+  list.pushFront(2);
+  list.pushFront(1);
+  list.pushBack(4);
+  list.pushBack(5);
+  
+  list.print();  // 1 2 3 4 5
+  
+  list.deleteValue(3);
+  list.print();  // 1 2 4 5
+  
+  // No manual cleanup needed!
+  return 0;
+}
+\end{lstlisting}
+
+\section{Common Pointer Errors}
+
+\subsection{Dangling Pointer}
+
+Pointer yang menunjuk ke memori yang sudah didealokasi.
+
+\begin{lstlisting}[language=C, caption={Dangling pointer problem}]
+int* createDanglingPointer() {
+  int x = 42;
+  return &x;  // BAD! x destroyed after return
+}
+
+int main() {
+  int *p = createDanglingPointer();
+  // *p is undefined behavior!
+  
+  // Correct version
+  int *q = (int*)malloc(sizeof(int));
+  *q = 42;
+  // Use q...
+  free(q);
+  q = NULL;  // Good practice to avoid dangling pointer
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Memory Leak}
+
+Alokasi memori yang tidak pernah didealokasi.
+
+\begin{lstlisting}[language=C, caption={Memory leak}]
+void memoryLeak() {
+  int *p = (int*)malloc(sizeof(int));
+  *p = 42;
+  // Forgot to free(p)!
+}  // Memory leak!
+
+void correct() {
+  int *p = (int*)malloc(sizeof(int));
+  *p = 42;
+  free(p);  // Properly deallocated
+}
+\end{lstlisting}
+
+\subsection{Null Pointer Dereference}
+
+Dereferensi pointer NULL/nullptr.
+
+\begin{lstlisting}[language=C, caption={Null pointer dereference}]
+int main() {
+  int *p = NULL;
+  // *p = 42;  // CRASH! Null pointer dereference
+  
+  // Always check before dereference
+  if (p != NULL) {
+    *p = 42;
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Wild Pointer}
+
+Pointer yang tidak diinisialisasi.
+
+\begin{lstlisting}[language=C, caption={Wild pointer}]
+int main() {
+  int *p;  // Uninitialized! Contains garbage address
+  // *p = 42;  // DANGEROUS! Writing to random memory
+  
+  // Always initialize
+  int *q = NULL;
+  // Or
+  int x;
+  int *r = &x;
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Best Practices}
+
+\subsection{Pointer Safety Guidelines}
+
+\begin{enumerate}
+  \item \textbf{Initialize pointers:} Selalu inisialisasi ke NULL/nullptr atau valid address
+  \item \textbf{Check before dereference:} Validasi pointer bukan NULL sebelum akses
+  \item \textbf{Free memory:} Setiap malloc harus paired dengan free
+  \item \textbf{Set to NULL after free:} Hindari dangling pointer
+  \item \textbf{Avoid returning local address:} Jangan return alamat variabel lokal
+  \item \textbf{Use const:} Gunakan const untuk pointer read-only
+  \item \textbf{Document ownership:} Jelaskan siapa yang bertanggung jawab free
+\end{enumerate}
+
+\subsection{Modern C++ Recommendations}
+
+\begin{itemize}
+  \item Prefer smart pointers (\texttt{unique\_ptr}, \texttt{shared\_ptr}) over raw pointers
+  \item Use references untuk parameter pass-by-reference
+  \item Use \texttt{nullptr} bukan \texttt{NULL}
+  \item Avoid manual \texttt{new}/\texttt{delete}, use smart pointers
+  \item Use containers (\texttt{vector}, \texttt{list}) bukan manual array
+  \item Follow RAII principle
+\end{itemize}
+
+\subsection{Debugging Tools}
+
+\begin{itemize}
+  \item \textbf{Valgrind:} Detect memory leaks dan invalid access (Linux)
+  \item \textbf{AddressSanitizer:} Compiler-based memory error detection
+  \item \textbf{Visual Studio Debugger:} Memory windows dan breakpoints
+  \item \textbf{GDB:} Command-line debugger dengan pointer inspection
+  \item \textbf{Static analyzers:} Cppcheck, Clang-Tidy untuk deteksi dini
+\end{itemize}
+
+\section{Rangkuman}
+
+Pointer adalah konsep fundamental yang memberikan kontrol langsung atas memori dan memungkinkan struktur data dinamis.
+
+\subsection{Poin-Poin Penting}
+
+\begin{itemize}
+  \item Pointer menyimpan alamat memori variabel lain
+  \item Operator \texttt{\&} mengambil alamat, \texttt{*} untuk dereferensi
+  \item Pointer arithmetic untuk navigasi memori
+  \item Array dan pointer sangat terkait (array name adalah pointer)
+  \item Dynamic memory allocation dengan malloc/new, dealokasi dengan free/delete
+  \item Pointer ke struct menggunakan operator \texttt{->}
+  \item Smart pointers di C++ untuk manajemen memori otomatis
+  \item Hati-hati dengan dangling pointer, memory leak, null dereference
+\end{itemize}
+
+\subsection{Perbandingan Antar Bahasa}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Aspek} & \textbf{Pascal} & \textbf{C} & \textbf{C++} \\
+\hline
+Declaration & \texttt{\^{}type} & \texttt{type*} & \texttt{type*} \\
+\hline
+Address-of & \texttt{@} & \texttt{\&} & \texttt{\&} \\
+\hline
+Dereference & \texttt{\^{}} & \texttt{*} & \texttt{*} \\
+\hline
+NULL value & \texttt{nil} & \texttt{NULL} & \texttt{nullptr} \\
+\hline
+Allocation & \texttt{New} & \texttt{malloc} & \texttt{new}/smart ptrs \\
+\hline
+Deallocation & \texttt{Dispose} & \texttt{free} & \texttt{delete}/automatic \\
+\hline
+Reference & Tidak & Tidak & Ya (\texttt{\&}) \\
+\hline
+Smart pointers & Tidak & Tidak & Ya \\
+\hline
+\end{tabular}
+\caption{Perbandingan pointer di Pascal, C, dan C++}
+\end{table}
+
+\subsection{Kapan Menggunakan Pointer}
+
+\textbf{Gunakan pointer untuk:}
+\begin{itemize}
+  \item Dynamic memory allocation
+  \item Building data structures (linked list, tree, graph)
+  \item Efficient passing of large objects
+  \item Implementing callbacks dan function pointers
+  \item Low-level system programming
+\end{itemize}
+
+\textbf{Hindari pointer bila:}
+\begin{itemize}
+  \item Bisa menggunakan reference (C++)
+  \item Bisa menggunakan value semantics
+  \item Bisa menggunakan container standar (vector, list)
+  \item Tidak perlu dynamic lifetime
+\end{itemize}
+
+Pointer adalah tool yang powerful namun memerlukan kehati-hatian. Dengan pemahaman yang baik tentang konsep dan best practices, Anda dapat menggunakan pointer dengan aman dan efektif untuk membangun program yang efisien dan fleksibel!
+
 \end{document}
+

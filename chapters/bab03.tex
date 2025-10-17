@@ -1,76 +1,198 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 \chapter{Operator \& Ekspresi}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami dan menggunakan operator aritmetika (+, -, *, /, div, mod, \%)
+  \item Memahami dan menggunakan operator relasional untuk perbandingan
+  \item Memahami dan menggunakan operator logika (and, or, not, \&\&, ||, !)
+  \item Memahami konsep precedence dan associativity operator
+  \item Menulis ekspresi kompleks dengan urutan evaluasi yang benar
+  \item Menggunakan tanda kurung untuk memperjelas dan mengubah urutan evaluasi
+\end{itemize}
+
 \section{Operator Aritmetika, Relasional, Logika}
-Operator aritmetika (\texttt{+}, \texttt{-}, \texttt{*}, pembagian, sisa), relasional (\texttt{<}, \texttt{<=}, \texttt{==}/\texttt{=}, \texttt{>}, \texttt{>=}), dan logika (\texttt{and}/\texttt{or}/\texttt{not} atau \texttt{\&\&}/\texttt{||}/\texttt{!}) adalah dasar evaluasi ekspresi. Perhatikan perbedaan pembagian bilangan bulat vs pecahan dan konvensi operator kesetaraan antarbahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Operator aritmetika (\texttt{+}, \texttt{-}, \texttt{*}, pembagian, sisa), relasional (\texttt{\textless}, \texttt{\textless=}, \texttt{==}/\texttt{=}, \texttt{\textgreater}, \texttt{\textgreater=}), dan logika (\texttt{and}/\texttt{or}/\texttt{not} atau \texttt{\&\&}/\texttt{||}/\texttt{!}) adalah dasar evaluasi ekspresi. Perhatikan perbedaan pembagian bilangan bulat vs pecahan dan konvensi operator kesetaraan antarbahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
 Gunakan tanda kurung untuk menegaskan maksud pada ekspresi panjang. Pecah ekspresi kompleks menjadi variabel perantara bernama agar mudah diuji. Rujuk tabel resmi operator untuk detail prioritas dan asosiasi \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
 
 \subsection{Ringkasan Operator Umum}
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \caption{Operator umum lintas bahasa (ringkas)}
   \begin{tabular}{@{}llll@{}}
     \toprule
     Kategori & Pascal & C & C++ \\
     \midrule
-    Aritmetika & \texttt{+ - * / div mod} & \texttt{+ - * / %} & \texttt{+ - * / %} \\
-    Relasional & \texttt{= <> < <= > >=} & \texttt{== != < <= > >=} & sama dengan C \\
-    Logika & \texttt{and or not} & \texttt{&& || !} & sama dengan C \\
+    Aritmetika & \texttt{+ - * / div mod} & \texttt{+ - * / \%} & \texttt{+ - * / \%} \\
+    Relasional & \texttt{= {\textless}{\textgreater} {\textless} {\textless}= {\textgreater} {\textgreater}=} & \texttt{== != {\textless} {\textless}= {\textgreater} {\textgreater}=} & sama dengan C \\
+    Logika & \texttt{and or not} & \texttt{\&\& || !} & sama dengan C \\
     Penugasan & \texttt{:=} & \texttt{=} & \texttt{=} \\
     Inkremen & (tidak ada) & \texttt{++ --} & \texttt{++ --} \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Short-circuit dan Efek Samping}
-Di C/C++, \texttt{&&} dan \texttt{||} melakukan evaluasi singkat (operan kanan hanya dievaluasi bila perlu). Hindari efek samping pada operan yang mungkin tidak dievaluasi \parencite{gnu-c-manual,cpp-reference}.
-\begin{lstlisting}[language=C, caption={Short-circuit di C}]
-int expensive();
-if (ptr != NULL && expensive()) {
-  // aman: expensive() hanya dipanggil jika ptr != NULL
-}
-\end{lstlisting}
-Pada Pascal, kebijakan evaluasi boolean dapat bergantung opsi/ mode kompiler. Hindari mengandalkan evaluasi kondisi untuk mencegah error; lebih aman tulis pemeriksaan bertahap \parencite{free-pascal-docs}.
-\begin{lstlisting}[language=Pascal, caption={Pemeriksaan bertahap di Pascal}]
-if b <> 0 then begin
-  if a / b > 1 then Writeln('ok');
-end;
-\end{lstlisting}
-
-\section{Operator Bitwise}
-Operator bitwise mengoperasikan representasi biner: \texttt{\&}, \texttt{|}, \texttt{\^{}}, \texttt{\~{}} (not), \texttt{<<}, \texttt{>>} di C/C++; di Pascal gunakan \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{not}, serta \texttt{shl}/\texttt{shr}. Gunakan untuk \emph{flags}, protokol, dan optimasi bit-level \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
-
-\subsection{Contoh Flags}
-\begin{lstlisting}[language=C, caption={Bit flags di C}]
-#include <stdio.h>
-enum { READ = 1<<0, WRITE = 1<<1, EXEC = 1<<2 };
-int main(void){
-  unsigned mask = READ | WRITE;        // set dua bit
-  mask &= ~WRITE;                      // clear satu bit
-  if (mask & READ) printf("READ on\n");
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=Pascal, caption={Pergeseran dan bitwise di Pascal}]
-var mask: longint; begin
-  mask := (1 shl 0) or (1 shl 1); // set bit 0 dan 1
-  mask := mask and not (1 shl 1); // clear bit 1
-  if (mask and (1 shl 0)) <> 0 then Writeln('READ on');
+\subsection{Contoh Operator Aritmetika}
+\begin{lstlisting}[language=Pascal, caption={Operator aritmetika di Pascal}]
+program OperatorAritmatika;
+var
+  a, b: integer;
+begin
+  a := 10;
+  b := 3;
+  Writeln('Penjumlahan: ', a + b);
+  Writeln('Pengurangan: ', a - b);
+  Writeln('Perkalian: ', a * b);
+  Writeln('Pembagian real: ', a / b:0:2);
+  Writeln('Pembagian bulat: ', a div b);
+  Writeln('Modulus: ', a mod b);
 end.
 \end{lstlisting}
 
-Hati-hati saat pergeseran pada tipe bertanda: pergeseran kanan dapat memperluas tanda pada beberapa implementasi. Batasi jumlah pergeseran agar tidak melebihi lebar tipe \parencite{iso-c-draft-n1570,cpp-reference}.
+\begin{lstlisting}[language=C, caption={Operator aritmetika di C}]
+#include <stdio.h>
+int main(void) {
+  int a = 10, b = 3;
+  printf("Penjumlahan: %d\n", a + b);
+  printf("Pengurangan: %d\n", a - b);
+  printf("Perkalian: %d\n", a * b);
+  printf("Pembagian real: %.2f\n", (float)a / b);
+  printf("Pembagian bulat: %d\n", a / b);
+  printf("Modulus: %d\n", a % b);
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Operator aritmetika di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int a = 10, b = 3;
+  cout << "Penjumlahan: " << a + b << "\n";
+  cout << "Pengurangan: " << a - b << "\n";
+  cout << "Perkalian: " << a * b << "\n";
+  cout << "Pembagian real: " << (float)a / b << "\n";
+  cout << "Pembagian bulat: " << a / b << "\n";
+  cout << "Modulus: " << a % b << "\n";
+}
+\end{lstlisting}
+
+\subsection{Contoh Operator Relasional dan Logika}
+\begin{lstlisting}[language=Pascal, caption={Operator relasional dan logika di Pascal}]
+program OperatorRelasionalLogika;
+var
+  a, b: integer;
+  hasil: boolean;
+begin
+  a := 10;
+  b := 5;
+  { Operator Relasional }
+  hasil := a > b;
+  Writeln('a > b: ', hasil);
+  hasil := a = b;
+  Writeln('a = b: ', hasil);
+  hasil := a <> b;
+  Writeln('a <> b: ', hasil);
+  { Operator Logika }
+  hasil := (a > b) and (b > 0);
+  Writeln('(a > b) and (b > 0): ', hasil);
+  hasil := (a < b) or (b > 0);
+  Writeln('(a < b) or (b > 0): ', hasil);
+  hasil := not (a = b);
+  Writeln('not (a = b): ', hasil);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Operator relasional dan logika di C}]
+#include <stdio.h>
+int main(void) {
+  int a = 10, b = 5;
+  int hasil;
+  // Operator Relasional
+  hasil = a > b;
+  printf("a > b: %d\n", hasil);
+  hasil = a == b;
+  printf("a == b: %d\n", hasil);
+  hasil = a != b;
+  printf("a != b: %d\n", hasil);
+  // Operator Logika
+  hasil = (a > b) && (b > 0);
+  printf("(a > b) && (b > 0): %d\n", hasil);
+  hasil = (a < b) || (b > 0);
+  printf("(a < b) || (b > 0): %d\n", hasil);
+  hasil = !(a == b);
+  printf("!(a == b): %d\n", hasil);
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Operator relasional dan logika di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int a = 10, b = 5;
+  bool hasil;
+  // Operator Relasional
+  hasil = a > b;
+  cout << "a > b: " << hasil << "\n";
+  hasil = a == b;
+  cout << "a == b: " << hasil << "\n";
+  hasil = a != b;
+  cout << "a != b: " << hasil << "\n";
+  // Operator Logika
+  hasil = (a > b) && (b > 0);
+  cout << "(a > b) && (b > 0): " << hasil << "\n";
+  hasil = (a < b) || (b > 0);
+  cout << "(a < b) || (b > 0): " << hasil << "\n";
+  hasil = !(a == b);
+  cout << "!(a == b): " << hasil << "\n";
+}
+\end{lstlisting}
 
 \section{Precedence dan Asosiasi}
 Precedence dan asosiasi menentukan urutan evaluasi tanpa tanda kurung. Variasi kecil antarbahasa dapat memicu salah tafsir; tambahkan tanda kurung untuk memperjelas maksud \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
 
+\subsection{Penjelasan Precedence dan Associativity}
+Precedence (prioritas) menentukan operator mana yang dievaluasi terlebih dahulu dalam ekspresi tanpa tanda kurung. Operator dengan precedence lebih tinggi dievaluasi sebelum operator dengan precedence lebih rendah. Associativity (asosiativitas) menentukan arah evaluasi ketika operator memiliki precedence yang sama: kiri-ke-kanan atau kanan-ke-kiri.
+
+Untuk memastikan urutan evaluasi yang benar dalam ekspresi kompleks, gunakan tanda kurung eksplisit. Ini meningkatkan keterbacaan dan menghindari kesalahan logika yang sulit dilacak.
+
+\subsection{Tabel Precedence Operator}
+\begin{table}[H]
+  \centering
+  \caption{Precedence operator (tinggi ke rendah)}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Level & Operator & Associativity & Kategori \\
+    \midrule
+    1 & \texttt{()}, \texttt{[]} & kiri-ke-kanan & Pengelompokan, array \\
+    2 & \texttt{++}, \texttt{--} (postfix) & kiri-ke-kanan & Increment/decrement \\
+    3 & \texttt{!}, \texttt{not}, unary \texttt{+}, \texttt{-} & kanan-ke-kiri & Unary \\
+    4 & \texttt{*}, \texttt{/}, \texttt{\%}, \texttt{mod}, \texttt{div} & kiri-ke-kanan & Multiplikatif \\
+    5 & \texttt{+}, \texttt{-} & kiri-ke-kanan & Additif \\
+    6 & \texttt{<}, \texttt{<=}, \texttt{>}, \texttt{>=} & kiri-ke-kanan & Relasional \\
+    7 & \texttt{==}, \texttt{!=}, \texttt{=}, \texttt{<>} & kiri-ke-kanan & Kesetaraan \\
+    8 & \texttt{\&\&}, \texttt{and} & kiri-ke-kanan & Logika AND \\
+    9 & \texttt{||}, \texttt{or} & kiri-ke-kanan & Logika OR \\
+    10 & \texttt{=}, \texttt{:=}, \texttt{+=}, \texttt{-=} & kanan-ke-kiri & Penugasan \\
+    \bottomrule
+  \end{tabular}
+  \\Sumber: \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}
+\end{table}
+
 \subsection{Sketsa Pohon Ekspresi}
-\begin{figure}[h]
+Untuk memvisualisasikan bagaimana precedence bekerja, perhatikan pohon ekspresi berikut yang menunjukkan urutan evaluasi operator dari bawah (prioritas tinggi) ke atas (prioritas rendah):
+
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[level distance=1.1cm, sibling distance=2.2cm]
     \tikzstyle{n}=[draw, rounded corners, minimum width=9mm, align=center]
-    \node[n]{&&}
+    \node[n]{\&\&}
       child{ node[n]{==}
         child{ node[n]{+}
           child{ node[n]{a} }
@@ -83,28 +205,77 @@ Precedence dan asosiasi menentukan urutan evaluasi tanpa tanda kurung. Variasi k
       }
       child{ node[n]{e} };
   \end{tikzpicture}
-  \caption{Precedence: \texttt{*} > \texttt{+} > \texttt{==} > \texttt{&&}}
+  \caption{Precedence: \texttt{*} \textgreater{} \texttt{+} \textgreater{} \texttt{==} \textgreater{} \texttt{\&\&}}
 \end{figure}
 
-Uji dengan menambahkan atau menghapus tanda kurung dan bandingkan hasilnya di masing-masing bahasa.
+Pada pohon di atas, operator \texttt{*} (perkalian) berada paling bawah sehingga dievaluasi terlebih dahulu, diikuti \texttt{+}, lalu \texttt{==}, dan terakhir \texttt{\&\&}. Ini menunjukkan ekspresi: \texttt{(a + b * c) == d \&\& e}.
 
-\section{Operator Overloading (Pendahuluan)}
-Di C++, \emph{operator overloading} mendefinisikan makna operator untuk tipe pengguna. Gunakan saat notasi infiks benar-benar memperjelas maksud dan konsisten secara aljabar \parencite{cpp-reference,cpp-operator-overloading}.
-
-\begin{lstlisting}[language=C++, caption={Contoh singkat operator+ pada vektor 2D}]
-#include <iostream>
-struct Vec2 { double x, y; };
-Vec2 operator+(const Vec2& a, const Vec2& b) { return {a.x + b.x, a.y + b.y}; }
-std::ostream& operator<<(std::ostream& os, const Vec2& v){ return os << '(' << v.x << ',' << v.y << ')'; }
-int main(){ Vec2 a{1,2}, b{3,4}; std::cout << (a+b) << "\n"; }
+\subsection{Contoh Demonstrasi Precedence}
+\begin{lstlisting}[language=Pascal, caption={Precedence operator di Pascal}]
+program PrecedenceDemo;
+var
+  a, b, c, hasil: integer;
+begin
+  a := 10;
+  b := 5;
+  c := 2;
+  { Perkalian (*) memiliki precedence lebih tinggi dari penjumlahan (+) }
+  hasil := a + b * c;
+  Writeln('a + b * c = ', hasil);        { Output: 20 }
+  Writeln('(a + b) * c = ', (a + b) * c); { Output: 30 }
+  
+  { Operator dengan precedence sama: evaluasi kiri-ke-kanan }
+  hasil := a - b + c;
+  Writeln('a - b + c = ', hasil);        { Output: 7 }
+  Writeln('a - (b + c) = ', a - (b + c)); { Output: 3 }
+end.
 \end{lstlisting}
 
-Jaga konsistensi dengan operasi terkait (mis. \texttt{+=}, perbandingan) dan perhatikan biaya komputasi.
+\begin{lstlisting}[language=C, caption={Precedence operator di C}]
+#include <stdio.h>
+int main(void) {
+  int a = 10, b = 5, c = 2;
+  int hasil;
+  // Perkalian (*) memiliki precedence lebih tinggi dari penjumlahan (+)
+  hasil = a + b * c;
+  printf("a + b * c = %d\n", hasil);        // Output: 20
+  printf("(a + b) * c = %d\n", (a + b) * c); // Output: 30
+  
+  // Operator dengan precedence sama: evaluasi kiri-ke-kanan
+  hasil = a - b + c;
+  printf("a - b + c = %d\n", hasil);        // Output: 7
+  printf("a - (b + c) = %d\n", a - (b + c)); // Output: 3
+  
+  // Operator relasional dan logika
+  hasil = a > b && b > c;
+  printf("(a > b) && (b > c) = %d\n", hasil); // Output: 1 (true)
+  return 0;
+}
+\end{lstlisting}
 
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
-\begin{itemize}
-  \item \textbf{OnlineGDB}: buka \url{https://www.onlinegdb.com/}, pilih bahasa yang sesuai (Pascal/C/C++), tempel contoh, lalu Run.
-  \item \textbf{Lazarus (Pascal)}: buat Console Application, tempel contoh Pascal, Run.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
-\end{itemize}
+\begin{lstlisting}[language=C++, caption={Precedence operator di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int a = 10, b = 5, c = 2;
+  int hasil;
+  // Perkalian (*) memiliki precedence lebih tinggi dari penjumlahan (+)
+  hasil = a + b * c;
+  cout << "a + b * c = " << hasil << "\n";        // Output: 20
+  cout << "(a + b) * c = " << (a + b) * c << "\n"; // Output: 30
+  
+  // Operator dengan precedence sama: evaluasi kiri-ke-kanan
+  hasil = a - b + c;
+  cout << "a - b + c = " << hasil << "\n";        // Output: 7
+  cout << "a - (b + c) = " << a - (b + c) << "\n"; // Output: 3
+  
+  // Operator relasional dan logika
+  bool cek = (a > b) && (b > c);
+  cout << "(a > b) && (b > c) = " << cek << "\n"; // Output: 1 (true)
+}
+\end{lstlisting}
+
+Contoh di atas menunjukkan bagaimana precedence memengaruhi hasil evaluasi. Tanpa tanda kurung, \texttt{a + b * c} dievaluasi sebagai \texttt{a + (b * c)} karena perkalian memiliki prioritas lebih tinggi. Dengan tanda kurung eksplisit \texttt{(a + b) * c}, urutan evaluasi berubah dan menghasilkan nilai berbeda.
+
 \end{document}

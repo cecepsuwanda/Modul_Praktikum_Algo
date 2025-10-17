@@ -1,72 +1,43 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Struktur Kontrol Kondisional}
-\section{Pernyataan \texttt{if} / \texttt{else}}
-Pernyataan \texttt{if} / \texttt{else} mengeksekusi cabang berdasarkan hasil kondisi boolean. Di Pascal, kondisi bertipe \texttt{boolean}; di C/C++, nilai bukan nol dianggap benar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+\chapter{Percabangan}
 
-Gunakan blok yang jelas (\texttt{begin\ldots end} atau \{\}) dan pertimbangkan pola \emph{early return} untuk mengurangi nesting. Uji semua cabang agar regresi mudah terdeteksi.
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami konsep dan jenis-jenis percabangan (satu arah, dua arah, banyak arah)
+  \item Mengimplementasikan percabangan if, if-else, dan if-else if-else
+  \item Menggunakan nested if untuk kondisi bertingkat
+  \item Mengimplementasikan switch/case untuk pilihan multi-cabang
+  \item Memahami short-circuit evaluation pada operator logika
+  \item Menggunakan operator bitwise dalam struktur kontrol kondisional
+  \item Memilih struktur percabangan yang tepat untuk berbagai kasus pemrograman
+\end{itemize}
 
-\subsection{Contoh Lintas Bahasa}
-\begin{lstlisting}[language=Pascal, caption={if/else di Pascal}]
-if n mod 2 = 0 then Writeln('Genap') else Writeln('Ganjil');
-\end{lstlisting}
-\begin{lstlisting}[language=C, caption={if/else di C}]
-if (n % 2 == 0) printf("Genap\n"); else printf("Ganjil\n");
-\end{lstlisting}
-\begin{lstlisting}[language=C++, caption={if dengan initializer di C++17}]
-if (int rem = n % 2; rem == 0) std::cout << "Genap\n"; else std::cout << "Ganjil\n";
-\end{lstlisting}
+\section{Klasifikasi Percabangan}
+Struktur kontrol kondisional (percabangan) memungkinkan program membuat keputusan berdasarkan kondisi tertentu. Percabangan dapat diklasifikasikan berdasarkan jumlah pilihan yang tersedia: satu arah, dua arah, atau banyak arah.
 
-\subsection{Pola Early Return}
-\begin{lstlisting}[language=C]
-int process(const char* path) {
-  if (!path) return -1;           // validasi awal
-  FILE* f = fopen(path, "r");
-  if (!f) return -2;              // gagal buka
-  // ... proses ...
-  fclose(f);
-  return 0;
-}
-\end{lstlisting}
+\subsection{Tabel Perbandingan Jenis Percabangan}
+\begin{table}[H]
+  \centering
+  \caption{Perbandingan jenis percabangan}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Jenis & Struktur & Jumlah Pilihan & Kegunaan \\
+    \midrule
+    Satu arah & \texttt{if} & 1 (eksekusi atau lewati) & Validasi, aksi opsional \\
+    Dua arah & \texttt{if-else} & 2 & Pilihan biner (ya/tidak) \\
+    Banyak arah & \texttt{if-else if-else} & 3+ & Klasifikasi, grading \\
+    Bersarang & \texttt{nested if} & Bertingkat & Kondisi kompleks \\
+    Multi-cabang & \texttt{switch/case} & 3+ & Pilihan diskret/enumerasi \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-\section{Pernyataan \texttt{case} / \texttt{switch}}
-Konstruksi multi-cabang merangkum pilihan diskret. Pascal: \texttt{case\ldots of} (mendukung rentang); C/C++: \texttt{switch} dengan \texttt{case} konstanta integral. Sertakan klausa default untuk ketangguhan \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference,cpp-switch,cpp-enum-class}.
+Pemilihan jenis percabangan bergantung pada kompleksitas logika. Percabangan satu arah cocok untuk validasi sederhana; dua arah untuk keputusan biner; banyak arah untuk klasifikasi bertingkat; bersarang untuk kondisi kompleks; dan \texttt{switch/case} untuk pilihan diskret yang jelas.
 
-\begin{lstlisting}[language=Pascal, caption={case of dengan rentang}]
-case score of
-  90..100: Writeln('A');
-  80..89:  Writeln('B');
-  70..79:  Writeln('C');
-  else     Writeln('D/E');
-end;
-\end{lstlisting}
-
-\begin{lstlisting}[language=C, caption={switch di C dengan break}]
-switch (score/10) {
-  case 10: case 9: printf("A\n"); break;
-  case 8: printf("B\n"); break;
-  case 7: printf("C\n"); break;
-  default: printf("D/E\n");
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=C++, caption={switch modern dengan enum class dan [[fallthrough]]}]
-enum class Grade { A, B, C, Other };
-Grade fromScore(int s){
-  switch (s/10) {
-    case 10: [[fallthrough]];
-    case 9:  return Grade::A;
-    case 8:  return Grade::B;
-    case 7:  return Grade::C;
-    default: return Grade::Other;
-  }
-}
-\end{lstlisting}
-
-Untuk logika yang terus bertambah, pertimbangkan tabel keputusan atau pemetaan fungsi ketimbang rantai \texttt{if/else} panjang.
-
-\subsection{Diagram Alur Keputusan}
-\begin{figure}[h]
+\subsection{Diagram Alur Percabangan}
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[node distance=1.7cm, >=Stealth]
     \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1cm]
@@ -81,13 +52,556 @@ Untuk logika yang terus bertambah, pertimbangkan tabel keputusan atau pemetaan f
     \draw[->] (yes) |- (end);
     \draw[->] (no)  |- (end);
   \end{tikzpicture}
-  \caption{Alur keputusan sederhana}
+  \caption{Alur keputusan dua arah sederhana}
 \end{figure}
 
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+\subsection{Percabangan Satu Arah (Single Selection)}
+Percabangan satu arah hanya mengeksekusi blok kode jika kondisi bernilai benar (\texttt{true}). Jika kondisi salah (\texttt{false}), program melewati blok tersebut dan melanjutkan eksekusi normal. Digunakan ketika aksi hanya diperlukan pada satu kondisi spesifik.
+
+\begin{lstlisting}[language=Pascal, caption={Percabangan satu arah di Pascal}]
+program SatuArah;
+var
+  nilai: integer;
+begin
+  Write('Masukkan nilai: ');
+  Readln(nilai);
+  if nilai >= 75 then
+    Writeln('Selamat, Anda lulus!');
+  Writeln('Program selesai.');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Percabangan satu arah di C}]
+#include <stdio.h>
+int main(void) {
+  int nilai;
+  printf("Masukkan nilai: ");
+  scanf("%d", &nilai);
+  if (nilai >= 75)
+    printf("Selamat, Anda lulus!\n");
+  printf("Program selesai.\n");
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Percabangan satu arah di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int nilai;
+  cout << "Masukkan nilai: ";
+  cin >> nilai;
+  if (nilai >= 75)
+    cout << "Selamat, Anda lulus!\n";
+  cout << "Program selesai.\n";
+}
+\end{lstlisting}
+
+\subsection{Percabangan Dua Arah (Double Selection)}
+Percabangan dua arah menyediakan dua pilihan: blok kode untuk kondisi benar dan blok kode untuk kondisi salah. Dengan \texttt{if-else}, program selalu mengeksekusi salah satu dari dua cabang yang tersedia.
+
+\begin{lstlisting}[language=Pascal, caption={Percabangan dua arah di Pascal}]
+program DuaArah;
+var
+  umur: integer;
+begin
+  Write('Masukkan umur: ');
+  Readln(umur);
+  if umur >= 17 then
+    Writeln('Anda sudah dewasa')
+  else
+    Writeln('Anda masih di bawah umur');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Percabangan dua arah di C}]
+#include <stdio.h>
+int main(void) {
+  int umur;
+  printf("Masukkan umur: ");
+  scanf("%d", &umur);
+  if (umur >= 17)
+    printf("Anda sudah dewasa\n");
+  else
+    printf("Anda masih di bawah umur\n");
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Percabangan dua arah di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int umur;
+  cout << "Masukkan umur: ";
+  cin >> umur;
+  if (umur >= 17)
+    cout << "Anda sudah dewasa\n";
+  else
+    cout << "Anda masih di bawah umur\n";
+}
+\end{lstlisting}
+
+\subsection{Percabangan Banyak Arah (Multiple Selection)}
+Percabangan banyak arah menyediakan lebih dari dua pilihan dengan menggunakan \texttt{if-else if-else} atau percabangan bersarang (\texttt{nested if}). Cocok untuk kasus dengan banyak kondisi yang harus diperiksa secara berurutan.
+
+\begin{lstlisting}[language=Pascal, caption={Percabangan banyak arah di Pascal}]
+program BanyakArah;
+var
+  nilai: integer;
+begin
+  Write('Masukkan nilai (0-100): ');
+  Readln(nilai);
+  if nilai >= 85 then
+    Writeln('Grade: A')
+  else if nilai >= 70 then
+    Writeln('Grade: B')
+  else if nilai >= 55 then
+    Writeln('Grade: C')
+  else if nilai >= 40 then
+    Writeln('Grade: D')
+  else
+    Writeln('Grade: E');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Percabangan banyak arah di C}]
+#include <stdio.h>
+int main(void) {
+  int nilai;
+  printf("Masukkan nilai (0-100): ");
+  scanf("%d", &nilai);
+  if (nilai >= 85)
+    printf("Grade: A\n");
+  else if (nilai >= 70)
+    printf("Grade: B\n");
+  else if (nilai >= 55)
+    printf("Grade: C\n");
+  else if (nilai >= 40)
+    printf("Grade: D\n");
+  else
+    printf("Grade: E\n");
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Percabangan banyak arah di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int nilai;
+  cout << "Masukkan nilai (0-100): ";
+  cin >> nilai;
+  if (nilai >= 85)
+    cout << "Grade: A\n";
+  else if (nilai >= 70)
+    cout << "Grade: B\n";
+  else if (nilai >= 55)
+    cout << "Grade: C\n";
+  else if (nilai >= 40)
+    cout << "Grade: D\n";
+  else
+    cout << "Grade: E\n";
+}
+\end{lstlisting}
+
+\subsection{Percabangan Bersarang (Nested If)}
+Percabangan bersarang adalah kondisi \texttt{if} di dalam kondisi \texttt{if} lainnya. Digunakan ketika keputusan bergantung pada beberapa kondisi yang harus diperiksa secara bertingkat. Hati-hati terhadap nesting yang terlalu dalam karena dapat menurunkan keterbacaan kode.
+
+\begin{lstlisting}[language=Pascal, caption={Nested if di Pascal}]
+program NestedIf;
+var
+  nilai: integer;
+  kehadiran: integer;
+begin
+  Write('Masukkan nilai: ');
+  Readln(nilai);
+  Write('Masukkan kehadiran (%): ');
+  Readln(kehadiran);
+  
+  if nilai >= 75 then begin
+    if kehadiran >= 80 then
+      Writeln('Lulus dengan baik')
+    else
+      Writeln('Lulus, tapi kehadiran kurang');
+  end else begin
+    Writeln('Tidak lulus');
+  end;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Nested if di C}]
+#include <stdio.h>
+int main(void) {
+  int nilai, kehadiran;
+  printf("Masukkan nilai: ");
+  scanf("%d", &nilai);
+  printf("Masukkan kehadiran (%%): ");
+  scanf("%d", &kehadiran);
+  
+  if (nilai >= 75) {
+    if (kehadiran >= 80)
+      printf("Lulus dengan baik\n");
+    else
+      printf("Lulus, tapi kehadiran kurang\n");
+  } else {
+    printf("Tidak lulus\n");
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Nested if di C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int nilai, kehadiran;
+  cout << "Masukkan nilai: ";
+  cin >> nilai;
+  cout << "Masukkan kehadiran (%): ";
+  cin >> kehadiran;
+  
+  if (nilai >= 75) {
+    if (kehadiran >= 80)
+      cout << "Lulus dengan baik\n";
+    else
+      cout << "Lulus, tapi kehadiran kurang\n";
+  } else {
+    cout << "Tidak lulus\n";
+  }
+}
+\end{lstlisting}
+
+\subsection{Short-circuit Evaluation pada Kondisi}
+Di C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan evaluasi singkat (\emph{short-circuit}): operan kanan hanya dievaluasi bila diperlukan. Pada \texttt{\&\&}, jika operan kiri \texttt{false}, operan kanan tidak dievaluasi; pada \texttt{||}, jika operan kiri \texttt{true}, operan kanan diabaikan. Perilaku ini penting untuk menulis kondisi yang aman dan efisien \parencite{gnu-c-manual,cpp-reference}.
+
+\begin{lstlisting}[language=C, caption={Short-circuit di C untuk keamanan}]
+#include <stdio.h>
+
+int expensive() {
+  printf("expensive() dipanggil\n");
+  return 1;
+}
+
+int main(void) {
+  int *ptr = NULL;
+  
+  // Aman: expensive() TIDAK dipanggil karena ptr == NULL
+  if (ptr != NULL && expensive()) {
+    printf("Masuk blok if\n");
+  }
+  
+  // Operator OR: expensive() dipanggil hanya jika kondisi pertama false
+  if (ptr == NULL || expensive()) {
+    printf("ptr adalah NULL atau expensive() true\n");
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Short-circuit di C++ untuk efisiensi}]
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string text = "";
+  
+  // Aman: size() tidak dipanggil jika text kosong
+  if (!text.empty() && text.size() > 10) {
+    cout << "Teks panjang\n";
+  }
+  
+  // Efisien: cek sederhana dulu sebelum cek kompleks
+  if (text.empty() || text.find("error") != string::npos) {
+    cout << "Teks kosong atau mengandung error\n";
+  }
+}
+\end{lstlisting}
+
+Pada Pascal, kebijakan evaluasi boolean dapat bergantung pada opsi kompiler (mode boolean evaluation). Lebih aman tulis pemeriksaan bertahap dengan nested if untuk memastikan kondisi diperiksa dalam urutan yang benar \parencite{free-pascal-docs}.
+
+\begin{lstlisting}[language=Pascal, caption={Pemeriksaan bertahap di Pascal}]
+program SafeCheck;
+var
+  a, b: integer;
+begin
+  a := 10;
+  b := 0;
+  { Pemeriksaan bertahap untuk menghindari division by zero }
+  if b <> 0 then begin
+    if a / b > 1 then
+      Writeln('Rasio lebih dari 1');
+  end else begin
+    Writeln('b adalah nol, tidak bisa dibagi');
+  end;
+end.
+\end{lstlisting}
+
+Hindari efek samping (seperti increment, assignment, atau pemanggilan fungsi) pada operan kondisi yang mungkin tidak dievaluasi karena short-circuit. Tulis kondisi yang jelas dan prediktabel untuk mempermudah debugging.
+
+\subsection{Pola Early Return vs Nested If}
+Nested if dapat menyebabkan kode sulit dibaca ketika tingkat nesting terlalu dalam. Pola \emph{early return} mengurangi nesting dengan keluar dari fungsi lebih awal saat kondisi tertentu terpenuhi. Ini meningkatkan keterbacaan dan mengurangi kompleksitas kognitif.
+\begin{lstlisting}[language=C]
+int process(const char* path) {
+  if (!path) return -1;           // validasi awal
+  FILE* f = fopen(path, "r");
+  if (!f) return -2;              // gagal buka
+  // ... proses ...
+  fclose(f);
+  return 0;
+}
+\end{lstlisting}
+
+\section{Pernyataan \texttt{case} / \texttt{switch}}
+Konstruksi multi-cabang \texttt{case}/\texttt{switch} merangkum pilihan diskret berbasis nilai konstan. Pascal: \texttt{case\ldots of} (mendukung rentang); C/C++: \texttt{switch} dengan \texttt{case} konstanta integral. Sertakan klausa \texttt{else}/\texttt{default} untuk ketangguhan \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference,cpp-switch,cpp-enum-class}.
+
+\subsection{Kapan Menggunakan \texttt{switch} vs \texttt{if-else if}}
 \begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
-  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
+  \item Gunakan \texttt{switch/case} ketika: pilihan diskret berbasis satu variabel dengan nilai konstan (angka, karakter, enumerasi). Lebih efisien dan mudah dibaca untuk banyak pilihan.
+  \item Gunakan \texttt{if-else if} ketika: kondisi kompleks, rentang nilai, atau ekspresi boolean yang berbeda-beda. Lebih fleksibel untuk logika yang bervariasi.
 \end{itemize}
+
+\subsection{Contoh Menu dengan \texttt{switch/case}}
+\begin{lstlisting}[language=Pascal, caption={Menu dengan case di Pascal}]
+program MenuSwitch;
+var
+  pilihan: char;
+begin
+  Writeln('=== Menu Utama ===');
+  Writeln('1. Input data');
+  Writeln('2. Tampilkan data');
+  Writeln('3. Hapus data');
+  Writeln('0. Keluar');
+  Write('Pilih menu: ');
+  Readln(pilihan);
+  
+  case pilihan of
+    '1': Writeln('Anda memilih Input data');
+    '2': Writeln('Anda memilih Tampilkan data');
+    '3': Writeln('Anda memilih Hapus data');
+    '0': Writeln('Keluar dari program');
+  else
+    Writeln('Pilihan tidak valid');
+  end;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Menu dengan switch di C}]
+#include <stdio.h>
+int main(void) {
+  char pilihan;
+  printf("=== Menu Utama ===\n");
+  printf("1. Input data\n");
+  printf("2. Tampilkan data\n");
+  printf("3. Hapus data\n");
+  printf("0. Keluar\n");
+  printf("Pilih menu: ");
+  scanf(" %c", &pilihan);
+  
+  switch (pilihan) {
+    case '1':
+      printf("Anda memilih Input data\n");
+      break;
+    case '2':
+      printf("Anda memilih Tampilkan data\n");
+    break;
+    case '3':
+      printf("Anda memilih Hapus data\n");
+    break;
+    case '0':
+      printf("Keluar dari program\n");
+    break;
+  default:
+      printf("Pilihan tidak valid\n");
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Menu dengan switch dan enum di C++}]
+#include <iostream>
+using namespace std;
+
+enum Menu { INPUT = 1, TAMPIL = 2, HAPUS = 3, KELUAR = 0 };
+
+int main() {
+  int pilihan;
+  cout << "=== Menu Utama ===\n";
+  cout << "1. Input data\n";
+  cout << "2. Tampilkan data\n";
+  cout << "3. Hapus data\n";
+  cout << "0. Keluar\n";
+  cout << "Pilih menu: ";
+  cin >> pilihan;
+  
+  switch (pilihan) {
+    case INPUT:
+      cout << "Anda memilih Input data\n";
+      break;
+    case TAMPIL:
+      cout << "Anda memilih Tampilkan data\n";
+      break;
+    case HAPUS:
+      cout << "Anda memilih Hapus data\n";
+      break;
+    case KELUAR:
+      cout << "Keluar dari program\n";
+      break;
+    default:
+      cout << "Pilihan tidak valid\n";
+  }
+}
+\end{lstlisting}
+
+Perhatikan bahwa di C/C++ setiap \texttt{case} memerlukan \texttt{break} untuk mencegah fall-through ke case berikutnya, kecuali fall-through memang diinginkan. Di C++ modern, gunakan atribut \texttt{[[fallthrough]]} untuk kejelasan. Pascal secara default tidak melakukan fall-through.
+
+\section{Operator Bitwise dalam Kondisi}
+Operator bitwise mengoperasikan representasi biner: \texttt{\&}, \texttt{|}, \texttt{\^{}}, \texttt{\~{}} (not), \texttt{\textless\textless}, \texttt{\textgreater\textgreater} di C/C++; di Pascal gunakan \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{not}, serta \texttt{shl}/\texttt{shr}. Operator ini sangat berguna dalam struktur kontrol kondisional untuk mengelola \emph{flags}, status bit, dan pemeriksaan kondisi berbasis bit \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
+
+Dalam konteks percabangan, operator bitwise memungkinkan pengecekan multiple kondisi sekaligus melalui bit flags, serta manipulasi status yang efisien untuk aplikasi sistem, protokol jaringan, dan embedded programming.
+
+\subsection{Contoh Flags dalam Percabangan}
+\begin{lstlisting}[language=C, caption={Bit flags dengan kondisi di C}]
+#include <stdio.h>
+
+enum { READ = 1<<0, WRITE = 1<<1, EXEC = 1<<2 };
+
+int main(void) {
+  unsigned mask = READ | WRITE;  // set dua bit
+  
+  // Percabangan berdasarkan bit flags
+  if (mask & READ) {
+    printf("READ permission on\n");
+  }
+  
+  if (mask & WRITE) {
+    printf("WRITE permission on\n");
+  }
+  
+  if (mask & EXEC) {
+    printf("EXEC permission on\n");
+  } else {
+    printf("EXEC permission off\n");
+  }
+  
+  // Clear satu bit
+  mask &= ~WRITE;
+  
+  // Cek kombinasi flags
+  if ((mask & (READ | WRITE)) == (READ | WRITE)) {
+    printf("Both READ and WRITE on\n");
+  } else {
+    printf("Not both READ and WRITE\n");
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Pascal, caption={Pergeseran dan bitwise dengan kondisi di Pascal}]
+program BitwiseFlags;
+const
+  READ  = 1 shl 0;  // bit 0
+  WRITE = 1 shl 1;  // bit 1
+  EXEC  = 1 shl 2;  // bit 2
+var
+  mask: longint;
+begin
+  mask := READ or WRITE;  // set bit 0 dan 1
+  
+  { Percabangan berdasarkan bit flags }
+  if (mask and READ) <> 0 then
+    Writeln('READ permission on');
+  
+  if (mask and WRITE) <> 0 then
+    Writeln('WRITE permission on');
+  
+  if (mask and EXEC) <> 0 then
+    Writeln('EXEC permission on')
+  else
+    Writeln('EXEC permission off');
+  
+  { Clear satu bit }
+  mask := mask and not WRITE;
+  
+  { Cek lagi setelah perubahan }
+  if (mask and WRITE) <> 0 then
+    Writeln('WRITE still on')
+  else
+    Writeln('WRITE cleared');
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Bitwise flags dengan switch di C++}]
+#include <iostream>
+using namespace std;
+
+enum Permission {
+  NONE  = 0,
+  READ  = 1 << 0,
+  WRITE = 1 << 1,
+  EXEC  = 1 << 2,
+  ALL   = READ | WRITE | EXEC
+};
+
+void checkPermissions(unsigned perm) {
+  cout << "Permissions: ";
+  
+  if (perm & READ)  cout << "R";
+  else cout << "-";
+  
+  if (perm & WRITE) cout << "W";
+  else cout << "-";
+  
+  if (perm & EXEC)  cout << "X";
+  else cout << "-";
+  
+  cout << "\n";
+}
+
+int main() {
+  unsigned userPerm = READ | WRITE;
+  
+  checkPermissions(userPerm);
+  
+  // Percabangan berdasarkan kombinasi
+  if ((userPerm & (READ | WRITE)) == (READ | WRITE)) {
+    cout << "User can read and write\n";
+  }
+  
+  // Toggle bit
+  userPerm ^= EXEC;  // add EXEC
+  checkPermissions(userPerm);
+  
+  userPerm ^= EXEC;  // remove EXEC
+  checkPermissions(userPerm);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Pola Umum Operasi Bit Flags}
+\begin{table}[H]
+  \centering
+  \caption{Operasi umum bit flags dalam kondisi}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Operasi & C/C++ & Pascal \\
+    \midrule
+    Set bit & \texttt{mask |= FLAG} & \texttt{mask := mask or FLAG} \\
+    Clear bit & \texttt{mask \&= \~{}FLAG} & \texttt{mask := mask and not FLAG} \\
+    Toggle bit & \texttt{mask \^{}= FLAG} & \texttt{mask := mask xor FLAG} \\
+    Check bit & \texttt{if (mask \& FLAG)} & \texttt{if (mask and FLAG) {\textless}{\textgreater} 0} \\
+    Check all & \texttt{if ((mask \& FLAGS) == FLAGS)} & \texttt{if (mask and FLAGS) = FLAGS} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Hati-hati saat pergeseran pada tipe bertanda: pergeseran kanan dapat memperluas tanda pada beberapa implementasi. Batasi jumlah pergeseran agar tidak melebihi lebar tipe. Pada kondisi kompleks, gunakan tanda kurung untuk memperjelas precedence operator bitwise terhadap operator relasional dan logika \parencite{iso-c-draft-n1570,cpp-reference}.
+
 \end{document}

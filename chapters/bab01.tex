@@ -1,6 +1,17 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 \chapter{Pengantar \& Persiapan Lingkungan}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami sejarah dan peran Pascal, C, dan C++ dalam pembelajaran pemrograman
+  \item Menginstal dan mengkonfigurasi lingkungan pengembangan (IDE) untuk Pascal, C, dan C++
+  \item Menggunakan IDE baik online (OnlineGDB) maupun offline (Lazarus, Code::Blocks)
+  \item Menulis, mengkompilasi, dan menjalankan program "Hello World" dalam ketiga bahasa
+  \item Memahami perbedaan dasar sintaks input/output antara Pascal, C, dan C++
+\end{itemize}
+
 \section{Sejarah dan Posisi Pascal, C, C++}
 Pascal, C, dan C++ adalah bahasa dasar yang banyak dipakai untuk belajar algoritma dan membangun perangkat lunak performa tinggi. Pascal awalnya dibuat untuk pendidikan dengan sintaks yang jelas; C dipakai luas untuk pemrograman sistem karena kontrol memori yang ketat; C++ menambah konsep berorientasi objek dan generik di atas C untuk proyek besar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
@@ -8,67 +19,71 @@ Ketiganya penting dalam kurikulum karena memberi keseimbangan antara kedekatan k
 
 Dalam praktik industri, C umum untuk firmware dan sistem tertanam, C++ untuk aplikasi performa tinggi (gim, mesin basis data), sedangkan Pascal (melalui Free Pascal/Lazarus) tetap relevan untuk pembelajaran dan sebagian aplikasi desktop \parencite{free-pascal-docs}.
 
-\section{Menyiapkan Lingkungan Pengembangan}
-Lingkungan minimal: kompiler, editor/IDE, dan alat build.
-\begin{itemize}
-  \item \textbf{Kompiler}: FPC untuk Pascal; GCC/Clang untuk C/C++ \parencite{free-pascal-docs,gcc-docs,clang-docs}.
-  \item \textbf{Editor}: Visual Studio Code dengan ekstensi C/C++ untuk linting dan debugging \parencite{vscode-cpp}.
-  \item \textbf{Alat build (opsional)}: \texttt{make} atau CMake untuk proyek multi-berkas \parencite{gnu-make,cmake-docs}.
-\end{itemize}
+\section{Lingkungan Pengembangan}
+Untuk praktikum ini, kita akan menggunakan lingkungan pengembangan terintegrasi (IDE) yang menyediakan editor kode, kompiler, debugger, dan alat bantu lainnya dalam satu antarmuka. IDE mempermudah proses belajar karena mahasiswa tidak perlu mengatur kompiler secara manual via terminal.
 
-\subsection{Instalasi Cepat}
-Contoh perintah di Linux/macOS/Windows (sesuaikan distro):
-\begin{lstlisting}[language=bash]
-# Debian/Ubuntu
-sudo apt update
-sudo apt install fpc gcc g++ make
-\end{lstlisting}
-\begin{lstlisting}[language=bash]
-# Fedora
-sudo dnf install fpc gcc gcc-c++ make
-\end{lstlisting}
-\begin{lstlisting}[language=bash]
-# macOS (Homebrew)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install fpc gcc make cmake
-\end{lstlisting}
-\begin{lstlisting}[language=bash]
-# Windows (Chocolatey; jalankan PowerShell sebagai Administrator)
-Set-ExecutionPolicy Bypass -Scope Process -Force
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-choco install mingw make cmake -y
-# Alternatif: MSYS2 (kompiler & tools)
-# https://www.msys2.org/
-\end{lstlisting}
-Untuk pengembangan C/C++ di Windows, alternatif lain adalah WSL \parencite{wsl} atau MSYS2 \parencite{msys2}. Untuk Pascal dengan GUI, Lazarus IDE tersedia lintas platform \parencite{lazarus}.
+Berikut penjelasan lengkap untuk masing-masing IDE yang direkomendasikan. Mahasiswa dapat memilih salah satu sesuai kebutuhan dan preferensi.
 
-\subsection{Verifikasi dan Struktur Proyek}
-Pastikan perintah tersedia:
-\begin{lstlisting}[language=bash]
-fpc -v
-gcc --version
-g++ --version
-\end{lstlisting}
-Gunakan struktur direktori sederhana: \texttt{src/} untuk kode, \texttt{build/} untuk output. Tetapkan standar bahasa dan peringatan saat kompilasi (mis. \texttt{-std=c11}, \texttt{-std=c++17}, \texttt{-Wall -Wextra}) \parencite{gnu-c-manual,cpp-reference}.
+\subsection{Lingkungan Online}
+\textbf{OnlineGDB} \parencite{onlinegdb} — platform berbasis web untuk menjalankan Pascal, C, dan C++ tanpa instalasi. Cocok untuk latihan cepat dan berbagi kode.
 
-\subsection{Arsitektur Kompilasi dan Eksekusi}
-\begin{figure}[h]
-  \centering
-  \begin{tikzpicture}[node distance=1.8cm, >=Stealth]
-    \tikzstyle{box}=[rectangle, draw, rounded corners, align=center, minimum width=3.2cm, minimum height=1cm]
-    \node[box] (src) {Kode Sumber\\(\texttt{.pas}, \texttt{.c}, \texttt{.cpp})};
-    \node[box, right=of src] (compiler) {Kompiler\\FPC / GCC / Clang};
-    \node[box, right=of compiler] (exe) {Berkas Eksekusi\\(\texttt{.out}/\texttt{.exe})};
-    \node[box, right=of exe] (run) {Proses Berjalan\\Output ke Terminal};
-    \draw[->] (src) -- (compiler);
-    \draw[->] (compiler) -- node[above]{compile/link} (exe);
-    \draw[->] (exe) -- node[above]{run} (run);
-  \end{tikzpicture}
-  \caption{Alur kompilasi dan eksekusi program}
-  \label{fig:compile-run}
-\end{figure}
+Langkah penggunaan:
+\begin{enumerate}
+  \item Buka \url{https://www.onlinegdb.com}
+  \item Pilih bahasa (Pascal, C, atau C++)
+  \item Tulis atau tempel kode pada editor
+  \item Klik tombol \emph{Run} untuk kompilasi dan eksekusi
+  \item Simpan berkas untuk mendapatkan tautan berbagi
+\end{enumerate}
 
-\section{Hello, World! — Program Pertama}
+\subsection{Lingkungan Offline untuk Pascal}
+\textbf{Lazarus IDE} \parencite{lazarus} — IDE lengkap berbasis Free Pascal dengan dukungan GUI dan konsol. Tersedia untuk Windows, Linux, dan macOS.
+
+\subsubsection{Instalasi Lazarus IDE}
+Langkah instalasi:
+\begin{enumerate}
+  \item Kunjungi situs resmi Lazarus di \url{https://www.lazarus-ide.org}
+  \item Unduh versi yang sesuai dengan sistem operasi Anda (Windows, Linux, atau macOS)
+  \item Untuk Windows, unduh file installer (misalnya \texttt{lazarus-}\\\texttt{X.X.X-fpc-X.X.X-win64.exe})
+  \item Jalankan file instalasi dan ikuti petunjuk instalasi
+  \item Paket instalasi Lazarus biasanya sudah menyertakan Free Pascal Compiler (FPC). Jika tidak, unduh FPC dari \url{https://www.freepascal.org/download.html}
+  \item Setelah instalasi selesai, buka Lazarus IDE untuk memverifikasi bahwa instalasi berjalan dengan baik
+\end{enumerate}
+
+Langkah penggunaan:
+\begin{enumerate}
+  \item Buat proyek baru: \texttt{Project \textrightarrow{} New Project \textrightarrow{} Console Application}
+  \item Tulis kode Pascal pada editor
+  \item Klik \texttt{Run} atau tekan F9 untuk kompilasi dan eksekusi
+  \item Tambahkan unit bila diperlukan untuk modularisasi
+\end{enumerate}
+
+\subsection{Lingkungan Offline untuk C/C++}
+\textbf{Code::Blocks} \parencite{codeblocks} — IDE lintas platform untuk C dan C++. Mendukung berbagai kompiler (GCC, Clang, MSVC).
+
+\subsubsection{Instalasi Code::Blocks}
+Langkah instalasi:
+\begin{enumerate}
+  \item Kunjungi situs resmi Code::Blocks di \url{http://www.codeblocks.org/downloads/binaries}
+  \item Untuk Windows, unduh versi yang sudah menyertakan compiler MinGW (misalnya \texttt{codeblocks-20.03mingw-setup.exe})
+  \item Untuk Linux, gunakan package manager sistem Anda (misalnya \texttt{sudo apt-get install codeblocks} pada Ubuntu/Debian)
+  \item Untuk macOS, unduh file DMG atau gunakan Homebrew
+  \item Jalankan file instalasi yang telah diunduh
+  \item Pada instalasi Windows: klik \texttt{Next}, setujui lisensi (\texttt{I Agree}), biarkan komponen default, pilih lokasi instalasi, lalu klik \texttt{Install}
+  \item Setelah instalasi selesai, buka Code::Blocks
+  \item Saat pertama kali membuka, pilih \texttt{GNU GCC Compiler} jika diminta memilih compiler
+  \item Verifikasi pengaturan compiler melalui menu \texttt{Settings \textrightarrow{} Compiler \textrightarrow{} Toolchain executables}
+\end{enumerate}
+
+Langkah penggunaan:
+\begin{enumerate}
+  \item Buat proyek baru: \texttt{File \textrightarrow{} New \textrightarrow{} Project \textrightarrow{} Console Application}
+  \item Pilih bahasa C atau C++
+  \item Tulis kode di \texttt{main.c} atau \texttt{main.cpp}
+  \item Klik \texttt{Build \& Run} atau tekan F9
+\end{enumerate}
+
+\section{Program Pertama}
 Program pertama memastikan instalasi dan alur kompilasi-pengejalan (\emph{run}) bekerja. Perbedaan I/O dasar: Pascal memakai \texttt{Writeln}, C memakai \texttt{printf}, C++ memakai \texttt{std::cout} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
 
 \begin{lstlisting}[language=Pascal, caption={Hello World pada Pascal}]
@@ -88,124 +103,13 @@ int main(void) {
 
 \begin{lstlisting}[language=C++, caption={Hello World pada C++}]
 #include <iostream>
+using namespace std;
+
 int main() {
-  std::cout << "Hello, World!\n";
+  cout << "Hello, World!\n";
 }
 \end{lstlisting}
 
-Kompilasi dan jalankan dari terminal:
-\begin{lstlisting}[language=bash]
-# Pascal
-fpc Hello.pas && ./Hello
-
-# C
-gcc -std=c11 -Wall -Wextra hello.c -o hello && ./hello
-
-# C++
-g++ -std=c++17 -Wall -Wextra hello.cpp -o hello && ./hello
-\end{lstlisting}
-
-\subsection{Program Interaktif Sederhana}
-\begin{lstlisting}[language=Pascal, caption={Input nama pada Pascal}]
-program Greet;
-var name: string;
-begin
-  Write('Nama Anda? '); Readln(name);
-  Writeln('Halo, ', name, '!');
-end.
-\end{lstlisting}
-
-\begin{lstlisting}[language=C, caption={Input nama pada C}]
-#include <stdio.h>
-int main(void) {
-  char name[64];
-  printf("Nama Anda? ");
-  if (fgets(name, sizeof name, stdin)) {
-    printf("Halo, %s", name); // fgets menyertakan newline
-  }
-  return 0;
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=C++, caption={Input nama pada C++}]
-#include <iostream>
-#include <string>
-int main() {
-  std::string name;
-  std::cout << "Nama Anda? ";
-  std::getline(std::cin, name);
-  std::cout << "Halo, " << name << "!\n";
-}
-\end{lstlisting}
-
-\subsection{Ringkasan Peralatan}
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan peralatan dan perintah dasar}
-  \begin{tabular}{@{}llll@{}}
-    \toprule
-    Bahasa & Ekstensi & Kompiler & Perintah contoh \\
-    \midrule
-    Pascal & \texttt{.pas} & FPC & \texttt{fpc file.pas} \\
-    C & \texttt{.c} & GCC/Clang & \texttt{gcc -std=c11 file.c -o app} \\
-    C++ & \texttt{.cpp} & G++/Clang++ & \texttt{g++ -std=c++17 file.cpp -o app} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsection{Toolchain Resmi untuk Buku Ini}
-\begin{itemize}
-  \item \textbf{Online}: OnlineGDB — jalankan Pascal, C, C++ di browser. Pilih bahasa, tempel kode, lalu \emph{Run}. Simpan berkas untuk berbagi tautan \parencite{onlinegdb}.
-  \item \textbf{Offline Pascal}: Lazarus IDE — buat proyek \texttt{Console Application}, tulis kode Pascal, \texttt{Run} untuk kompilasi dan eksekusi \parencite{lazarus}.
-  \item \textbf{Offline C/C++}: Code::Blocks — buat \texttt{Console Application}, pilih C atau C++, tulis kode di \texttt{main.c}/\texttt{main.cpp}, \texttt{Build \& Run} \parencite{codeblocks}.
-\end{itemize}
-
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan lingkungan rekomendasi}
-  \begin{tabular}{@{}llll@{}}
-    \toprule
-    Kebutuhan & Pascal & C & C++ \\
-    \midrule
-    Online & OnlineGDB & OnlineGDB & OnlineGDB \\
-    Offline & Lazarus & Code::Blocks & Code::Blocks \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsection{Troubleshooting Cepat}
-\begin{itemize}
-  \item \textbf{Perintah tidak ditemukan}: pastikan instalasi selesai dan folder \texttt{bin} ada di \texttt{PATH} \parencite{gcc-docs,clang-docs,free-pascal-docs}.
-  \item \textbf{Hak eksekusi}: pada Linux/macOS gunakan \texttt{chmod +x app} bila perlu.
-  \item \textbf{Linker error}: tambahkan file sumber yang benar, atau opsi standar bahasa yang sesuai.
-\end{itemize}
+Untuk menjalankan program di atas, gunakan salah satu IDE yang direkomendasikan (OnlineGDB, Lazarus, atau Code::Blocks). Cukup salin kode ke editor IDE, lalu klik tombol Run atau tekan F9.
 \end{document}
-% Toolchain resmi untuk buku ini
-\subsection{Toolchain Resmi: OnlineGDB, Lazarus, Code::Blocks}
-Untuk konsistensi praktikum:
-\begin{itemize}
-  \item \textbf{Online (semua bahasa)}: OnlineGDB — jalankan Pascal, C, C++ langsung di browser \parencite{onlinegdb}.
-  \item \textbf{Offline Pascal}: Lazarus IDE (berbasis Free Pascal) \parencite{lazarus}.
-  \item \textbf{Offline C/C++}: Code::Blocks IDE (dengan toolchain MinGW/Clang sesuai OS) \parencite{codeblocks}.
-\end{itemize}
-
-Langkah cepat:
-\begin{enumerate}
-  \item \textbf{OnlineGDB}: buka proyek baru, pilih bahasa (Pascal/C/C++), tempel kode, klik Run.
-  \item \textbf{Lazarus}: buat Project \textrightarrow{} Program; tambahkan unit bila perlu; Build \& Run.
-  \item \textbf{Code::Blocks}: buat Console Application (C atau C++), letakkan sumber di \texttt{src/}, Build \& Run.
-\end{enumerate}
-
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan toolchain praktikum}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Modus & Pascal & C/C++ \\
-    \midrule
-    Online & OnlineGDB & OnlineGDB \\
-    Offline & Lazarus & Code::Blocks \\
-    \bottomrule
-  \end{tabular}
-\end{table}
 

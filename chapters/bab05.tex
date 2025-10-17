@@ -1,11 +1,40 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Struktur Kontrol Perulangan \& Lainnya}
+\chapter{Perulangan}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami konsep dan jenis-jenis perulangan (for, while, repeat-until, do-while)
+  \item Memilih bentuk loop yang sesuai berdasarkan kondisi masalah
+  \item Mengimplementasikan nested loop untuk masalah multidimensi
+  \item Menggunakan break dan continue untuk kontrol alur loop
+  \item Menghindari infinite loop dan off-by-one error
+  \item Membuat program dengan pola output menggunakan nested loop
+  \item Mengoptimalkan efisiensi loop untuk performa yang lebih baik
+\end{itemize}
+
 \section{Perulangan: \texttt{for}, \texttt{while}, \texttt{repeat} / \texttt{do\textendash while}}
 Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan kondisi dievaluasi (awal/akhir). Pascal: \texttt{for}, \texttt{while}, \texttt{repeat\ldots until}; C/C++: \texttt{for}, \texttt{while}, \texttt{do\ldots while} \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
+\subsection{Ringkasan Pemilihan Bentuk Loop}
+\begin{table}[H]
+  \centering
+  \caption{Kapan memakai bentuk loop}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bentuk & Kapan dipakai & Catatan \\
+    \midrule
+    while & Iterasi tak diketahui, cek di awal & Bisa 0 iterasi \\
+    do-while/repeat-until & Harus jalan minimal sekali & Cek di akhir \\
+    for & Indeks berhingga, batas jelas & Hati-hati off-by-one \\
+    range-based for (C++) & Koleksi/iterator modern & Lebih aman dan ringkas \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \subsection{Diagram Alur Loop}
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[node distance=1.7cm, >=Stealth]
     \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1cm]
@@ -22,76 +51,370 @@ Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan 
   \caption{Skema \texttt{while}: cek di awal, mungkin 0 iterasi}
 \end{figure}
 
-\subsection{Contoh Lintas Bahasa}
-\begin{lstlisting}[language=Pascal, caption={for dan repeat\ldots until (Pascal)}]
-var i: integer; begin
-  for i := 1 to 5 do Writeln(i);
-  repeat
-    Writeln('jalankan minimal sekali');
-  until SomeCondition;
+\subsection{Diagram Alur \texttt{repeat-until} / \texttt{do-while}}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=1.7cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=1cm]
+    \node[b] (start) {Mulai};
+    \node[b, below=of start] (body) {badan loop};
+    \node[b, below=of body] (cond) {kondisi?};
+    \node[b, below=of cond] (end) {Selesai};
+    \draw[->] (start) -- (body);
+    \draw[->] (body) -- (cond);
+    \draw[->] (cond) -- node[right]{Tidak (C)} (end);
+    \draw[->] (cond.west) -- +(-2.0, 0) |- node[pos=0.25,left]{Ya (C)} (body);
+    \node[right=0.3cm of cond] {\footnotesize Pascal: until true keluar};
+  \end{tikzpicture}
+  \caption{Skema \texttt{do-while}/\texttt{repeat-until}: cek di akhir, minimal 1 iterasi}
+\end{figure}
+
+\subsection{Contoh Loop \texttt{for}}
+\begin{lstlisting}[language=Pascal, caption={Cetak tabel perkalian dengan for (Pascal)}]
+program TabelPerkalian;
+var
+  i, angka, hasil: integer;
+begin
+  Write('Masukkan angka: ');
+  Readln(angka);
+  for i := 1 to 10 do begin
+    hasil := angka * i;
+    Writeln(angka, ' x ', i, ' = ', hasil);
+  end;
 end.
 \end{lstlisting}
 
-\begin{lstlisting}[language=C, caption={for, while, do\ldots while (C)}]
-for (int i=1; i<=5; ++i) printf("%d\n", i);
-int j=1; while (j<=5) { printf("%d\n", j++); }
-int k=0; do { ++k; } while (k<1); // jalan sekali
+\begin{lstlisting}[language=C, caption={Hitung faktorial dengan for (C)}]
+#include <stdio.h>
+int main(void) {
+  int n;
+  unsigned long faktorial = 1;
+  printf("Masukkan n: ");
+  scanf("%d", &n);
+  
+  for (int i = 1; i <= n; ++i) {
+    faktorial *= i;
+  }
+  printf("Faktorial %d = %lu\n", n, faktorial);
+  return 0;
+}
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={Range-based for (C++)}]
-#include <vector>
+\begin{lstlisting}[language=C++, caption={Loop for dengan hitung total (C++)}]
 #include <iostream>
-int main(){
-  std::vector<int> v{1,2,3,4,5};
-  for (int x : v) std::cout << x << "\n"; // aman untuk koleksi
+using namespace std;
+
+int main() {
+  int total = 0;
+  int jumlah = 5;
+  
+  cout << "Masukkan " << jumlah << " nilai:\n";
+  for (int i = 0; i < jumlah; ++i) {
+    int nilai;
+    cout << "Nilai ke-" << (i+1) << ": ";
+    cin >> nilai;
+    total += nilai;
+  }
+  
+  cout << "Total: " << total << "\n";
+  cout << "Rata-rata: " << (double)total / jumlah << "\n";
+}
+\end{lstlisting}
+
+\subsection{Contoh Loop \texttt{while}}
+\begin{lstlisting}[language=Pascal, caption={Input validasi dengan while (Pascal)}]
+program ValidasiInput;
+var
+  angka: integer;
+begin
+  angka := -1;
+  while angka < 0 do begin
+    Write('Masukkan angka positif: ');
+    Readln(angka);
+    if angka < 0 then
+      Writeln('Angka harus positif!');
+  end;
+  Writeln('Angka valid: ', angka);
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Hitung digit dengan while (C)}]
+#include <stdio.h>
+int main(void) {
+  int n, digit = 0;
+  printf("Masukkan angka: ");
+  scanf("%d", &n);
+  
+  int temp = n;
+  while (temp != 0) {
+    temp /= 10;
+    digit++;
+  }
+  printf("Jumlah digit: %d\n", digit);
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Hitung bilangan prima dengan while (C++)}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int n;
+  cout << "Masukkan angka: ";
+  cin >> n;
+  
+  int pembagi = 2;
+  bool prima = (n > 1);
+  
+  while (pembagi * pembagi <= n && prima) {
+    if (n % pembagi == 0)
+      prima = false;
+    pembagi++;
+  }
+  
+  if (prima)
+    cout << n << " adalah bilangan prima\n";
+  else
+    cout << n << " bukan bilangan prima\n";
+}
+\end{lstlisting}
+
+\subsection{Contoh Loop \texttt{repeat-until} / \texttt{do-while}}
+\begin{lstlisting}[language=Pascal, caption={Menu dengan repeat-until (Pascal)}]
+program MenuLoop;
+var
+  pilihan: integer;
+begin
+  repeat
+    Writeln('=== Menu ===');
+    Writeln('1. Opsi A');
+    Writeln('2. Opsi B');
+    Writeln('0. Keluar');
+    Write('Pilih: ');
+    Readln(pilihan);
+    
+    case pilihan of
+      1: Writeln('Anda pilih A');
+      2: Writeln('Anda pilih B');
+      0: Writeln('Keluar...');
+    else
+      Writeln('Pilihan tidak valid');
+    end;
+  until pilihan = 0;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Input ulang dengan do-while (C)}]
+#include <stdio.h>
+int main(void) {
+  int angka;
+  char lagi;
+  
+  do {
+    printf("Masukkan angka: ");
+    scanf("%d", &angka);
+    printf("Kuadrat: %d\n", angka * angka);
+    
+    printf("Ulangi? (y/n): ");
+    scanf(" %c", &lagi);
+  } while (lagi == 'y' || lagi == 'Y');
+  
+  printf("Selesai.\n");
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Validasi input dengan do-while (C++)}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int pilihan;
+  
+  do {
+    cout << "\n=== Kalkulator Sederhana ===\n";
+    cout << "1. Tambah\n";
+    cout << "2. Kurang\n";
+    cout << "3. Kali\n";
+    cout << "4. Bagi\n";
+    cout << "0. Keluar\n";
+    cout << "Pilih operasi: ";
+    cin >> pilihan;
+    
+    if (pilihan >= 1 && pilihan <= 4) {
+      int a, b;
+      cout << "Angka 1: "; cin >> a;
+      cout << "Angka 2: "; cin >> b;
+      
+      switch(pilihan) {
+        case 1: cout << "Hasil: " << a + b << "\n"; break;
+        case 2: cout << "Hasil: " << a - b << "\n"; break;
+        case 3: cout << "Hasil: " << a * b << "\n"; break;
+        case 4: 
+          if (b != 0) cout << "Hasil: " << (double)a / b << "\n";
+          else cout << "Error: pembagi nol\n";
+          break;
+      }
+    }
+  } while (pilihan != 0);
+  
+  cout << "Terima kasih!\n";
 }
 \end{lstlisting}
 
 Ketelitian terhadap \emph{off-by-one} penting pada indeks. Pilih batas eksplisit dan nama variabel penghitung yang jelas.
 
-\section{Penggunaan \texttt{break}, \texttt{continue}}
-\texttt{break} menghentikan loop, \texttt{continue} melompati ke iterasi berikutnya. Gunakan seperlunya agar alur tetap jelas \parencite{gnu-c-manual,cpp-reference}.
+\section{Perulangan Bersarang (Nested Loop)}
+Perulangan bersarang adalah loop di dalam loop lainnya. Loop luar dieksekusi sekali, sementara loop dalam dieksekusi sepenuhnya untuk setiap iterasi loop luar. Nested loop umum digunakan untuk memproses struktur data multidimensi seperti matriks atau untuk menghasilkan kombinasi.
 
-\begin{lstlisting}[language=C, caption={break dan continue di C}]
-for (int i=0; i<100; ++i) {
-  if (i%2==1) continue; // lewati bilangan ganjil
-  if (i>10) break;      // batasi proses
-  printf("%d\n", i);
+\subsection{Diagram Nested Loop}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=1.4cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, align=center, minimum width=2.6cm, minimum height=0.9cm]
+    \node[b] (start) {Mulai};
+    \node[b, below=of start] (outer) {Loop Luar};
+    \node[b, below=of outer] (inner) {Loop Dalam};
+    \node[b, below=of inner] (body) {Proses};
+    \node[b, below=of body] (end) {Selesai};
+    \draw[->] (start) -- (outer);
+    \draw[->] (outer) -- (inner);
+    \draw[->] (inner) -- (body);
+    \draw[->] (body.east) -- +(1.5,0) |- (inner);
+    \draw[->] (inner.west) -- +(-1.5,0) |- (outer);
+    \draw[->] (outer) -- +(0,3.5) -| (end);
+  \end{tikzpicture}
+  \caption{Skema nested loop: loop dalam dieksekusi penuh untuk setiap iterasi loop luar}
+\end{figure}
+
+\subsection{Contoh Nested Loop}
+\begin{lstlisting}[language=Pascal, caption={Pola segitiga dengan nested loop (Pascal)}]
+program PolaBintang;
+var
+  i, j, tinggi: integer;
+begin
+  Write('Masukkan tinggi segitiga: ');
+  Readln(tinggi);
+  
+  for i := 1 to tinggi do begin
+    for j := 1 to i do
+      Write('* ');
+    Writeln;
+  end;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Tabel perkalian dengan nested loop (C)}]
+#include <stdio.h>
+int main(void) {
+  int baris = 5, kolom = 5;
+  
+  printf("Tabel Perkalian %dx%d:\n", baris, kolom);
+  for (int i = 1; i <= baris; ++i) {
+    for (int j = 1; j <= kolom; ++j) {
+      printf("%4d", i * j);
+    }
+    printf("\n");
+  }
+  return 0;
 }
 \end{lstlisting}
 
-Ekstrak predikat kompleks ke fungsi terpisah untuk menghindari banyak \texttt{break}/\texttt{continue}. Pada C++, pastikan iterator tetap valid saat keluar dini.
+\begin{lstlisting}[language=C++, caption={Pola bintang dengan nested loop (C++)}]
+#include <iostream>
+using namespace std;
 
-\section{Operator Ternary / Conditional (C / C++)}
-Operator \texttt{?:} memilih nilai berbasis kondisi dalam satu ekspresi. Gunakan hemat; jika bercabang kompleks, kembali ke \texttt{if/else} \parencite{cpp-reference}.
-
-\begin{lstlisting}[language=C++]
-int absVal = (x >= 0) ? x : -x;
-auto label = (score >= 90) ? "A" : (score >= 80) ? "B" : "C"; // hati-hati keterbacaan
+int main() {
+  int tinggi;
+  cout << "Masukkan tinggi segitiga: ";
+  cin >> tinggi;
+  
+  cout << "Pola segitiga:\n";
+  for (int i = 1; i <= tinggi; ++i) {
+    for (int j = 1; j <= i; ++j) {
+      cout << "* ";
+    }
+    cout << "\n";
+  }
+}
 \end{lstlisting}
 
-Pastikan tipe kedua cabang kompatibel untuk mencegah konversi mengejutkan.
+Pada nested loop, kompleksitas waktu menjadi perkalian iterasi loop luar dan dalam. Loop 3 tingkat atau lebih harus dievaluasi untuk efisiensi, terutama pada dataset besar. Pertimbangkan algoritme alternatif atau optimisasi bila diperlukan.
 
-\subsection{Ringkasan Pemilihan Bentuk Loop}
-\begin{table}[h]
-  \centering
-  \caption{Kapan memakai bentuk loop}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Bentuk & Kapan dipakai & Catatan \\
-    \midrule
-    while & Iterasi tak diketahui, cek di awal & Bisa 0 iterasi \\
-    do-while/repeat-until & Harus jalan minimal sekali & Cek di akhir \\
-    for & Indeks berhingga, batas jelas & Hati-hati off-by-one \\
-    range-based for (C++) & Koleksi/iterator modern & Lebih aman dan ringkas \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\section{Penggunaan \texttt{break}, \texttt{continue}}
+\texttt{break} menghentikan loop sepenuhnya dan keluar ke pernyataan setelah loop. \texttt{continue} melompati sisa iterasi saat ini dan langsung ke iterasi berikutnya. Gunakan seperlunya agar alur tetap jelas; terlalu banyak \texttt{break}/\texttt{continue} dapat membingungkan \parencite{gnu-c-manual,cpp-reference}.
 
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
-\begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih bahasa, tempel contoh, Run.
-  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
-\end{itemize}
+\subsection{Contoh \texttt{break} dan \texttt{continue}}
+\begin{lstlisting}[language=Pascal, caption={break dan continue di Pascal}]
+program BreakContinue;
+var
+  i: integer;
+begin
+  { Continue: lewati bilangan ganjil }
+  for i := 1 to 10 do begin
+    if i mod 2 = 1 then
+      continue;
+    Writeln(i);  { hanya cetak genap }
+  end;
+  
+  { Break: hentikan loop saat menemukan kondisi }
+  i := 0;
+  while true do begin
+    i := i + 1;
+    if i > 5 then
+      break;
+    Writeln('Iterasi: ', i);
+  end;
+end.
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={break dan continue di C}]
+#include <stdio.h>
+int main(void) {
+  // Continue: cetak bilangan genap saja
+  for (int i = 0; i < 100; ++i) {
+    if (i % 2 == 1)
+      continue;  // lewati bilangan ganjil
+    if (i > 10)
+      break;     // batasi proses
+    printf("%d\n", i);
+  }
+  
+  // Break pada nested loop: keluar dari loop dalam
+  for (int i = 0; i < 5; ++i) {
+    for (int j = 0; j < 5; ++j) {
+      if (i * j > 6)
+        break;  // keluar dari loop j
+      printf("(%d,%d) ", i, j);
+    }
+    printf("\n");
+  }
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={break saat menemukan kondisi (C++)}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int n;
+  cout << "Masukkan batas: ";
+  cin >> n;
+  
+  cout << "Bilangan kelipatan 7:\n";
+  for (int i = 1; i <= n; ++i) {
+    if (i % 7 == 0) {
+      cout << "Ditemukan: " << i << "\n";
+      cout << "Berhenti di kelipatan 7 pertama\n";
+      break;  // keluar loop setelah ditemukan
+    }
+    cout << i << " ";
+  }
+  cout << "\n";
+}
+\end{lstlisting}
+
+Ekstrak predikat kompleks ke fungsi terpisah untuk menghindari banyak \texttt{break} atau \texttt{continue}. Pada nested loop, \texttt{break} hanya keluar dari loop terdalamnya; untuk keluar dari semua loop, gunakan flag boolean atau label (di bahasa yang mendukung). Pada C++, pastikan iterator tetap valid saat keluar dini.
 \end{document}

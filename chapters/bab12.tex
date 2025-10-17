@@ -1,105 +1,593 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Modul / Unit / Header \& Manajemen Proyek}
-\section{Unit dan ``uses'' (Pascal)}
-\subsection{Contoh Unit Sederhana}
-\begin{lstlisting}[language=Pascal, caption={Unit dan program utama (Pascal)}]
-// mathutil.pas
-unit MathUtil;
-interface
-function Square(x: integer): integer;
-implementation
-function Square(x: integer): integer; begin Square := x*x; end;
+\chapter{File dan I/O}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami perbedaan antara file teks (ASCII) dan file binary
+  \item Membuka, membaca, menulis, dan menutup file dengan benar
+  \item Menggunakan mode file yang tepat (read, write, append, binary)
+  \item Melakukan operasi seek dan tell untuk akses random pada file
+  \item Menangani error file operation dengan tepat
+  \item Mengimplementasikan atomic write untuk keamanan data
+  \item Membuat program yang dapat menyimpan dan membaca data dari file
+\end{itemize}
+
+Berinteraksi dengan berkas memungkinkan program menyimpan dan memuat data secara persisten. Terdapat dua jenis berkas utama dalam pemrograman: file ASCII/teks dan file binary. Keduanya memiliki perbedaan fundamental dalam cara deklarasi, mode pembukaan, fungsi manipulasi, dan representasi data. Memahami perbedaan ini penting untuk memilih pendekatan yang sesuai dengan kebutuhan aplikasi \parencite{gnu-c-manual,cpp-reference,free-pascal-docs}.
+
+\section{File ASCII/Teks}
+
+File teks adalah berkas yang berisi karakter ASCII atau Unicode yang dapat dibaca langsung oleh manusia. Data disimpan sebagai rangkaian karakter dengan encoding tertentu (UTF-8, ASCII, dll). File teks cocok untuk menyimpan konfigurasi, log, data terstruktur sederhana, dan dokumen yang perlu diedit manual.
+
+\subsection{Karakteristik File Teks}
+\begin{itemize}
+  \item Data disimpan dalam bentuk karakter yang dapat dibaca manusia
+  \item Karakter khusus seperti newline (\textbackslash n) diterjemahkan secara berbeda antar sistem operasi (Windows: CR+LF, Unix/Linux: LF)
+  \item Ukuran file cenderung lebih besar karena representasi numerik sebagai string
+  \item Dapat dibuka dan diedit dengan editor teks biasa
+  \item Portabel lintas platform dengan konversi line ending yang sesuai
+\end{itemize}
+
+\subsection{Deklarasi dan Mode Pembukaan}
+
+\subsubsection{Pascal}
+Dalam Pascal, tipe \texttt{text} digunakan untuk file teks. Deklarasi dan operasi dasar:
+
+\begin{lstlisting}[language=Pascal, caption={Deklarasi dan mode file teks Pascal}]
+var
+  f: text;           // Deklarasi variabel file teks
+  s: string;
+  angka: integer;
+begin
+  // Mode tulis (w): membuat file baru atau overwrite
+  Assign(f, 'output.txt');
+  Rewrite(f);                    // Buka untuk menulis
+  Writeln(f, 'Baris pertama');
+  Writeln(f, 'Angka: ', 42);
+  Close(f);
+  
+  // Mode baca (r): membaca file yang sudah ada
+  Assign(f, 'output.txt');
+  Reset(f);                      // Buka untuk membaca
+  Readln(f, s);
+  Writeln('Dibaca: ', s);
+  Close(f);
+  
+  // Mode append (a): menambah di akhir file
+  Assign(f, 'output.txt');
+  Append(f);                     // Buka untuk menambah
+  Writeln(f, 'Baris tambahan');
+  Close(f);
 end.
-
-// main.pas
-program Main; uses MathUtil; begin Writeln(Square(5)); end.
-\end{lstlisting}
-Unit pada Pascal memisahkan antarmuka (\texttt{interface}) dari implementasi (\texttt{implementation}) untuk meningkatkan modularitas dan kompilasi terpisah. Kata kunci \texttt{uses} menentukan ketergantungan lintas unit sehingga resolusi simbol menjadi eksplisit. Pendekatan ini memperjelas kontrak publik dan memungkinkan pengujian bagian-bagian program secara mandiri \parencite{free-pascal-docs,pascal-tutorial-wikibooks}.
-
-Dokumentasikan simbol yang diekspos pada bagian antarmuka dan sembunyikan detail pada implementasi guna menjaga enkapsulasi. Struktur direktori yang konsisten memudahkan navigasi dan automasi build. Sertakan uji yang memverifikasi kompatibilitas antar unit saat evolusi API berlangsung.
-
-\section{Header / Implementasi (C / C++)}
-\subsection{Contoh Header dan Implementasi}
-\begin{lstlisting}[language=C, caption={Header dengan include guard dan implementasi C}]
-// math.h
-#ifndef MATH_H_INCLUDED
-#define MATH_H_INCLUDED
-int square(int x);
-#endif
-
-// math.c
-int square(int x){ return x*x; }
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={Header C++ dan catatan module C++20}]
-// math.hpp
-#pragma once
-inline int square(int x){ return x*x; }
-// Catatan: C++20 modules (jika toolchain mendukung) dapat menggantikan header tradisional.
+\subsubsection{C}
+C menggunakan pointer \texttt{FILE*} dengan mode string untuk file teks:
+
+\begin{lstlisting}[language=C, caption={Mode file teks di C}]
+#include <stdio.h>
+
+int main() {
+  FILE *fp;
+  char buffer[256];
+  
+  // Mode "r": baca (read), file harus ada
+  fp = fopen("data.txt", "r");
+  if (fp == NULL) {
+    perror("Gagal membuka file");
+    return 1;
+  }
+  fgets(buffer, sizeof(buffer), fp);
+  printf("Dibaca: %s", buffer);
+  fclose(fp);
+  
+  // Mode "w": tulis (write), file baru atau overwrite
+  fp = fopen("output.txt", "w");
+  fprintf(fp, "Halo dunia\n");
+  fprintf(fp, "Angka: %d\n", 100);
+  fclose(fp);
+  
+  // Mode "a": append, menambah di akhir
+  fp = fopen("output.txt", "a");
+  fprintf(fp, "Baris tambahan\n");
+  fclose(fp);
+  
+  // Mode "r+": baca dan tulis, file harus ada
+  fp = fopen("data.txt", "r+");
+  // dapat fread dan fwrite
+  fclose(fp);
+  
+  return 0;
+}
 \end{lstlisting}
-Di C/C++, pemisahan berkas header (deklarasi) dan berkas sumber (definisi) memungkinkan kompilasi terpisah dan pengelolaan ketergantungan yang lebih baik. Sertakan include guard atau \texttt{\#pragma once} untuk mencegah duplikasi definisi. Untuk C++, pertimbangkan modul C++ modern bila toolchain mendukung untuk mempercepat kompilasi dan meningkatkan enkapsulasi \parencite{gnu-c-manual,cpp-reference}.
 
-Organisasi proyek yang baik meminimalkan \texttt{\#include} yang tidak perlu dan menghindari ketergantungan siklik. Ekstraksi antarmuka minimal ke header membantu mempercepat waktu kompilasi dan memperkuat pemisahan tanggung jawab. Dokumentasi referensi memuat pola dan kontra-pola umum dalam pengelolaan header.
+\subsubsection{C++}
+C++ menyediakan stream object dengan manipulator yang lebih type-safe:
 
-\section{Include Guards / \texttt{\#pragma once}}
-\subsection{Perbandingan Singkat}
-\begin{table}[h]
-  \centering
-  \caption{Guard vs pragma once}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Teknik & Kelebihan & Pertimbangan \\
-    \midrule
-    Include guard & Portabel, eksplisit & Butuh nama makro unik \\
-    #pragma once & Ringkas & Bukan standar (dukungan luas) \\
-    \bottomrule
-  \end{tabular}
+\begin{lstlisting}[language=C++, caption={Mode file teks di C++}]
+#include <fstream>
+#include <string>
+#include <iostream>
+using namespace std;
+
+int main() {
+  // ofstream: output (write)
+  ofstream ofs("output.txt");
+  if (!ofs.is_open()) {
+    cerr << "Gagal membuka file\n";
+    return 1;
+  }
+  ofs << "Baris pertama\n";
+  ofs << "Angka: " << 42 << "\n";
+  ofs.close();
+  
+  // ifstream: input (read)
+  ifstream ifs("output.txt");
+  string line;
+  while (getline(ifs, line)) {
+    cout << line << "\n";
+  }
+  ifs.close();
+  
+  // Mode append: ios::app
+  ofstream ofs_append("output.txt", ios::app);
+  ofs_append << "Baris tambahan\n";
+  ofs_append.close();
+  
+  // Mode read+write: ios::in | ios::out
+  fstream fs("data.txt", ios::in | ios::out);
+  // dapat baca dan tulis
+  fs.close();
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Fungsi Manipulasi File Teks}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Operasi} & \textbf{Pascal} & \textbf{C} & \textbf{C++} \\ \hline
+Baca baris & \texttt{Readln(f, s)} & \texttt{fgets(buf, n, fp)} & \texttt{getline(ifs, str)} \\ \hline
+Tulis baris & \texttt{Writeln(f, s)} & \texttt{fprintf(fp, "\%s\textbackslash n", s)} & \texttt{ofs << s << "\textbackslash n"} \\ \hline
+Baca format & \texttt{Read(f, i)} & \texttt{fscanf(fp, "\%d", \&i)} & \texttt{ifs >> i} \\ \hline
+Tulis format & \texttt{Write(f, i)} & \texttt{fprintf(fp, "\%d", i)} & \texttt{ofs << i} \\ \hline
+Cek EOF & \texttt{Eof(f)} & \texttt{feof(fp)} & \texttt{ifs.eof()} \\ \hline
+\end{tabular}
+\caption{Perbandingan fungsi manipulasi file teks}
 \end{table}
-Include guards mencegah definisi ganda saat header disertakan dari banyak tempat. Pola konvensional menggunakan makro unik untuk setiap berkas header, sedangkan \texttt{\#pragma once} menawarkan alternatif yang ringkas dengan dukungan luas. Pastikan strategi yang dipilih konsisten di seluruh proyek \parencite{gnu-c-manual,cpp-reference}.
 
-Gunakan alat analisis untuk mendeteksi siklus penyertaan dan header yang terlalu gemuk. Refaktor ke antarmuka yang lebih kecil dan spesifik agar unit kompilasi tidak memuat lebih banyak dependensi daripada yang dibutuhkan. Pendekatan ini mengurangi waktu build dan mempermudah pemeliharaan.
+\subsection{Contoh Aplikasi File Teks}
 
-\section{Organisasi Proyek Modular}
-\subsection{Diagram Kompilasi dan Linking}
-\begin{figure}[h]
+\begin{lstlisting}[language=C, caption={Membaca file konfigurasi sederhana}]
+#include <stdio.h>
+#include <string.h>
+
+int read_config(const char *filename) {
+  FILE *fp = fopen(filename, "r");
+  if (!fp) return -1;
+  
+  char line[256];
+  while (fgets(line, sizeof(line), fp)) {
+    // Lewati komentar
+    if (line[0] == '#') continue;
+    
+    // Parse key=value
+    char key[64], value[64];
+    if (sscanf(line, "%63[^=]=%63s", key, value) == 2) {
+      printf("Config: %s = %s\n", key, value);
+    }
+  }
+  
+  fclose(fp);
+  return 0;
+}
+\end{lstlisting}
+
+\section{File Binary}
+
+File binary menyimpan data dalam format biner mentah (raw bytes) yang tidak dapat dibaca langsung oleh manusia. Data disimpan dalam representasi internal mesin, seperti integer 32-bit disimpan sebagai 4 byte secara langsung. File binary cocok untuk menyimpan struktur data kompleks, gambar, audio, executable, dan data yang memerlukan efisiensi ruang dan kecepatan akses.
+
+\subsection{Karakteristik File Binary}
+\begin{itemize}
+  \item Data disimpan dalam format biner mentah (byte sequence)
+  \item Tidak ada translasi karakter khusus (newline tetap sebagai byte mentah)
+  \item Ukuran file lebih efisien untuk data numerik
+  \item Tidak dapat dibaca/diedit dengan editor teks biasa
+  \item Perlu perhatian terhadap endianness, alignment, dan portabilitas antar arsitektur
+  \item Kecepatan baca/tulis lebih tinggi karena tidak ada konversi format
+\end{itemize}
+
+\subsection{Deklarasi dan Mode Pembukaan}
+
+\subsubsection{Pascal}
+Pascal menggunakan \texttt{file of <type>} untuk file binary dengan tipe tertentu:
+
+\begin{lstlisting}[language=Pascal, caption={Deklarasi dan mode file binary Pascal}]
+type
+  TRecord = record
+    id: integer;
+    nilai: real;
+    nama: string[50];
+  end;
+
+var
+  fb: file of TRecord;    // File binary bertipe
+  fu: file;               // File binary untyped (byte stream)
+  rec: TRecord;
+  buffer: array[1..1024] of byte;
+  numRead: integer;
+begin
+  // File bertipe
+  Assign(fb, 'data.dat');
+  Rewrite(fb);                   // Buka untuk tulis binary
+  rec.id := 1;
+  rec.nilai := 95.5;
+  rec.nama := 'Alice';
+  Write(fb, rec);                // Tulis record
+  Close(fb);
+  
+  Reset(fb);                     // Buka untuk baca binary
+  Read(fb, rec);                 // Baca record
+  Writeln('ID: ', rec.id);
+  Close(fb);
+  
+  // File untyped untuk akses byte-level
+  Assign(fu, 'binary.bin');
+  Reset(fu, 1);                  // Ukuran record = 1 byte
+  BlockRead(fu, buffer, 1024, numRead);
+  Close(fu);
+end.
+\end{lstlisting}
+
+\subsubsection{C}
+C menggunakan mode dengan suffix \texttt{b} untuk binary:
+
+\begin{lstlisting}[language=C, caption={Mode file binary di C}]
+#include <stdio.h>
+
+typedef struct {
+  int id;
+  double nilai;
+  char nama[50];
+} Record;
+
+int main() {
+  FILE *fp;
+  Record rec;
+  
+  // Mode "rb": read binary
+  fp = fopen("data.bin", "rb");
+  if (fp) {
+    fread(&rec, sizeof(Record), 1, fp);
+    printf("ID: %d\n", rec.id);
+    fclose(fp);
+  }
+  
+  // Mode "wb": write binary (overwrite)
+  fp = fopen("data.bin", "wb");
+  rec.id = 1;
+  rec.nilai = 95.5;
+  snprintf(rec.nama, sizeof(rec.nama), "Alice");
+  fwrite(&rec, sizeof(Record), 1, fp);
+  fclose(fp);
+  
+  // Mode "ab": append binary
+  fp = fopen("data.bin", "ab");
+  rec.id = 2;
+  fwrite(&rec, sizeof(Record), 1, fp);
+  fclose(fp);
+  
+  // Mode "rb+": read+write binary
+  fp = fopen("data.bin", "rb+");
+  // dapat fread dan fwrite pada posisi mana saja
+  fclose(fp);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsubsection{C++}
+C++ menggunakan flag \texttt{ios::binary} untuk mode binary:
+
+\begin{lstlisting}[language=C++, caption={Mode file binary di C++}]
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+struct Record {
+  int id;
+  double nilai;
+  char nama[50];
+};
+
+int main() {
+  Record rec;
+  
+  // Tulis binary: ios::binary | ios::out
+  ofstream ofs("data.bin", ios::binary);
+  if (!ofs) {
+    cerr << "Gagal buka file\n";
+    return 1;
+  }
+  rec.id = 1;
+  rec.nilai = 95.5;
+  snprintf(rec.nama, sizeof(rec.nama), "Alice");
+  ofs.write(reinterpret_cast<char*>(&rec), sizeof(Record));
+  ofs.close();
+  
+  // Baca binary: ios::binary | ios::in
+  ifstream ifs("data.bin", ios::binary);
+  ifs.read(reinterpret_cast<char*>(&rec), sizeof(Record));
+  cout << "ID: " << rec.id << "\n";
+  ifs.close();
+  
+  // Read+write binary
+  fstream fs("data.bin", ios::binary | ios::in | ios::out);
+  // dapat seek, read, write
+  fs.close();
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Fungsi Manipulasi File Binary}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Operasi} & \textbf{Pascal} & \textbf{C} & \textbf{C++} \\ \hline
+Tulis data & \texttt{Write(f, v)} & \texttt{fwrite(\&v, sz, n, fp)} & \texttt{ofs.write((char*)\&v, sz)} \\ \hline
+Baca data & \texttt{Read(f, v)} & \texttt{fread(\&v, sz, n, fp)} & \texttt{ifs.read((char*)\&v, sz)} \\ \hline
+Tulis blok & \texttt{BlockWrite(f, buf, n)} & \texttt{fwrite(buf, 1, n, fp)} & \texttt{ofs.write(buf, n)} \\ \hline
+Baca blok & \texttt{BlockRead(f, buf, n)} & \texttt{fread(buf, 1, n, fp)} & \texttt{ifs.read(buf, n)} \\ \hline
+Seek posisi & \texttt{Seek(f, pos)} & \texttt{fseek(fp, pos, orig)} & \texttt{fs.seekg(pos)} \\ \hline
+Posisi saat ini & \texttt{FilePos(f)} & \texttt{ftell(fp)} & \texttt{fs.tellg()} \\ \hline
+Ukuran file & \texttt{FileSize(f)} & seek+ftell & seekg+tellg \\ \hline
+\end{tabular}
+\caption{Perbandingan fungsi manipulasi file binary}
+\end{table}
+
+\subsection{Akses Acak dan Posisi dalam File Binary}
+
+File binary mendukung akses acak (random access) yang memungkinkan membaca/menulis pada posisi arbitrary tanpa harus membaca seluruh file:
+
+\begin{lstlisting}[language=C, caption={fseek/ftell untuk akses acak}]
+#include <stdio.h>
+
+typedef struct { int id; char nama[20]; } Record;
+
+int main() {
+  FILE *fp = fopen("data.bin", "rb+");
+  Record rec;
+  
+  // Pergi ke akhir file untuk ukuran
+  fseek(fp, 0, SEEK_END);
+  long file_size = ftell(fp);
+  int num_records = file_size / sizeof(Record);
+  
+  // Kembali ke awal
+  rewind(fp);  // atau fseek(fp, 0, SEEK_SET);
+  
+  // Baca record ke-3 (indeks 2)
+  fseek(fp, 2 * sizeof(Record), SEEK_SET);
+  fread(&rec, sizeof(Record), 1, fp);
+  
+  // Update record tersebut
+  rec.id = 999;
+  fseek(fp, -sizeof(Record), SEEK_CUR); // mundur 1 record
+  fwrite(&rec, sizeof(Record), 1, fp);
+  
+  fclose(fp);
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={seekg/tellg untuk akses acak}]
+#include <fstream>
+using namespace std;
+
+struct Record { int id; char nama[20]; };
+
+int main() {
+  fstream fs("data.bin", ios::binary | ios::in | ios::out);
+  Record rec;
+  
+  // Ukuran file
+  fs.seekg(0, ios::end);
+  auto file_size = fs.tellg();
+  int num_records = file_size / sizeof(Record);
+  
+  // Baca record ke-3
+  fs.seekg(2 * sizeof(Record), ios::beg);
+  fs.read(reinterpret_cast<char*>(&rec), sizeof(Record));
+  
+  // Update pada posisi yang sama
+  rec.id = 999;
+  fs.seekp(2 * sizeof(Record), ios::beg);  // seekp untuk write
+  fs.write(reinterpret_cast<char*>(&rec), sizeof(Record));
+  
+  fs.close();
+  return 0;
+}
+\end{lstlisting}
+
+Parameter origin untuk seek:
+\begin{itemize}
+  \item \texttt{SEEK\_SET} (C) / \texttt{ios::beg} (C++): dari awal file
+  \item \texttt{SEEK\_CUR} (C) / \texttt{ios::cur} (C++): dari posisi saat ini
+  \item \texttt{SEEK\_END} (C) / \texttt{ios::end} (C++): dari akhir file
+\end{itemize}
+
+\subsection{Pertimbangan Portabilitas File Binary}
+
+File binary memerlukan perhatian khusus untuk portabilitas antar platform:
+
+\begin{itemize}
+  \item \textbf{Endianness}: Urutan byte integer berbeda antara big-endian dan little-endian. Gunakan fungsi konversi byte order atau format standar (network byte order)
+  \item \textbf{Alignment dan padding}: Compiler dapat menambahkan padding pada struct. Gunakan \texttt{\#pragma pack} (C/C++) atau attribute untuk kontrol layout
+  \item \textbf{Ukuran tipe data}: \texttt{int}, \texttt{long} dapat berbeda ukuran antar platform. Gunakan tipe fixed-width seperti \texttt{int32\_t}, \texttt{int64\_t}
+  \item \textbf{Format serialisasi}: Untuk portabilitas maksimal, gunakan format standar seperti JSON, XML, Protocol Buffers, atau MessagePack
+\end{itemize}
+
+\begin{lstlisting}[language=C, caption={Contoh struct dengan padding control}]
+#include <stdint.h>
+
+// Tanpa pragma pack, compiler menambahkan padding
+struct Unpacked {
+  char c;      // 1 byte + 3 byte padding
+  int32_t i;   // 4 byte
+  char c2;     // 1 byte + 3 byte padding
+};  // Total: 12 byte
+
+// Dengan pragma pack, tidak ada padding
+#pragma pack(push, 1)
+struct Packed {
+  char c;      // 1 byte
+  int32_t i;   // 4 byte
+  char c2;     // 1 byte
+};  // Total: 6 byte
+#pragma pack(pop)
+\end{lstlisting}
+
+\begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=1.6cm, >=Stealth]
-    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.8cm, minimum height=0.9cm]
-    \node[b] (src) {Sumber (\texttt{.pas/.c/.cpp})};
-    \node[b, right=of src] (obj) {Objek (\texttt{.o})};
-    \node[b, right=of obj] (bin) {Biner (\texttt{.exe/.out})};
-    \draw[->] (src) -- node[above]{compile} (obj);
-    \draw[->] (obj) -- node[above]{link} (bin);
+  \begin{tikzpicture}[node distance=1.6cm]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.6cm, minimum height=0.9cm]
+    \node[b] (open) {buka file};
+    \node[b, right=of open] (proc) {baca/olah/tulis};
+    \node[b, right=of proc] (close) {tutup file};
+    \draw[->] (open) -- (proc); \draw[->] (proc) -- (close);
   \end{tikzpicture}
-  \caption{Alur kompilasi dan linking}
+  \caption{Alur sederhana pemrosesan berkas}
 \end{figure}
 
-\subsection{Makefile dan CMake Sederhana}
-\begin{lstlisting}[language=make, caption={Makefile minimal}]
-CC=gcc
-CFLAGS=-std=c11 -O2 -Wall -Wextra
-all: app
-app: main.o math.o
-	$(CC) $(CFLAGS) -o $@ $^
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
-clean:
-	rm -f *.o app
+\section{Penanganan Kesalahan File}
+
+Operasi file dapat gagal karena berbagai alasan: file tidak ditemukan, izin ditolak, disk penuh, atau media rusak. Penanganan kesalahan yang tepat penting untuk mencegah kehilangan data dan memberikan pengalaman pengguna yang baik.
+
+\subsection{Pemeriksaan Kesalahan}
+
+\begin{lstlisting}[language=C, caption={Penanganan kesalahan di C}]
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+
+int main() {
+  FILE *fp = fopen("data.txt", "r");
+  if (fp == NULL) {
+    // Gunakan errno dan perror untuk detail error
+    fprintf(stderr, "Error: %s\n", strerror(errno));
+    perror("fopen failed");
+    return 1;
+  }
+  
+  char buffer[256];
+  if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+    if (feof(fp)) {
+      printf("End of file reached\n");
+    } else if (ferror(fp)) {
+      fprintf(stderr, "Read error occurred\n");
+      clearerr(fp);  // clear error flag
+    }
+  }
+  
+  fclose(fp);
+  return 0;
+}
 \end{lstlisting}
 
-\begin{lstlisting}[language=cmake, caption={CMakeLists.txt minimal}]
-cmake_minimum_required(VERSION 3.20)
-project(Demo C CXX)
-add_executable(app main.c math.c)
-\end{lstlisting}
-Struktur proyek modular memfasilitasi kolaborasi dan penskalaan basis kode. Pisahkan kode aplikasi, pustaka bersama, dan pengujian ke dalam direktori yang jelas. Gunakan sistem build seperti Make atau CMake untuk mendeskripsikan target, dependensi, dan opsi kompilasi secara deklaratif \parencite{gnu-c-manual,cpp-reference}.
+\begin{lstlisting}[language=C++, caption={Penanganan kesalahan di C++}]
+#include <fstream>
+#include <iostream>
+using namespace std;
 
-Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar regresi dapat terdeteksi dini. Dokumentasi proyek harus memuat instruksi build, daftar dependensi, dan konvensi penamaan berkas. Praktik ini memastikan mahasiswa dapat mereproduksi dan memperluas contoh dengan konsisten di berbagai lingkungan.
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
+int main() {
+  ifstream ifs("data.txt");
+  
+  // Cek apakah file berhasil dibuka
+  if (!ifs.is_open()) {
+    cerr << "Gagal membuka file\n";
+    return 1;
+  }
+  
+  // Aktifkan exception untuk error
+  ifs.exceptions(ifstream::failbit | ifstream::badbit);
+  
+  try {
+    string line;
+    while (getline(ifs, line)) {
+      cout << line << "\n";
+    }
+  } catch (ifstream::failure& e) {
+    if (ifs.eof()) {
+      cout << "End of file\n";
+    } else {
+      cerr << "Exception: " << e.what() << "\n";
+    }
+  }
+  
+  ifs.close();
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Tulis Atomik untuk Keamanan Data}
+
+Untuk mencegah korupsi data saat terjadi kegagalan di tengah penulisan, gunakan strategi tulis ke file temporary kemudian rename:
+
+\begin{lstlisting}[language=C, caption={Menulis ke file sementara lalu rename (C, POSIX)}]
+#include <stdio.h>
+
+int atomic_write(const char* path, const char* data) {
+  char temp_path[256];
+  snprintf(temp_path, sizeof(temp_path), "%s.tmp", path);
+  
+  // Tulis ke file temporary
+  FILE* f = fopen(temp_path, "w");
+  if (!f) {
+    perror("Failed to open temp file");
+    return -1;
+  }
+  
+  if (fprintf(f, "%s", data) < 0) {
+    fclose(f);
+    remove(temp_path);
+    return -1;
+  }
+  
+  // Flush buffer ke disk
+  fflush(f);
+  fclose(f);
+  
+  // Rename atomik (pada filesystem yang mendukung)
+  if (rename(temp_path, path) != 0) {
+    perror("Failed to rename");
+    remove(temp_path);
+    return -1;
+  }
+  
+  return 0;
+}
+\end{lstlisting}
+
+Operasi \texttt{rename} pada filesystem modern (POSIX, NTFS) bersifat atomik, artinya file target akan muncul lengkap atau tidak sama sekali, tidak pernah dalam keadaan setengah tertulis. Ini melindungi dari korupsi data jika program crash atau sistem mati mendadak \parencite{gnu-c-manual}.
+
+\subsection{Best Practices}
 \begin{itemize}
-  \item \textbf{OnlineGDB}: cocok untuk contoh satu berkas (Pascal/C/C++). Untuk multi-berkas, gunakan lingkungan offline.
-  \item \textbf{Lazarus (Pascal)}: tambahkan unit ke proyek, atur \texttt{uses}, Run.
-  \item \textbf{Code::Blocks (C/C++)}: tambahkan \texttt{.c/.cpp} dan \texttt{.h} ke proyek, pastikan dependensi benar, Build \& Run.
+  \item Selalu periksa return value dari operasi file
+  \item Gunakan \texttt{perror} atau \texttt{strerror(errno)} untuk pesan error informatif
+  \item Tutup file dengan \texttt{fclose}/\texttt{close()} dalam semua jalur eksekusi
+  \item Pada C++, gunakan RAII (Resource Acquisition Is Initialization) agar file otomatis tertutup
+  \item Flush buffer secara eksplisit untuk data kritis
+  \item Implementasikan retry logic untuk error transient (seperti \texttt{EINTR})
+  \item Gunakan atomic write untuk mencegah korupsi data
 \end{itemize}
+
+Strategi buffering dapat meningkatkan throughput tetapi memerlukan sinkronisasi saat menggabungkan I/O dan perhitungan. Pada C++, nonaktifkan sinkronisasi dengan stdio (via \texttt{sync\_with\_stdio(false)}) bila tidak memerlukan interoperabilitas untuk meningkatkan kinerja. Uji integrasi harus mensimulasikan skenario kesalahan untuk memastikan program merespons dengan benar tanpa korupsi data \parencite{cplusplus-io,cpp-reference}.
+
 \end{document}

@@ -5,9 +5,16 @@
 % Encoding and language
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[indonesian]{babel}
+\usepackage[english,indonesian]{babel}
 \usepackage{lmodern}
 \usepackage{csquotes}
+% Set fallback quote style for Indonesian (use English style)
+\DeclareQuoteStyle{indonesian}
+  {\quotedblbase}
+  {\textquotedblleft}
+  [0.05em]
+  {\quotesinglbase}
+  {\fixligatures\textquoteleft}
 
 % Page layout
 \usepackage{geometry}
@@ -18,9 +25,17 @@
 % Graphics, tables, code listings
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{float}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\hypersetup{
+  breaklinks=true,
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
 \usepackage{cleveref}
 % Diagrams
 \usepackage{tikz}
@@ -42,8 +57,29 @@
 \lstset{style=codestyle}
 
 % Bibliography (biblatex)
-\usepackage[backend=biber,style=authoryear,sorting=nyt]{biblatex}
+\usepackage[backend=biber,style=authoryear,sorting=nyt,autolang=other,maxbibnames=99]{biblatex}
 \addbibresource{references.bib}
+
+% Explicitly set bibliography language to English
+\DeclareLanguageMapping{indonesian}{english}
+
+% Define custom strings for bibliography
+\DefineBibliographyStrings{english}{%
+  andothers = {et~al\adddot},
+  and = {and},
+  in = {in},
+  page = {p\adddot},
+  pages = {pp\adddot},
+  urlseen = {accessed},
+}
+
+% Configure URL breaking in bibliography
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburlucpenalty}{9000}
+\setcounter{biburllcpenalty}{9000}
+
+% Allow more flexibility in line breaking
+\emergencystretch=1em
 
 % Subfiles per chapter
 \usepackage{subfiles}
@@ -55,11 +91,15 @@
 
 \begin{document}
 \frontmatter
+\hypersetup{pageanchor=false}
 \maketitle
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
 \tableofcontents
 
+\cleardoublepage
 \mainmatter
-% Struktur mengikuti RPS (12 bab)
+% Struktur mengikuti RPS (13 bab)
 \subfile{chapters/bab01} % Pengantar & Persiapan Lingkungan
 \subfile{chapters/bab02} % Tipe Data, Variabel, Input/Output
 \subfile{chapters/bab03} % Operator & Ekspresi
@@ -67,11 +107,12 @@
 \subfile{chapters/bab05} % Struktur Kontrol Perulangan & Lainnya
 \subfile{chapters/bab06} % Array & Multidimensi
 \subfile{chapters/bab07} % String / Karakter & Operasi String
-\subfile{chapters/bab08} % Struktur Data Dasar & Pointer Dasar
-\subfile{chapters/bab09} % Fungsi & Prosedur / Metode
-\subfile{chapters/bab10} % Alokasi Dinamis & Pointer Lanjutan
-\subfile{chapters/bab11} % File & Operasi I/O Lanjutan
-\subfile{chapters/bab12} % Modul / Unit / Header & Manajemen Proyek
+\subfile{chapters/bab08} % Record / Struct --- Tipe Data Terstruktur
+\subfile{chapters/bab09} % Pointer --- Penunjuk dan Manajemen Memori
+\subfile{chapters/bab10} % Fungsi & Prosedur / Metode
+\subfile{chapters/bab11} % Alokasi Dinamis & Pointer Lanjutan
+\subfile{chapters/bab12} % File & Operasi I/O Lanjutan
+\subfile{chapters/bab13} % Modul / Unit / Header & Manajemen Proyek
 
 \backmatter
 \printbibliography

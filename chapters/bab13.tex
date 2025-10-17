@@ -1,0 +1,1104 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\chapter{Modularisasi Program}
+
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami pentingnya modularisasi dalam pengembangan program besar
+  \item Membuat unit (Pascal) dan header file (C/C++) untuk memecah program
+  \item Menggunakan include guards dan pragma once untuk mencegah multiple inclusion
+  \item Memisahkan interface (deklarasi) dari implementation (definisi)
+  \item Mengorganisir proyek dengan struktur direktori yang baik
+  \item Menggunakan build tools (Makefile, CMake) untuk automasi kompilasi
+  \item Menerapkan prinsip separation of concerns dan modular design
+\end{itemize}
+
+Seiring program berkembang menjadi lebih besar dan kompleks, memecah kode menjadi beberapa file yang lebih kecil dan terorganisir menjadi sangat penting. Modularisasi meningkatkan keterbacaan, kemudahan pemeliharaan, penggunaan kembali kode, dan mempercepat waktu kompilasi. Bab ini membahas cara membuat dan menggunakan unit (Pascal) serta header file (C/C++) untuk memecah program besar menjadi komponen-komponen modular \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+
+\section{Mengapa Modularisasi Penting?}
+
+\subsection{Masalah Kode Monolitik}
+Program yang ditulis dalam satu file besar menghadapi beberapa masalah:
+\begin{itemize}
+  \item \textbf{Sulit dibaca}: Ribuan baris kode dalam satu file membingungkan
+  \item \textbf{Sulit dipelihara}: Perubahan kecil dapat mempengaruhi bagian yang tidak terkait
+  \item \textbf{Tidak dapat digunakan kembali}: Fungsi berguna tidak dapat dipakai di program lain
+  \item \textbf{Kompilasi lambat}: Perubahan kecil memerlukan kompilasi ulang seluruh program
+  \item \textbf{Kolaborasi sulit}: Banyak programmer sulit bekerja pada file yang sama
+  \item \textbf{Testing sulit}: Tidak dapat menguji komponen secara terpisah
+\end{itemize}
+
+\subsection{Manfaat Modularisasi}
+Memecah program menjadi modul memberikan keuntungan:
+\begin{itemize}
+  \item \textbf{Separation of Concerns}: Setiap modul fokus pada satu tanggung jawab
+  \item \textbf{Encapsulation}: Detail implementasi disembunyikan, hanya interface yang ekspos
+  \item \textbf{Reusability}: Modul dapat digunakan di berbagai program
+  \item \textbf{Maintainability}: Perubahan terisolasi pada modul spesifik
+  \item \textbf{Testability}: Setiap modul dapat diuji secara independen
+  \item \textbf{Compilation Speed}: Kompilasi inkremental hanya file yang berubah
+  \item \textbf{Team Collaboration}: Anggota tim dapat bekerja pada modul berbeda
+\end{itemize}
+
+\section{Unit di Pascal: Memecah Program Besar}
+
+Unit pada Pascal adalah cara untuk mengorganisir kode ke dalam modul terpisah yang dapat digunakan kembali. Unit memisahkan antarmuka (\texttt{interface}) dari implementasi (\texttt{implementation}) untuk meningkatkan modularitas dan kompilasi terpisah \parencite{free-pascal-docs,pascal-tutorial-wikibooks}.
+
+\subsection{Struktur Unit Pascal}
+Unit Pascal memiliki struktur standar:
+\begin{lstlisting}[language=Pascal, caption={Struktur unit Pascal}]
+unit NamaUnit;
+
+interface
+  // Bagian publik: deklarasi yang dapat diakses dari luar
+  // - Konstanta publik
+  // - Tipe data publik
+  // - Variabel publik (hindari jika tidak perlu)
+  // - Deklarasi prosedur dan fungsi
+
+implementation
+  // Bagian privat: implementasi detail
+  // - Prosedur/fungsi privat (tidak dideklarasikan di interface)
+  // - Implementasi prosedur/fungsi publik
+
+initialization
+  // Opsional: kode yang dijalankan saat unit pertama kali dimuat
+
+finalization
+  // Opsional: kode cleanup saat program selesai
+
+end.
+\end{lstlisting}
+
+\subsection{Contoh: Memecah Program Kalkulator Monolitik}
+
+Misalkan kita memiliki program kalkulator sederhana dalam satu file besar:
+
+\begin{lstlisting}[language=Pascal, caption={Program monolitik (kalkulator\_monolitik.pas)}]
+program KalkulatorMonolitik;
+var
+  a, b: real;
+  pilihan: integer;
+  hasil: real;
+  
+// Semua fungsi dalam satu file
+function Tambah(x, y: real): real;
+begin
+  Tambah := x + y;
+end;
+
+function Kurang(x, y: real): real;
+begin
+  Kurang := x - y;
+end;
+
+function Kali(x, y: real): real;
+begin
+  Kali := x * y;
+end;
+
+function Bagi(x, y: real): real;
+begin
+  if y <> 0 then
+    Bagi := x / y
+  else
+  begin
+    Writeln('Error: Pembagian dengan nol!');
+    Bagi := 0;
+  end;
+end;
+
+function Pangkat(x: real; n: integer): real;
+var
+  i: integer;
+  temp: real;
+begin
+  temp := 1;
+  for i := 1 to n do
+    temp := temp * x;
+  Pangkat := temp;
+end;
+
+// ... fungsi lain ...
+
+begin
+  Writeln('=== Kalkulator ===');
+  Write('Masukkan angka pertama: '); Readln(a);
+  Write('Masukkan angka kedua: '); Readln(b);
+  Writeln('1. Tambah');
+  Writeln('2. Kurang');
+  Writeln('3. Kali');
+  Writeln('4. Bagi');
+  Write('Pilih operasi: '); Readln(pilihan);
+  
+  case pilihan of
+    1: hasil := Tambah(a, b);
+    2: hasil := Kurang(a, b);
+    3: hasil := Kali(a, b);
+    4: hasil := Bagi(a, b);
+  end;
+  
+  Writeln('Hasil: ', hasil:0:2);
+end.
+\end{lstlisting}
+
+Sekarang kita pecah menjadi modul-modul terpisah berdasarkan fungsi:
+
+\subsubsection{Unit 1: Operasi Aritmatika Dasar}
+\begin{lstlisting}[language=Pascal, caption={mathbasic.pas - operasi aritmatika dasar}]
+unit MathBasic;
+
+interface
+
+// Deklarasi fungsi publik
+function Tambah(x, y: real): real;
+function Kurang(x, y: real): real;
+function Kali(x, y: real): real;
+function Bagi(x, y: real): real;
+
+implementation
+
+function Tambah(x, y: real): real;
+begin
+  Tambah := x + y;
+end;
+
+function Kurang(x, y: real): real;
+begin
+  Kurang := x - y;
+end;
+
+function Kali(x, y: real): real;
+begin
+  Kali := x * y;
+end;
+
+function Bagi(x, y: real): real;
+begin
+  if y <> 0 then
+    Bagi := x / y
+  else
+  begin
+    Writeln('Error: Pembagian dengan nol!');
+    Bagi := 0;
+  end;
+end;
+
+end.
+\end{lstlisting}
+
+\subsubsection{Unit 2: Operasi Lanjutan}
+\begin{lstlisting}[language=Pascal, caption={mathadvanced.pas - operasi matematika lanjutan}]
+unit MathAdvanced;
+
+interface
+
+function Pangkat(x: real; n: integer): real;
+function FaktorialIteratif(n: integer): longint;
+function Akar(x: real): real;
+
+implementation
+
+uses
+  Math;  // Unit sistem untuk fungsi Sqrt
+
+function Pangkat(x: real; n: integer): real;
+var
+  i: integer;
+  temp: real;
+begin
+  temp := 1;
+  if n > 0 then
+    for i := 1 to n do
+      temp := temp * x
+  else if n < 0 then
+    for i := 1 to -n do
+      temp := temp / x;
+  Pangkat := temp;
+end;
+
+function FaktorialIteratif(n: integer): longint;
+var
+  i: integer;
+  hasil: longint;
+begin
+  hasil := 1;
+  for i := 2 to n do
+    hasil := hasil * i;
+  FaktorialIteratif := hasil;
+end;
+
+function Akar(x: real): real;
+begin
+  if x >= 0 then
+    Akar := Sqrt(x)
+  else
+  begin
+    Writeln('Error: Akar dari bilangan negatif!');
+    Akar := 0;
+  end;
+end;
+
+end.
+\end{lstlisting}
+
+\subsubsection{Unit 3: Input/Output Interface}
+\begin{lstlisting}[language=Pascal, caption={calcui.pas - antarmuka pengguna}]
+unit CalcUI;
+
+interface
+
+procedure TampilkanMenu;
+function InputAngka(pesan: string): real;
+function InputPilihan: integer;
+procedure TampilkanHasil(nilai: real);
+
+implementation
+
+procedure TampilkanMenu;
+begin
+  Writeln;
+  Writeln('==== KALKULATOR ====');
+  Writeln('1. Penjumlahan');
+  Writeln('2. Pengurangan');
+  Writeln('3. Perkalian');
+  Writeln('4. Pembagian');
+  Writeln('5. Pangkat');
+  Writeln('6. Faktorial');
+  Writeln('7. Akar Kuadrat');
+  Writeln('0. Keluar');
+  Writeln('====================');
+end;
+
+function InputAngka(pesan: string): real;
+var
+  nilai: real;
+begin
+  Write(pesan);
+  Readln(nilai);
+  InputAngka := nilai;
+end;
+
+function InputPilihan: integer;
+var
+  pilihan: integer;
+begin
+  Write('Pilih operasi (0-7): ');
+  Readln(pilihan);
+  InputPilihan := pilihan;
+end;
+
+procedure TampilkanHasil(nilai: real);
+begin
+  Writeln('Hasil: ', nilai:0:4);
+  Writeln;
+end;
+
+end.
+\end{lstlisting}
+
+\subsubsection{Program Utama Modular}
+\begin{lstlisting}[language=Pascal, caption={kalkulator.pas - program utama modular}]
+program Kalkulator;
+
+uses
+  MathBasic,      // Unit operasi dasar
+  MathAdvanced,   // Unit operasi lanjutan
+  CalcUI;         // Unit interface pengguna
+
+var
+  a, b: real;
+  n: integer;
+  pilihan: integer;
+  hasil: real;
+  lanjut: boolean;
+
+begin
+  lanjut := True;
+  
+  while lanjut do
+  begin
+    TampilkanMenu;
+    pilihan := InputPilihan;
+    
+    case pilihan of
+      0: lanjut := False;
+      
+      1..4: begin
+        a := InputAngka('Masukkan angka pertama: ');
+        b := InputAngka('Masukkan angka kedua: ');
+        
+        case pilihan of
+          1: hasil := Tambah(a, b);
+          2: hasil := Kurang(a, b);
+          3: hasil := Kali(a, b);
+          4: hasil := Bagi(a, b);
+        end;
+        
+        TampilkanHasil(hasil);
+      end;
+      
+      5: begin
+        a := InputAngka('Masukkan basis: ');
+        n := Round(InputAngka('Masukkan eksponen: '));
+        hasil := Pangkat(a, n);
+        TampilkanHasil(hasil);
+      end;
+      
+      6: begin
+        n := Round(InputAngka('Masukkan bilangan: '));
+        hasil := FaktorialIteratif(n);
+        TampilkanHasil(hasil);
+      end;
+      
+      7: begin
+        a := InputAngka('Masukkan bilangan: ');
+        hasil := Akar(a);
+        TampilkanHasil(hasil);
+      end;
+      
+      else
+        Writeln('Pilihan tidak valid!');
+    end;
+  end;
+  
+  Writeln('Terima kasih telah menggunakan kalkulator.');
+end.
+\end{lstlisting}
+
+\subsection{Keuntungan Pemecahan}
+Dengan memecah program menjadi 3 unit (\texttt{MathBasic}, \texttt{MathAdvanced}, \texttt{CalcUI}), kita mendapatkan:
+\begin{itemize}
+  \item Program utama menjadi ringkas dan fokus pada logika alur
+  \item Unit \texttt{MathBasic} dan \texttt{MathAdvanced} dapat digunakan di program lain
+  \item Perubahan tampilan hanya perlu modifikasi unit \texttt{CalcUI}
+  \item Setiap unit dapat diuji secara independen
+  \item Tim dapat bekerja paralel pada unit berbeda
+\end{itemize}
+
+\subsection{Kompilasi Unit Pascal}
+Untuk mengkompilasi program modular:
+\begin{lstlisting}[language=bash, caption={Kompilasi unit Pascal dengan Free Pascal}]
+# Kompilasi unit (akan menghasilkan .ppu dan .o)
+fpc -c mathbasic.pas
+fpc -c mathadvanced.pas
+fpc -c calcui.pas
+
+# Kompilasi program utama (otomatis link dengan unit)
+fpc kalkulator.pas
+
+# Atau kompilasi sekaligus (FPC otomatis kompilasi unit)
+fpc kalkulator.pas
+\end{lstlisting}
+
+\section{Header Files di C/C++: Memecah Program Besar}
+
+Di C/C++, pemisahan antara file header (\texttt{.h} atau \texttt{.hpp}) yang berisi deklarasi dan file implementasi (\texttt{.c} atau \texttt{.cpp}) yang berisi definisi memungkinkan kompilasi terpisah dan pengelolaan dependensi yang lebih baik \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Struktur File Header dan Implementasi}
+
+\subsubsection{File Header (.h/.hpp)}
+File header berisi:
+\begin{itemize}
+  \item Deklarasi fungsi (function prototypes)
+  \item Definisi tipe data (struct, enum, typedef)
+  \item Definisi konstanta (\texttt{\#define}, \texttt{const})
+  \item Deklarasi variabel eksternal (\texttt{extern})
+  \item Include guard atau \texttt{\#pragma once}
+\end{itemize}
+
+\subsubsection{File Implementasi (.c/.cpp)}
+File implementasi berisi:
+\begin{itemize}
+  \item \texttt{\#include} untuk header yang sesuai
+  \item Definisi fungsi yang dideklarasikan di header
+  \item Fungsi dan variabel static (private untuk file tersebut)
+  \item Implementasi detail yang tidak perlu diekspos
+\end{itemize}
+
+\subsection{Include Guards}
+Include guards mencegah definisi ganda saat header disertakan dari banyak tempat:
+
+\begin{table}[H]
+  \centering
+  \caption{Perbandingan teknik include guard}
+  \begin{tabular}{@{}p{3cm}p{5cm}p{5cm}@{}}
+    \toprule
+    \textbf{Teknik} & \textbf{Kelebihan} & \textbf{Kekurangan} \\
+    \midrule
+    Include guard tradisional & Portabel, standar, eksplisit & Butuh nama makro unik, lebih verbose \\
+    \texttt{\#pragma once} & Ringkas, cepat, tidak perlu nama unik & Non-standar (tapi dukungan universal) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{lstlisting}[language=C, caption={Include guard tradisional}]
+// mathbasic.h
+#ifndef MATHBASIC_H
+#define MATHBASIC_H
+
+// Deklarasi di sini
+
+#endif  // MATHBASIC_H
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={Pragma once (alternatif modern)}]
+// mathbasic.h
+#pragma once
+
+// Deklarasi di sini
+\end{lstlisting}
+
+\subsection{Contoh: Memecah Program Kalkulator Monolitik (C)}
+
+Program monolitik dalam satu file:
+
+\begin{lstlisting}[language=C, caption={kalkulator\_monolitik.c}]
+#include <stdio.h>
+#include <math.h>
+
+// Semua fungsi dalam satu file
+double tambah(double a, double b) { return a + b; }
+double kurang(double a, double b) { return a - b; }
+double kali(double a, double b) { return a * b; }
+double bagi(double a, double b) {
+    if (b != 0) return a / b;
+    printf("Error: Pembagian dengan nol!\n");
+    return 0;
+}
+
+double pangkat(double x, int n) {
+    return pow(x, n);
+}
+
+long faktorial(int n) {
+    long hasil = 1;
+    for (int i = 2; i <= n; i++)
+        hasil *= i;
+    return hasil;
+}
+
+// ... banyak fungsi lain ...
+
+int main() {
+    double a, b, hasil;
+    int pilihan;
+    
+    printf("=== Kalkulator ===\n");
+    printf("Masukkan angka pertama: ");
+    scanf("%lf", &a);
+    printf("Masukkan angka kedua: ");
+    scanf("%lf", &b);
+    printf("1. Tambah\n2. Kurang\n3. Kali\n4. Bagi\n");
+    printf("Pilih: ");
+    scanf("%d", &pilihan);
+    
+    switch(pilihan) {
+        case 1: hasil = tambah(a, b); break;
+        case 2: hasil = kurang(a, b); break;
+        case 3: hasil = kali(a, b); break;
+        case 4: hasil = bagi(a, b); break;
+    }
+    
+    printf("Hasil: %.2f\n", hasil);
+    return 0;
+}
+\end{lstlisting}
+
+Sekarang dipecah menjadi modul-modul:
+
+\subsubsection{Modul 1: Operasi Matematika Dasar}
+\begin{lstlisting}[language=C, caption={mathbasic.h - header operasi dasar}]
+#ifndef MATHBASIC_H
+#define MATHBASIC_H
+
+// Deklarasi fungsi publik
+double tambah(double a, double b);
+double kurang(double a, double b);
+double kali(double a, double b);
+double bagi(double a, double b);
+
+#endif  // MATHBASIC_H
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={mathbasic.c - implementasi operasi dasar}]
+#include "mathbasic.h"
+#include <stdio.h>
+
+double tambah(double a, double b) {
+    return a + b;
+}
+
+double kurang(double a, double b) {
+    return a - b;
+}
+
+double kali(double a, double b) {
+    return a * b;
+}
+
+double bagi(double a, double b) {
+    if (b != 0.0) {
+        return a / b;
+    } else {
+        fprintf(stderr, "Error: Pembagian dengan nol!\n");
+        return 0.0;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Modul 2: Operasi Matematika Lanjutan}
+\begin{lstlisting}[language=C, caption={mathadvanced.h - header operasi lanjutan}]
+#ifndef MATHADVANCED_H
+#define MATHADVANCED_H
+
+double pangkat(double x, int n);
+long faktorial(int n);
+double akar_kuadrat(double x);
+double logaritma(double x);
+
+#endif  // MATHADVANCED_H
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={mathadvanced.c - implementasi operasi lanjutan}]
+#include "mathadvanced.h"
+#include <math.h>
+#include <stdio.h>
+
+double pangkat(double x, int n) {
+    return pow(x, (double)n);
+}
+
+long faktorial(int n) {
+    if (n < 0) {
+        fprintf(stderr, "Error: Faktorial bilangan negatif!\n");
+        return 0;
+    }
+    
+    long hasil = 1;
+    for (int i = 2; i <= n; i++) {
+        hasil *= i;
+    }
+    return hasil;
+}
+
+double akar_kuadrat(double x) {
+    if (x < 0.0) {
+        fprintf(stderr, "Error: Akar dari bilangan negatif!\n");
+        return 0.0;
+    }
+    return sqrt(x);
+}
+
+double logaritma(double x) {
+    if (x <= 0.0) {
+        fprintf(stderr, "Error: Logaritma hanya untuk bilangan positif!\n");
+        return 0.0;
+    }
+    return log10(x);
+}
+\end{lstlisting}
+
+\subsubsection{Modul 3: User Interface}
+\begin{lstlisting}[language=C, caption={calcui.h - header antarmuka pengguna}]
+#ifndef CALCUI_H
+#define CALCUI_H
+
+void tampilkan_menu(void);
+double input_angka(const char* pesan);
+int input_pilihan(void);
+void tampilkan_hasil(double nilai);
+void clear_input_buffer(void);
+
+#endif  // CALCUI_H
+\end{lstlisting}
+
+\begin{lstlisting}[language=C, caption={calcui.c - implementasi UI}]
+#include "calcui.h"
+#include <stdio.h>
+
+void tampilkan_menu(void) {
+    printf("\n==== KALKULATOR ====\n");
+    printf("1. Penjumlahan\n");
+    printf("2. Pengurangan\n");
+    printf("3. Perkalian\n");
+    printf("4. Pembagian\n");
+    printf("5. Pangkat\n");
+    printf("6. Faktorial\n");
+    printf("7. Akar Kuadrat\n");
+    printf("8. Logaritma (basis 10)\n");
+    printf("0. Keluar\n");
+    printf("====================\n");
+}
+
+double input_angka(const char* pesan) {
+    double nilai;
+    printf("%s", pesan);
+    scanf("%lf", &nilai);
+    return nilai;
+}
+
+int input_pilihan(void) {
+    int pilihan;
+    printf("Pilih operasi (0-8): ");
+    scanf("%d", &pilihan);
+    return pilihan;
+}
+
+void tampilkan_hasil(double nilai) {
+    printf("Hasil: %.4f\n\n", nilai);
+}
+
+void clear_input_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+\end{lstlisting}
+
+\subsubsection{Program Utama Modular}
+\begin{lstlisting}[language=C, caption={kalkulator.c - program utama}]
+#include <stdio.h>
+#include <stdlib.h>
+#include "mathbasic.h"
+#include "mathadvanced.h"
+#include "calcui.h"
+
+int main(void) {
+    double a, b, hasil;
+    int pilihan, n;
+    int lanjut = 1;
+    
+    printf("Selamat datang di Kalkulator!\n");
+    
+    while (lanjut) {
+        tampilkan_menu();
+        pilihan = input_pilihan();
+        
+        switch (pilihan) {
+            case 0:
+                lanjut = 0;
+                break;
+                
+            case 1: case 2: case 3: case 4:
+                a = input_angka("Masukkan angka pertama: ");
+                b = input_angka("Masukkan angka kedua: ");
+                
+                switch (pilihan) {
+                    case 1: hasil = tambah(a, b); break;
+                    case 2: hasil = kurang(a, b); break;
+                    case 3: hasil = kali(a, b); break;
+                    case 4: hasil = bagi(a, b); break;
+                }
+                
+                tampilkan_hasil(hasil);
+                break;
+                
+            case 5:
+                a = input_angka("Masukkan basis: ");
+                n = (int)input_angka("Masukkan eksponen: ");
+                hasil = pangkat(a, n);
+                tampilkan_hasil(hasil);
+                break;
+                
+            case 6:
+                n = (int)input_angka("Masukkan bilangan: ");
+                hasil = (double)faktorial(n);
+                tampilkan_hasil(hasil);
+                break;
+                
+            case 7:
+                a = input_angka("Masukkan bilangan: ");
+                hasil = akar_kuadrat(a);
+                tampilkan_hasil(hasil);
+                break;
+                
+            case 8:
+                a = input_angka("Masukkan bilangan: ");
+                hasil = logaritma(a);
+                tampilkan_hasil(hasil);
+                break;
+                
+            default:
+                printf("Pilihan tidak valid!\n");
+        }
+        
+        clear_input_buffer();
+    }
+    
+    printf("Terima kasih telah menggunakan kalkulator.\n");
+    return EXIT_SUCCESS;
+}
+\end{lstlisting}
+
+\subsection{Kompilasi Program C dengan Header}
+Ada beberapa cara untuk mengkompilasi program modular:
+
+\begin{lstlisting}[language=bash, caption={Kompilasi manual step-by-step}]
+# Kompilasi setiap file .c menjadi object file (.o)
+gcc -c mathbasic.c -o mathbasic.o
+gcc -c mathadvanced.c -o mathadvanced.o
+gcc -c calcui.c -o calcui.o
+gcc -c kalkulator.c -o kalkulator.o
+
+# Link semua object files menjadi executable
+gcc mathbasic.o mathadvanced.o calcui.o kalkulator.o -o kalkulator -lm
+
+# Jalankan program
+./kalkulator
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash, caption={Kompilasi langsung (satu perintah)}]
+# Kompilasi dan link sekaligus
+gcc kalkulator.c mathbasic.c mathadvanced.c calcui.c -o kalkulator -lm
+
+# Flag -lm untuk link library math (pow, sqrt, log10)
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash, caption={Dengan optimasi dan warning}]
+gcc -std=c11 -Wall -Wextra -O2 \
+    kalkulator.c mathbasic.c mathadvanced.c calcui.c \
+    -o kalkulator -lm
+\end{lstlisting}
+
+\section{Best Practices Modularisasi}
+
+\subsection{Prinsip Pemecahan Modul}
+
+Ketika memecah program besar, ikuti prinsip-prinsip berikut:
+
+\begin{enumerate}
+  \item \textbf{Single Responsibility Principle}: Setiap modul harus memiliki satu tanggung jawab yang jelas
+  \item \textbf{High Cohesion}: Fungsi dalam satu modul harus saling terkait erat
+  \item \textbf{Low Coupling}: Modul harus memiliki ketergantungan minimal satu sama lain
+  \item \textbf{Information Hiding}: Sembunyikan detail implementasi, ekspos hanya interface
+  \item \textbf{Reusability}: Desain modul agar dapat digunakan di berbagai konteks
+\end{enumerate}
+
+\subsection{Strategi Pemecahan}
+
+Beberapa cara umum untuk memecah program besar:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Strategi} & \textbf{Contoh} & \textbf{Kapan Digunakan} \\ \hline
+Berdasarkan fungsi bisnis & \texttt{payment.c}, \texttt{inventory.c}, \texttt{shipping.c} & Program dengan domain kompleks \\ \hline
+Berdasarkan layer & \texttt{ui.c}, \texttt{logic.c}, \texttt{database.c} & Aplikasi dengan arsitektur berlapis \\ \hline
+Berdasarkan tipe data & \texttt{vector.c}, \texttt{matrix.c}, \texttt{list.c} & Library struktur data \\ \hline
+Berdasarkan utility & \texttt{string\_utils.c}, \texttt{math\_utils.c}, \texttt{file\_utils.c} & Fungsi helper umum \\ \hline
+\end{tabular}
+\caption{Strategi pemecahan modul}
+\end{table}
+
+\subsection{Apa yang Harus Dimasukkan ke Header vs Implementasi}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{5cm}|p{4.5cm}|p{4.5cm}|}
+\hline
+\textbf{Item} & \textbf{Header (.h)} & \textbf{Implementasi (.c)} \\ \hline
+Deklarasi fungsi publik & \checkmark & \\ \hline
+Definisi fungsi publik & & \checkmark \\ \hline
+Fungsi inline kecil & \checkmark (dengan \texttt{inline}) & \\ \hline
+Fungsi helper privat & & \checkmark (dengan \texttt{static}) \\ \hline
+Struct/enum publik & \checkmark & \\ \hline
+Struct privat & & \checkmark \\ \hline
+Konstanta publik & \checkmark & \\ \hline
+Variabel global & Deklarasi (\texttt{extern}) & Definisi \\ \hline
+Makro & \checkmark (hati-hati) & \\ \hline
+\end{tabular}
+\caption{Pembagian konten header vs implementasi}
+\end{table}
+
+\subsection{Menghindari Masalah Umum}
+
+\begin{itemize}
+  \item \textbf{Circular Dependencies}: Jangan membuat dua header yang saling include. Gunakan forward declaration atau refaktor struktur
+  
+  \item \textbf{Header Bloat}: Jangan include terlalu banyak header lain di dalam header. Gunakan forward declaration bila memungkinkan
+  
+  \item \textbf{Global Variables}: Hindari variabel global. Jika perlu, gunakan \texttt{extern} di header dan definisi di satu file .c
+  
+  \item \textbf{Missing Include Guards}: Selalu gunakan include guards atau \texttt{\#pragma once}
+  
+  \item \textbf{Implementation in Header}: Hindari menaruh implementasi fungsi di header (kecuali inline atau template C++)
+\end{itemize}
+
+\begin{lstlisting}[language=C, caption={Contoh forward declaration untuk menghindari circular dependency}]
+// player.h
+#ifndef PLAYER_H
+#define PLAYER_H
+
+// Forward declaration - tidak perlu include "weapon.h"
+struct Weapon;
+
+typedef struct {
+    char name[50];
+    int health;
+    struct Weapon* current_weapon;  // Hanya pointer
+} Player;
+
+void equip_weapon(Player* player, struct Weapon* weapon);
+
+#endif
+\end{lstlisting}
+
+\section{Organisasi Proyek Modular}
+
+\subsection{Struktur Direktori yang Baik}
+
+Organisasi direktori yang konsisten memudahkan navigasi dan kolaborasi:
+
+\begin{lstlisting}[caption={Struktur direktori proyek modular}]
+project/
+├── src/                    # Source files
+│   ├── main.c
+│   ├── mathbasic.c
+│   ├── mathadvanced.c
+│   └── calcui.c
+├── include/                # Header files
+│   ├── mathbasic.h
+│   ├── mathadvanced.h
+│   └── calcui.h
+├── obj/                    # Object files (generated)
+├── bin/                    # Binary output (generated)
+├── tests/                  # Unit tests
+│   ├── test_mathbasic.c
+│   └── test_mathadvanced.c
+├── docs/                   # Documentation
+├── Makefile atau CMakeLists.txt
+└── README.md
+\end{lstlisting}
+
+\subsection{Diagram Kompilasi dan Linking}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=1.6cm, >=Stealth]
+    \tikzstyle{b}=[rectangle, draw, rounded corners, minimum width=2.8cm, minimum height=0.9cm]
+    \node[b] (src) {Sumber (\texttt{.pas/.c/.cpp})};
+    \node[b, right=of src] (obj) {Objek (\texttt{.o/.ppu})};
+    \node[b, right=of obj] (bin) {Biner (\texttt{.exe/.out})};
+    \draw[->] (src) -- node[above]{compile} (obj);
+    \draw[->] (obj) -- node[above]{link} (bin);
+  \end{tikzpicture}
+  \caption{Alur kompilasi dan linking}
+\end{figure}
+
+Proses kompilasi modular:
+\begin{enumerate}
+  \item \textbf{Preprocessing}: Ekspansi makro, include file
+  \item \textbf{Compilation}: Setiap file .c dikompilasi menjadi object file .o
+  \item \textbf{Linking}: Semua object file digabung menjadi executable
+\end{enumerate}
+
+Keuntungan kompilasi terpisah: jika hanya satu file yang berubah, hanya file itu yang perlu dikompilasi ulang. Object file lainnya dapat digunakan kembali, mempercepat build time.
+
+\subsection{Automasi Build dengan Makefile}
+
+Makefile mengotomasi proses kompilasi dan menangani dependensi:
+
+\begin{lstlisting}[language=make, caption={Makefile lengkap untuk kalkulator}]
+# Compiler dan flags
+CC = gcc
+CFLAGS = -std=c11 -Wall -Wextra -O2 -Iinclude
+LDFLAGS = -lm
+
+# Direktori
+SRC_DIR = src
+INC_DIR = include
+OBJ_DIR = obj
+BIN_DIR = bin
+
+# Target executable
+TARGET = $(BIN_DIR)/kalkulator
+
+# Source files
+SRCS = $(SRC_DIR)/kalkulator.c \
+       $(SRC_DIR)/mathbasic.c \
+       $(SRC_DIR)/mathadvanced.c \
+       $(SRC_DIR)/calcui.c
+
+# Object files
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# Default target
+all: $(TARGET)
+
+# Link object files menjadi executable
+$(TARGET): $(OBJS)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	@echo "Build complete: $(TARGET)"
+
+# Compile source files menjadi object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build artifacts
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	@echo "Cleaned build artifacts"
+
+# Rebuild from scratch
+rebuild: clean all
+
+# Run the program
+run: $(TARGET)
+	./$(TARGET)
+
+# Phony targets (not actual files)
+.PHONY: all clean rebuild run
+\end{lstlisting}
+
+Penggunaan Makefile:
+\begin{lstlisting}[language=bash, caption={Menggunakan Makefile}]
+# Build program
+make
+
+# Build dan run
+make run
+
+# Clean dan rebuild
+make rebuild
+
+# Hanya clean
+make clean
+\end{lstlisting}
+
+\subsection{Build System Modern: CMake}
+
+CMake adalah build system generator yang lebih portabel:
+
+\begin{lstlisting}[caption={CMakeLists.txt lengkap}]
+cmake_minimum_required(VERSION 3.10)
+project(Kalkulator C)
+
+# Set C standard
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# Compiler flags
+add_compile_options(-Wall -Wextra -O2)
+
+# Include directories
+include_directories(include)
+
+# Source files
+set(SOURCES
+    src/kalkulator.c
+    src/mathbasic.c
+    src/mathadvanced.c
+    src/calcui.c
+)
+
+# Create executable
+add_executable(kalkulator ${SOURCES})
+
+# Link math library
+target_link_libraries(kalkulator m)
+
+# Install target
+install(TARGETS kalkulator DESTINATION bin)
+
+# Enable testing
+enable_testing()
+add_subdirectory(tests)
+\end{lstlisting}
+
+Menggunakan CMake:
+\begin{lstlisting}[language=bash, caption={Build dengan CMake}]
+# Buat build directory
+mkdir build
+cd build
+
+# Generate build files
+cmake ..
+
+# Compile
+make
+
+# Run
+./kalkulator
+
+# Install
+sudo make install
+\end{lstlisting}
+
+\subsection{Langkah-Langkah Refactoring Program Monolitik}
+
+Proses sistematis untuk memecah program besar:
+
+\begin{enumerate}
+  \item \textbf{Identifikasi Kelompok Fungsi}
+  \begin{itemize}
+    \item Kelompokkan fungsi berdasarkan tanggung jawab
+    \item Identifikasi fungsi yang sering digunakan bersama
+    \item Cari fungsi yang bisa digunakan kembali
+  \end{itemize}
+  
+  \item \textbf{Buat Header Files}
+  \begin{itemize}
+    \item Buat file .h untuk setiap modul
+    \item Tambahkan include guards
+    \item Deklarasikan fungsi publik
+    \item Dokumentasikan API dengan komentar
+  \end{itemize}
+  
+  \item \textbf{Pindahkan Implementasi}
+  \begin{itemize}
+    \item Buat file .c yang sesuai
+    \item Include header yang diperlukan
+    \item Pindahkan definisi fungsi
+    \item Tambahkan fungsi helper privat dengan \texttt{static}
+  \end{itemize}
+  
+  \item \textbf{Update Program Utama}
+  \begin{itemize}
+    \item Include header yang diperlukan
+    \item Hapus definisi fungsi yang sudah dipindah
+    \item Test bahwa program masih berfungsi
+  \end{itemize}
+  
+  \item \textbf{Setup Build System}
+  \begin{itemize}
+    \item Buat Makefile atau CMakeLists.txt
+    \item Test kompilasi dan linking
+    \item Verifikasi semua modul ter-compile dengan benar
+  \end{itemize}
+  
+  \item \textbf{Testing dan Dokumentasi}
+  \begin{itemize}
+    \item Test setiap modul secara independen
+    \item Buat dokumentasi untuk setiap modul
+    \item Update README dengan struktur proyek baru
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Ringkasan Best Practices}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Aspek} & \textbf{Best Practice} \\ \hline
+Penamaan file & Gunakan nama deskriptif: \texttt{string\_utils.c}, bukan \texttt{util.c} \\ \hline
+Include guards & Gunakan nama unik: \texttt{NAMAPROJECT\_NAMAMODUL\_H} \\ \hline
+Header dependencies & Minimal include di header, lebih banyak di .c \\ \hline
+Fungsi inline & Hanya untuk fungsi sangat kecil (\textless 5 baris) \\ \hline
+Static functions & Gunakan untuk fungsi helper yang tidak perlu publik \\ \hline
+Dokumentasi & Dokumentasikan semua fungsi publik di header \\ \hline
+Ukuran modul & 200-500 baris per file (guideline, bukan aturan keras) \\ \hline
+Kompilasi & Gunakan flag \texttt{-Wall -Wextra} untuk deteksi warning \\ \hline
+Testing & Buat unit test untuk setiap modul \\ \hline
+\end{tabular}
+\caption{Best practices modularisasi}
+\end{table}
+
+Struktur proyek modular memfasilitasi kolaborasi dan penskalaan basis kode. Pisahkan kode aplikasi, pustaka bersama, dan pengujian ke dalam direktori yang jelas. Gunakan sistem build seperti Make atau CMake untuk mendeskripsikan target, dependensi, dan opsi kompilasi secara deklaratif \parencite{gnu-c-manual,cpp-reference}.
+
+Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar regresi dapat terdeteksi dini. Dokumentasi proyek harus memuat instruksi build, daftar dependensi, dan konvensi penamaan berkas. Praktik ini memastikan mahasiswa dapat mereproduksi dan memperluas contoh dengan konsisten di berbagai lingkungan.
+
+\end{document}

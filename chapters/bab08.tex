@@ -1,82 +1,1430 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-\chapter{Struktur Data Dasar \& Pointer Dasar}
-\section{Record / \texttt{struct}, Enumerasi, Set}
-Struktur data dasar menyusun data kompleks dari tipe sederhana. Pascal: \texttt{record}; C/C++: \texttt{struct} dengan kendali tata letak eksplisit. Enumerasi menyatakan himpunan nilai terbatas; di C++ \texttt{enum class} lebih aman \parencite{pascal-structs,c-struct,cpp-struct-class,cpp-enum-class}.
+\chapter{Record dan Struct}
 
-Representasi terstruktur mengurangi jumlah parameter fungsi dan meningkatkan kohesi modul. Ketika kebutuhan berevolusi, dokumentasikan invarian dan pertimbangkan kompatibilitas biner untuk antarmuka publik. Sertakan pengujian konstruksi, penugasan, dan perbandingan agar regresi mudah dideteksi.
+\section*{Tujuan Praktikum}
+Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
+\begin{itemize}
+  \item Memahami konsep record/struct sebagai tipe data terstruktur heterogen
+  \item Mendeklarasikan dan mendefinisikan record (Pascal) dan struct (C/C++)
+  \item Mengakses dan memodifikasi field/member dari record/struct
+  \item Membuat array of record/struct untuk menyimpan data tabular
+  \item Memahami nested record/struct untuk struktur data kompleks
+  \item Menggunakan typedef untuk menyederhanakan deklarasi struct
+  \item Membuat program manajemen data sederhana menggunakan record/struct
+\end{itemize}
 
-Pada Pascal, \texttt{record} dapat bersarang dan memiliki varian untuk berbagi ruang memori; gunakan dengan hati-hati agar invarian tetap terjaga. Pada C, perhatikan alignment dan padding yang memengaruhi interoperabilitas dan serialisasi lintas mesin. Pada C++, integrasikan dengan fitur kelas untuk mendapatkan enkapsulasi yang lebih kuat \parencite{pascal-structs,c-struct,cpp-struct-class}.
+\section{Pengantar Record/Struct}
 
-\section{Pointer \& Referensi Dasar}
-Pointer merepresentasikan alamat memori untuk berbagi data tanpa salin. Di C, pointer kuat namun rawan; di C++ ada referensi (\texttt{\&}) dan referensi konstan untuk API yang lebih aman \parencite{gnu-c-manual,cpp-reference}.
+\subsection{Konsep Dasar}
+Record (Pascal) atau Struct (C/C++) adalah tipe data terstruktur yang memungkinkan pengelompokan beberapa variabel dengan tipe data berbeda di bawah satu nama. Berbeda dengan array yang menyimpan elemen bertipe sama, record/struct dapat menyimpan data heterogen yang saling terkait \parencite{pascal-structs,c-struct,cpp-struct-class,duniailkom-struct-c,tutorialspoint-c-structures}.
 
-\subsection{Contoh Lintas Bahasa}
-\begin{lstlisting}[language=C, caption={Pointer dasar di C}]
-void set_to_zero(int *p){ if (p) *p = 0; }
+\textbf{Keuntungan menggunakan record/struct:}
+\begin{itemize}
+  \item \textbf{Organisasi data:} Mengelompokkan data terkait dalam satu entitas
+  \item \textbf{Keterbacaan kode:} Nama struct yang deskriptif membuat kode lebih mudah dipahami
+  \item \textbf{Modularitas:} Mengurangi jumlah parameter fungsi dengan mengirim satu struct
+  \item \textbf{Pemeliharaan:} Perubahan struktur data terpusat di satu tempat
+  \item \textbf{Reusabilitas:} Definisi struct dapat digunakan di berbagai bagian program
+\end{itemize}
+
+\subsection{Kapan Menggunakan Record/Struct}
+
+Gunakan record/struct ketika:
+\begin{itemize}
+  \item Merepresentasikan entitas dunia nyata (mahasiswa, buku, produk, dll)
+  \item Mengelompokkan data terkait yang sering dioperasikan bersama
+  \item Membangun struktur data kompleks (linked list, tree, graph)
+  \item Menyederhanakan passing data antar fungsi
+  \item Membuat tipe data custom untuk domain spesifik
+\end{itemize}
+
+\section{Deklarasi Record/Struct}
+
+\subsection{Deklarasi di Pascal}
+
+Pascal menggunakan kata kunci \texttt{record} dengan sintaks yang jelas untuk mendefinisikan tipe data terstruktur.
+
+\begin{lstlisting}[language=Pascal, caption={Deklarasi record di Pascal}]
+type
+  // Record sederhana untuk data mahasiswa
+  TMahasiswa = record
+    nama: string;
+    nim: string;
+    umur: integer;
+    ipk: real;
+  end;
+  
+  // Record dengan berbagai tipe data
+  TBuku = record
+    judul: string;
+    pengarang: string;
+    tahunTerbit: integer;
+    harga: real;
+    tersedia: boolean;
+  end;
+  
+  // Record untuk koordinat
+  TTitik = record
+    x, y: real;  // Deklarasi multiple field
+  end;
+  
+  // Record dengan array
+  TNilai = record
+    namaMatakuliah: string;
+    sks: integer;
+    nilai: array[1..10] of real;
+  end;
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={Referensi konstan di C++}]
-void print_len(const std::string& s){ std::cout << s.size() << "\n"; }
+\subsection{Deklarasi di C}
+
+C menggunakan kata kunci \texttt{struct} dengan sintaks yang memungkinkan definisi inline atau terpisah.
+
+\begin{lstlisting}[language=C, caption={Deklarasi struct di C}]
+// Definisi struct dengan typedef
+typedef struct {
+  char nama[50];
+  char nim[15];
+  int umur;
+  float ipk;
+} Mahasiswa;
+
+// Definisi struct tanpa typedef (perlu kata struct)
+struct Buku {
+  char judul[100];
+  char pengarang[50];
+  int tahunTerbit;
+  float harga;
+  int tersedia;  // boolean di C (0 atau 1)
+};
+
+// Struct dengan tag name
+struct Titik {
+  double x;
+  double y;
+};
+
+// Anonymous struct (jarang digunakan)
+struct {
+  int hari;
+  int bulan;
+  int tahun;
+} tanggal;
+
+// Struct dengan array
+typedef struct {
+  char namaMatakuliah[50];
+  int sks;
+  float nilai[10];
+} Nilai;
 \end{lstlisting}
 
-Keselamatan pointer mencakup inisialisasi ke nilai null yang jelas, validasi sebelum dereferensi, dan pembebasan memori tepat waktu. Pada antarmuka publik, preferensikan referensi konstan atau penunjuk non-null yang didokumentasikan agar niat terlihat. Sertakan uji yang mensimulasikan jalur kesalahan untuk memastikan tidak terjadi dereferensi null.
+\textbf{Perbedaan typedef dan non-typedef:}
+\begin{itemize}
+  \item Dengan \texttt{typedef}: langsung gunakan \texttt{Mahasiswa mhs;}
+  \item Tanpa \texttt{typedef}: perlu \texttt{struct Buku buku1;}
+  \item \texttt{typedef} membuat kode lebih ringkas dan konsisten
+\end{itemize}
 
-Pada Pascal, pointer digunakan untuk mengelola struktur dinamis dan interoperabilitas sistem. Kombinasi \texttt{new}/\texttt{dispose} atau fasilitas dialek modern perlu diiringi dengan kebijakan kepemilikan yang tegas. Dokumentasi referensi menyediakan panduan dan contoh idiomatik \parencite{free-pascal-docs,gnu-c-manual}.
+\subsection{Deklarasi di C++}
 
-\section{Pointer ke Record / Struct}
-Menggabungkan pointer dengan struktur membangun graf/daftar tertaut. Di C, gunakan alokasi dinamis dan fungsi pembungkus; di C++ gunakan \texttt{std::unique\_ptr} / \texttt{std::shared\_ptr} untuk kepemilikan eksplisit \parencite{cpp-reference}.
+C++ memperlakukan \texttt{struct} dan \texttt{class} hampir sama, dengan default access yang berbeda.
 
-\subsection{Ilustrasi Daftar Tertaut}
-\begin{figure}[h]
-  \centering
-  \begin{tikzpicture}[node distance=1.9cm, >=Stealth]
-    \tikzstyle{n}=[rectangle, draw, rounded corners, minimum width=2.4cm, minimum height=0.9cm, align=center]
-    \node[n] (n1) {data|next};
-    \node[n, right=of n1] (n2) {data|next};
-    \node[n, right=of n2] (n3) {data|NULL};
-    \draw[->] (n1) -- (n2);
-    \draw[->] (n2) -- (n3);
-  \end{tikzpicture}
-  \caption{Daftar tertaut sederhana}
-\end{figure}
+\begin{lstlisting}[language=C++, caption={Deklarasi struct di C++}]
+#include <string>
+#include <vector>
 
-\begin{lstlisting}[language=C, caption={Node dan insert di depan (C)}]
-typedef struct Node { int value; struct Node* next; } Node;
-void push_front(Node** head, int v){ Node* n = malloc(sizeof *n); n->value=v; n->next=*head; *head=n; }
+// Struct sederhana (default: public)
+struct Mahasiswa {
+  std::string nama;
+  std::string nim;
+  int umur;
+  double ipk;
+};
+
+// Struct dengan constructor
+struct Buku {
+  std::string judul;
+  std::string pengarang;
+  int tahunTerbit;
+  double harga;
+  bool tersedia;
+  
+  // Constructor
+  Buku() : tahunTerbit(0), harga(0.0), tersedia(false) {}
+  
+  Buku(const std::string& j, const std::string& p, 
+       int t, double h) 
+    : judul(j), pengarang(p), tahunTerbit(t), 
+      harga(h), tersedia(true) {}
+};
+
+// Struct dengan metode
+struct Titik {
+  double x, y;
+  
+  // Metode untuk menghitung jarak dari origin
+  double jarak() const {
+    return std::sqrt(x*x + y*y);
+  }
+  
+  // Metode untuk menggeser titik
+  void geser(double dx, double dy) {
+    x += dx;
+    y += dy;
+  }
+};
+
+// Struct dengan operator overloading
+struct Kompleks {
+  double real, imag;
+  
+  Kompleks operator+(const Kompleks& other) const {
+    return {real + other.real, imag + other.imag};
+  }
+};
 \end{lstlisting}
 
-\begin{lstlisting}[language=C++, caption={unique_ptr untuk daftar (C++)}]
-#include <memory>
-struct Node { int value; std::unique_ptr<Node> next; };
-void push_front(std::unique_ptr<Node>& head, int v){ auto n = std::make_unique<Node>(); n->value=v; n->next = std::move(head); head = std::move(n); }
+\section{Inisialisasi dan Pengisian Data}
+
+\subsection{Inisialisasi di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={Inisialisasi record di Pascal}]
+var
+  mhs1, mhs2: TMahasiswa;
+  buku: TBuku;
+begin
+  // Pengisian field satu per satu
+  mhs1.nama := 'John Doe';
+  mhs1.nim := '1234567890';
+  mhs1.umur := 20;
+  mhs1.ipk := 3.75;
+  
+  // Pengisian dengan with statement
+  with mhs2 do
+  begin
+    nama := 'Jane Smith';
+    nim := '0987654321';
+    umur := 21;
+    ipk := 3.85;
+  end;
+  
+  // Pengisian partial
+  buku.judul := 'Algoritma Pemrograman';
+  buku.pengarang := 'Prof. Ahmad';
+  buku.tahunTerbit := 2023;
+  // Field lain akan berisi nilai garbage jika tidak diisi
+end.
 \end{lstlisting}
 
-Abstraksikan akses bidang melalui fungsi pembantu untuk menjaga invarian dan memudahkan pengujian. Untuk struktur yang sering berpindah kepemilikan, gunakan semantik pindah agar penyalinan tidak mahal. Pada Pascal, manfaatkan unit untuk memisahkan antarmuka dan implementasi struktur dinamis \parencite{free-pascal-docs}.
+\textbf{Catatan \texttt{with} statement:}
+\begin{itemize}
+  \item Mengurangi repetisi nama record
+  \item Hati-hati dengan nested \texttt{with} -- bisa membingungkan
+  \item Pastikan nama field tidak ambigu dengan variabel lokal
+\end{itemize}
 
-\section{Akses anggota via pointer / referensi}
-Akses anggota via pointer/ref memperhatikan operator (\texttt{->} di C/C++ atau dereferensi di Pascal). Validasi null sebelum dereferensi. Di C++, preferensikan referensi konstan bila objek dijamin ada \parencite{gnu-c-manual,cpp-reference}.
+\subsection{Inisialisasi di C}
 
-\subsection{Ringkasan Singkat}
-\begin{table}[h]
-  \centering
-  \caption{Ringkasan representasi dan kepemilikan}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Bahasa & Tetap & Dinamis \\
-    \midrule
-    Pascal & \texttt{record} biasa & pointer \texttt{new}/\texttt{dispose} \\
-    C & \texttt{struct} + alamat & \texttt{malloc}/\texttt{free} \\
-    C++ & \texttt{struct}/kelas & \texttt{unique\_ptr}/\texttt{shared\_ptr} \\
-    \bottomrule
-  \end{tabular}
+\begin{lstlisting}[language=C, caption={Inisialisasi struct di C}]
+#include <string.h>
+#include <stdio.h>
+
+int main() {
+  // Inisialisasi saat deklarasi (designated initializers C99)
+  Mahasiswa mhs1 = {
+    .nama = "John Doe",
+    .nim = "1234567890",
+    .umur = 20,
+    .ipk = 3.75
+  };
+  
+  // Inisialisasi berurutan (older C style)
+  Mahasiswa mhs2 = {"Jane Smith", "0987654321", 21, 3.85};
+  
+  // Inisialisasi partial (sisanya diisi 0)
+  Mahasiswa mhs3 = {.nama = "Bob Lee"};
+  
+  // Zero initialization
+  Mahasiswa mhs4 = {0};  // Semua field diisi 0
+  
+  // Pengisian setelah deklarasi
+  Mahasiswa mhs5;
+  strcpy(mhs5.nama, "Alice Wong");
+  strcpy(mhs5.nim, "1122334455");
+  mhs5.umur = 19;
+  mhs5.ipk = 3.92;
+  
+  // Assignment antar struct (memberwise copy)
+  Mahasiswa mhs6 = mhs1;  // Copy semua field
+  
+  printf("Mahasiswa 1: %s, NIM: %s, IPK: %.2f\n", 
+         mhs1.nama, mhs1.nim, mhs1.ipk);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Poin penting:}
+\begin{itemize}
+  \item Designated initializers (C99+) lebih jelas dan aman
+  \item Gunakan \texttt{strcpy()} untuk field string, bukan assignment langsung
+  \item Assignment antar struct melakukan shallow copy
+  \item Hati-hati dengan uninitialized fields (nilai garbage)
+\end{itemize}
+
+\subsection{Inisialisasi di C++}
+
+\begin{lstlisting}[language=C++, caption={Inisialisasi struct di C++}]
+#include <iostream>
+#include <string>
+
+int main() {
+  // Uniform initialization (C++11)
+  Mahasiswa mhs1{"John Doe", "1234567890", 20, 3.75};
+  
+  // Designated initializers (C++20)
+  Mahasiswa mhs2{
+    .nama = "Jane Smith",
+    .nim = "0987654321",
+    .umur = 21,
+    .ipk = 3.85
+  };
+  
+  // Default initialization (memanggil default constructor)
+  Mahasiswa mhs3;
+  
+  // Partial initialization
+  Mahasiswa mhs4{};  // Value initialization (fields diisi default)
+  
+  // Pengisian setelah deklarasi
+  Mahasiswa mhs5;
+  mhs5.nama = "Bob Lee";
+  mhs5.nim = "1122334455";
+  mhs5.umur = 19;
+  mhs5.ipk = 3.92;
+  
+  // Copy construction
+  Mahasiswa mhs6 = mhs1;
+  
+  // Move construction (C++11)
+  Mahasiswa mhs7 = std::move(mhs1);
+  
+  // Menggunakan constructor (jika didefinisikan)
+  Buku buku1("Algoritma", "Prof. Ahmad", 2023, 150000);
+  
+  std::cout << "Mahasiswa 1: " << mhs2.nama 
+            << ", IPK: " << mhs2.ipk << "\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Akses dan Manipulasi Data}
+
+\subsection{Akses Field}
+
+\textbf{Pascal:}
+\begin{lstlisting}[language=Pascal, caption={Akses field di Pascal}]
+var
+  mhs: TMahasiswa;
+  nilai: real;
+begin
+  // Akses untuk membaca
+  Writeln('Nama: ', mhs.nama);
+  nilai := mhs.ipk;
+  
+  // Akses untuk menulis
+  mhs.umur := mhs.umur + 1;  // Birthday!
+  mhs.ipk := (mhs.ipk + 4.0) / 2;  // Update IPK
+  
+  // Menggunakan with untuk multiple access
+  with mhs do
+  begin
+    Writeln('Data Mahasiswa:');
+    Writeln('Nama: ', nama);
+    Writeln('NIM: ', nim);
+    Writeln('Umur: ', umur);
+    Writeln('IPK: ', ipk:0:2);
+  end;
+end.
+\end{lstlisting}
+
+\textbf{C:}
+\begin{lstlisting}[language=C, caption={Akses field di C}]
+#include <stdio.h>
+
+void printMahasiswa(Mahasiswa m) {
+  printf("=== Data Mahasiswa ===\n");
+  printf("Nama: %s\n", m.nama);
+  printf("NIM: %s\n", m.nim);
+  printf("Umur: %d tahun\n", m.umur);
+  printf("IPK: %.2f\n", m.ipk);
+}
+
+void updateIPK(Mahasiswa *m, float ipkBaru) {
+  if (m != NULL) {
+    m->ipk = (m->ipk + ipkBaru) / 2.0;
+  }
+}
+
+int main() {
+  Mahasiswa mhs = {"John Doe", "123", 20, 3.5};
+  
+  // Akses langsung
+  printf("Nama: %s\n", mhs.nama);
+  mhs.umur++;  // Increment umur
+  
+  // Melalui fungsi
+  printMahasiswa(mhs);
+  updateIPK(&mhs, 3.8);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{C++:}
+\begin{lstlisting}[language=C++, caption={Akses field di C++}]
+#include <iostream>
+
+void printMahasiswa(const Mahasiswa& m) {
+  std::cout << "=== Data Mahasiswa ===\n";
+  std::cout << "Nama: " << m.nama << "\n";
+  std::cout << "NIM: " << m.nim << "\n";
+  std::cout << "Umur: " << m.umur << " tahun\n";
+  std::cout << "IPK: " << m.ipk << "\n";
+}
+
+void updateIPK(Mahasiswa& m, double ipkBaru) {
+  m.ipk = (m.ipk + ipkBaru) / 2.0;
+}
+
+int main() {
+  Mahasiswa mhs{"John Doe", "123", 20, 3.5};
+  
+  // Akses langsung
+  std::cout << "Nama: " << mhs.nama << "\n";
+  mhs.umur++;
+  
+  // Melalui fungsi
+  printMahasiswa(mhs);
+  updateIPK(mhs, 3.8);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Array of Struct}
+
+Array of struct sangat berguna untuk menyimpan koleksi entitas dengan struktur yang sama.
+
+\subsection{Array of Struct di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={Array of struct di Pascal}]
+const
+  MAX_MHS = 100;
+
+type
+  TArrayMahasiswa = array[1..MAX_MHS] of TMahasiswa;
+
+var
+  daftarMhs: TArrayMahasiswa;
+  jumlahMhs: integer;
+  i: integer;
+  totalIPK, rataIPK: real;
+
+begin
+  jumlahMhs := 3;
+  
+  // Isi data mahasiswa
+  daftarMhs[1].nama := 'John Doe';
+  daftarMhs[1].nim := '001';
+  daftarMhs[1].umur := 20;
+  daftarMhs[1].ipk := 3.75;
+  
+  daftarMhs[2].nama := 'Jane Smith';
+  daftarMhs[2].nim := '002';
+  daftarMhs[2].umur := 21;
+  daftarMhs[2].ipk := 3.85;
+  
+  daftarMhs[3].nama := 'Bob Lee';
+  daftarMhs[3].nim := '003';
+  daftarMhs[3].umur := 19;
+  daftarMhs[3].ipk := 3.92;
+  
+  // Tampilkan semua mahasiswa
+  Writeln('=== Daftar Mahasiswa ===');
+  for i := 1 to jumlahMhs do
+  begin
+    Writeln('Mahasiswa ', i);
+    Writeln('Nama: ', daftarMhs[i].nama);
+    Writeln('NIM: ', daftarMhs[i].nim);
+    Writeln('IPK: ', daftarMhs[i].ipk:0:2);
+    Writeln;
+  end;
+  
+  // Hitung rata-rata IPK
+  totalIPK := 0;
+  for i := 1 to jumlahMhs do
+    totalIPK := totalIPK + daftarMhs[i].ipk;
+  rataIPK := totalIPK / jumlahMhs;
+  Writeln('Rata-rata IPK: ', rataIPK:0:2);
+end.
+\end{lstlisting}
+
+\subsection{Array of Struct di C}
+
+\begin{lstlisting}[language=C, caption={Array of struct di C}]
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_MHS 100
+
+int main() {
+  Mahasiswa daftarMhs[MAX_MHS];
+  int jumlahMhs = 3;
+  
+  // Isi data mahasiswa
+  strcpy(daftarMhs[0].nama, "John Doe");
+  strcpy(daftarMhs[0].nim, "001");
+  daftarMhs[0].umur = 20;
+  daftarMhs[0].ipk = 3.75;
+  
+  strcpy(daftarMhs[1].nama, "Jane Smith");
+  strcpy(daftarMhs[1].nim, "002");
+  daftarMhs[1].umur = 21;
+  daftarMhs[1].ipk = 3.85;
+  
+  strcpy(daftarMhs[2].nama, "Bob Lee");
+  strcpy(daftarMhs[2].nim, "003");
+  daftarMhs[2].umur = 19;
+  daftarMhs[2].ipk = 3.92;
+  
+  // Tampilkan semua mahasiswa
+  printf("=== Daftar Mahasiswa ===\n");
+  for (int i = 0; i < jumlahMhs; i++) {
+    printf("Mahasiswa %d\n", i + 1);
+    printf("Nama: %s\n", daftarMhs[i].nama);
+    printf("NIM: %s\n", daftarMhs[i].nim);
+    printf("IPK: %.2f\n\n", daftarMhs[i].ipk);
+  }
+  
+  // Hitung rata-rata IPK
+  float totalIPK = 0;
+  for (int i = 0; i < jumlahMhs; i++) {
+    totalIPK += daftarMhs[i].ipk;
+  }
+  float rataIPK = totalIPK / jumlahMhs;
+  printf("Rata-rata IPK: %.2f\n", rataIPK);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Array of Struct di C++}
+
+\begin{lstlisting}[language=C++, caption={Array of struct dengan vector di C++}]
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+  // Menggunakan std::vector (lebih fleksibel)
+  std::vector<Mahasiswa> daftarMhs;
+  
+  // Menambah mahasiswa
+  daftarMhs.push_back({"John Doe", "001", 20, 3.75});
+  daftarMhs.push_back({"Jane Smith", "002", 21, 3.85});
+  daftarMhs.push_back({"Bob Lee", "003", 19, 3.92});
+  
+  // Atau dengan emplace_back (lebih efisien)
+  daftarMhs.emplace_back("Alice Wong", "004", 22, 3.88);
+  
+  // Tampilkan semua mahasiswa
+  std::cout << "=== Daftar Mahasiswa ===\n";
+  for (size_t i = 0; i < daftarMhs.size(); i++) {
+    std::cout << "Mahasiswa " << (i + 1) << "\n";
+    std::cout << "Nama: " << daftarMhs[i].nama << "\n";
+    std::cout << "NIM: " << daftarMhs[i].nim << "\n";
+    std::cout << "IPK: " << daftarMhs[i].ipk << "\n\n";
+  }
+  
+  // Range-based for loop
+  std::cout << "=== Mahasiswa dengan IPK > 3.8 ===\n";
+  for (const auto& mhs : daftarMhs) {
+    if (mhs.ipk > 3.8) {
+      std::cout << mhs.nama << " - IPK: " << mhs.ipk << "\n";
+    }
+  }
+  
+  // Hitung rata-rata IPK menggunakan algorithm
+  double totalIPK = 0;
+  for (const auto& mhs : daftarMhs) {
+    totalIPK += mhs.ipk;
+  }
+  double rataIPK = totalIPK / daftarMhs.size();
+  std::cout << "\nRata-rata IPK: " << rataIPK << "\n";
+  
+  // Sorting berdasarkan IPK
+  std::sort(daftarMhs.begin(), daftarMhs.end(),
+    [](const Mahasiswa& a, const Mahasiswa& b) {
+      return a.ipk > b.ipk;  // Descending
+    });
+  
+  std::cout << "\n=== Mahasiswa Terbaik ===\n";
+  std::cout << daftarMhs[0].nama << " - IPK: " 
+            << daftarMhs[0].ipk << "\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Nested Struct}
+
+Struct dapat berisi struct lain sebagai field, memungkinkan representasi data hierarkis.
+
+\subsection{Nested Struct di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={Nested struct di Pascal}]
+type
+  TTanggal = record
+    hari: 1..31;
+    bulan: 1..12;
+    tahun: integer;
+  end;
+  
+  TAlamat = record
+    jalan: string;
+    kota: string;
+    provinsi: string;
+    kodePos: string;
+  end;
+  
+  TMahasiswaLengkap = record
+    nama: string;
+    nim: string;
+    tanggalLahir: TTanggal;
+    alamat: TAlamat;
+    ipk: real;
+  end;
+
+var
+  mhs: TMahasiswaLengkap;
+
+begin
+  // Pengisian data
+  mhs.nama := 'John Doe';
+  mhs.nim := '1234567890';
+  
+  // Akses nested struct
+  mhs.tanggalLahir.hari := 15;
+  mhs.tanggalLahir.bulan := 8;
+  mhs.tanggalLahir.tahun := 2000;
+  
+  mhs.alamat.jalan := 'Jl. Merdeka No. 10';
+  mhs.alamat.kota := 'Jakarta';
+  mhs.alamat.provinsi := 'DKI Jakarta';
+  mhs.alamat.kodePos := '10110';
+  
+  mhs.ipk := 3.75;
+  
+  // Tampilkan data
+  Writeln('Nama: ', mhs.nama);
+  Writeln('Tanggal Lahir: ', mhs.tanggalLahir.hari, '/',
+          mhs.tanggalLahir.bulan, '/', mhs.tanggalLahir.tahun);
+  Writeln('Alamat: ', mhs.alamat.jalan);
+  Writeln('Kota: ', mhs.alamat.kota);
+end.
+\end{lstlisting}
+
+\subsection{Nested Struct di C}
+
+\begin{lstlisting}[language=C, caption={Nested struct di C}]
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+  int hari;
+  int bulan;
+  int tahun;
+} Tanggal;
+
+typedef struct {
+  char jalan[100];
+  char kota[50];
+  char provinsi[50];
+  char kodePos[10];
+} Alamat;
+
+typedef struct {
+  char nama[50];
+  char nim[15];
+  Tanggal tanggalLahir;
+  Alamat alamat;
+  float ipk;
+} MahasiswaLengkap;
+
+void printTanggal(Tanggal t) {
+  printf("%02d/%02d/%04d", t.hari, t.bulan, t.tahun);
+}
+
+void printMahasiswaLengkap(MahasiswaLengkap m) {
+  printf("=== Data Mahasiswa Lengkap ===\n");
+  printf("Nama: %s\n", m.nama);
+  printf("NIM: %s\n", m.nim);
+  printf("Tanggal Lahir: ");
+  printTanggal(m.tanggalLahir);
+  printf("\nAlamat: %s\n", m.alamat.jalan);
+  printf("        %s, %s %s\n", m.alamat.kota, 
+         m.alamat.provinsi, m.alamat.kodePos);
+  printf("IPK: %.2f\n", m.ipk);
+}
+
+int main() {
+  MahasiswaLengkap mhs;
+  
+  // Isi data
+  strcpy(mhs.nama, "John Doe");
+  strcpy(mhs.nim, "1234567890");
+  
+  mhs.tanggalLahir.hari = 15;
+  mhs.tanggalLahir.bulan = 8;
+  mhs.tanggalLahir.tahun = 2000;
+  
+  strcpy(mhs.alamat.jalan, "Jl. Merdeka No. 10");
+  strcpy(mhs.alamat.kota, "Jakarta");
+  strcpy(mhs.alamat.provinsi, "DKI Jakarta");
+  strcpy(mhs.alamat.kodePos, "10110");
+  
+  mhs.ipk = 3.75;
+  
+  // Tampilkan
+  printMahasiswaLengkap(mhs);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Nested Struct di C++}
+
+\begin{lstlisting}[language=C++, caption={Nested struct di C++}]
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+struct Tanggal {
+  int hari, bulan, tahun;
+  
+  std::string toString() const {
+    return std::to_string(hari) + "/" + 
+           std::to_string(bulan) + "/" + 
+           std::to_string(tahun);
+  }
+};
+
+struct Alamat {
+  std::string jalan;
+  std::string kota;
+  std::string provinsi;
+  std::string kodePos;
+  
+  std::string toStringLengkap() const {
+    return jalan + "\n" + kota + ", " + provinsi + " " + kodePos;
+  }
+};
+
+struct MahasiswaLengkap {
+  std::string nama;
+  std::string nim;
+  Tanggal tanggalLahir;
+  Alamat alamat;
+  double ipk;
+  
+  void print() const {
+    std::cout << "=== Data Mahasiswa Lengkap ===\n";
+    std::cout << "Nama: " << nama << "\n";
+    std::cout << "NIM: " << nim << "\n";
+    std::cout << "Tanggal Lahir: " << tanggalLahir.toString() << "\n";
+    std::cout << "Alamat:\n" << alamat.toStringLengkap() << "\n";
+    std::cout << "IPK: " << std::fixed << std::setprecision(2) 
+              << ipk << "\n";
+  }
+};
+
+int main() {
+  // Menggunakan designated initializers (C++20)
+  MahasiswaLengkap mhs{
+    .nama = "John Doe",
+    .nim = "1234567890",
+    .tanggalLahir = {15, 8, 2000},
+    .alamat = {
+      "Jl. Merdeka No. 10",
+      "Jakarta",
+      "DKI Jakarta",
+      "10110"
+    },
+    .ipk = 3.75
+  };
+  
+  mhs.print();
+  
+  // Akses nested fields
+  std::cout << "\nKota: " << mhs.alamat.kota << "\n";
+  std::cout << "Tahun lahir: " << mhs.tanggalLahir.tahun << "\n";
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Passing Struct ke Fungsi}
+
+\subsection{By Value vs By Reference}
+
+\textbf{Pascal:}
+\begin{lstlisting}[language=Pascal, caption={Passing record di Pascal}]
+// By value (copy) - tidak mengubah original
+procedure PrintMahasiswa(mhs: TMahasiswa);
+begin
+  Writeln('Nama: ', mhs.nama);
+  Writeln('IPK: ', mhs.ipk:0:2);
+end;
+
+// By reference (var parameter) - bisa mengubah original
+procedure UpdateIPK(var mhs: TMahasiswa; ipkBaru: real);
+begin
+  mhs.ipk := (mhs.ipk + ipkBaru) / 2;
+end;
+
+var
+  mahasiswa: TMahasiswa;
+begin
+  mahasiswa.nama := 'John';
+  mahasiswa.ipk := 3.5;
+  
+  PrintMahasiswa(mahasiswa);  // Pass by value
+  UpdateIPK(mahasiswa, 3.8);  // Pass by reference
+end.
+\end{lstlisting}
+
+\textbf{C:}
+\begin{lstlisting}[language=C, caption={Passing struct di C}]
+#include <stdio.h>
+
+// By value - membuat copy
+void printMahasiswa(Mahasiswa m) {
+  printf("Nama: %s, IPK: %.2f\n", m.nama, m.ipk);
+}
+
+// By pointer - tidak copy, bisa mengubah
+void updateIPK(Mahasiswa *m, float ipkBaru) {
+  if (m != NULL) {
+    m->ipk = (m->ipk + ipkBaru) / 2.0;
+  }
+}
+
+// By pointer const - tidak copy, tidak bisa mengubah
+void printMahasiswaPtr(const Mahasiswa *m) {
+  if (m != NULL) {
+    printf("Nama: %s, IPK: %.2f\n", m->nama, m->ipk);
+  }
+}
+
+int main() {
+  Mahasiswa mhs = {"John", "123", 20, 3.5};
+  
+  printMahasiswa(mhs);        // Copy struct
+  printMahasiswaPtr(&mhs);    // Pass pointer
+  updateIPK(&mhs, 3.8);       // Modify through pointer
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{C++:}
+\begin{lstlisting}[language=C++, caption={Passing struct di C++}]
+#include <iostream>
+
+// By value - copy
+void printMahasiswa(Mahasiswa m) {
+  std::cout << "Nama: " << m.nama << ", IPK: " << m.ipk << "\n";
+}
+
+// By const reference - no copy, read-only (RECOMMENDED)
+void printMahasiswaRef(const Mahasiswa& m) {
+  std::cout << "Nama: " << m.nama << ", IPK: " << m.ipk << "\n";
+}
+
+// By reference - no copy, dapat mengubah
+void updateIPK(Mahasiswa& m, double ipkBaru) {
+  m.ipk = (m.ipk + ipkBaru) / 2.0;
+}
+
+// Return struct by value (dengan RVO/NRVO optimization)
+Mahasiswa createMahasiswa(const std::string& nama, 
+                          const std::string& nim) {
+  return {nama, nim, 20, 3.0};
+}
+
+int main() {
+  Mahasiswa mhs{"John", "123", 20, 3.5};
+  
+  printMahasiswa(mhs);      // Copy (inefficient untuk struct besar)
+  printMahasiswaRef(mhs);   // No copy (efficient)
+  updateIPK(mhs, 3.8);      // Modify by reference
+  
+  // Move semantics (C++11)
+  Mahasiswa mhs2 = createMahasiswa("Jane", "456");
+  
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Best Practices:}
+\begin{itemize}
+  \item \textbf{C:} Gunakan pointer const untuk read-only, pointer biasa untuk modifikasi
+  \item \textbf{C++:} Gunakan const reference untuk read-only, reference untuk modifikasi
+  \item Avoid passing large structs by value (inefficient)
+  \item Dokumentasikan apakah fungsi mengubah struct atau tidak
+\end{itemize}
+
+\section{Contoh Program Lengkap}
+
+\subsection{Sistem Manajemen Buku (C)}
+
+\begin{lstlisting}[language=C, caption={Sistem perpustakaan sederhana di C}]
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_BUKU 100
+
+typedef struct {
+  char judul[100];
+  char pengarang[50];
+  int tahunTerbit;
+  char isbn[20];
+  int tersedia;  // 1 = tersedia, 0 = dipinjam
+} Buku;
+
+typedef struct {
+  Buku daftar[MAX_BUKU];
+  int jumlah;
+} Perpustakaan;
+
+void initPerpustakaan(Perpustakaan *p) {
+  p->jumlah = 0;
+}
+
+int tambahBuku(Perpustakaan *p, const char *judul, 
+               const char *pengarang, int tahun, 
+               const char *isbn) {
+  if (p->jumlah >= MAX_BUKU) {
+    return 0;  // Perpustakaan penuh
+  }
+  
+  Buku *b = &p->daftar[p->jumlah];
+  strncpy(b->judul, judul, sizeof(b->judul) - 1);
+  strncpy(b->pengarang, pengarang, sizeof(b->pengarang) - 1);
+  b->tahunTerbit = tahun;
+  strncpy(b->isbn, isbn, sizeof(b->isbn) - 1);
+  b->tersedia = 1;
+  
+  p->jumlah++;
+  return 1;
+}
+
+void printBuku(const Buku *b, int nomor) {
+  printf("\n[%d] %s\n", nomor, b->judul);
+  printf("    Pengarang: %s\n", b->pengarang);
+  printf("    Tahun: %d\n", b->tahunTerbit);
+  printf("    ISBN: %s\n", b->isbn);
+  printf("    Status: %s\n", b->tersedia ? "Tersedia" : "Dipinjam");
+}
+
+void tampilkanSemuaBuku(const Perpustakaan *p) {
+  printf("\n=== Daftar Buku ===\n");
+  printf("Total buku: %d\n", p->jumlah);
+  
+  for (int i = 0; i < p->jumlah; i++) {
+    printBuku(&p->daftar[i], i + 1);
+  }
+}
+
+int cariBuku(const Perpustakaan *p, const char *judul) {
+  for (int i = 0; i < p->jumlah; i++) {
+    if (strstr(p->daftar[i].judul, judul) != NULL) {
+      return i;
+    }
+  }
+  return -1;  // Tidak ditemukan
+}
+
+void pinjamBuku(Perpustakaan *p, int index) {
+  if (index >= 0 && index < p->jumlah) {
+    if (p->daftar[index].tersedia) {
+      p->daftar[index].tersedia = 0;
+      printf("Buku '%s' berhasil dipinjam.\n", 
+             p->daftar[index].judul);
+    } else {
+      printf("Buku sudah dipinjam.\n");
+    }
+  }
+}
+
+void kembalikanBuku(Perpustakaan *p, int index) {
+  if (index >= 0 && index < p->jumlah) {
+    p->daftar[index].tersedia = 1;
+    printf("Buku '%s' berhasil dikembalikan.\n", 
+           p->daftar[index].judul);
+  }
+}
+
+int main() {
+  Perpustakaan perpus;
+  initPerpustakaan(&perpus);
+  
+  // Tambah beberapa buku
+  tambahBuku(&perpus, "Algoritma dan Pemrograman", 
+             "Prof. Ahmad", 2023, "978-1234567890");
+  tambahBuku(&perpus, "Struktur Data", 
+             "Dr. Budi", 2022, "978-0987654321");
+  tambahBuku(&perpus, "Basis Data", 
+             "Prof. Citra", 2021, "978-1122334455");
+  
+  // Tampilkan semua buku
+  tampilkanSemuaBuku(&perpus);
+  
+  // Cari dan pinjam buku
+  int index = cariBuku(&perpus, "Algoritma");
+  if (index != -1) {
+    printf("\nBuku ditemukan!\n");
+    printBuku(&perpus.daftar[index], index + 1);
+    pinjamBuku(&perpus, index);
+  }
+  
+  // Tampilkan lagi
+  tampilkanSemuaBuku(&perpus);
+  
+  // Kembalikan buku
+  kembalikanBuku(&perpus, index);
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Sistem Manajemen Mahasiswa (C++)}
+
+\begin{lstlisting}[language=C++, caption={Sistem manajemen mahasiswa di C++}]
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <iomanip>
+
+struct Matakuliah {
+  std::string nama;
+  int sks;
+  char nilai;  // A, B, C, D, E
+  
+  double getNilaiAngka() const {
+    switch(nilai) {
+      case 'A': return 4.0;
+      case 'B': return 3.0;
+      case 'C': return 2.0;
+      case 'D': return 1.0;
+      default: return 0.0;
+    }
+  }
+};
+
+struct Mahasiswa {
+  std::string nama;
+  std::string nim;
+  std::vector<Matakuliah> matakuliah;
+  
+  void tambahMatakuliah(const std::string& nama, 
+                        int sks, char nilai) {
+    matakuliah.push_back({nama, sks, nilai});
+  }
+  
+  double hitungIPK() const {
+    if (matakuliah.empty()) return 0.0;
+    
+    double totalNilai = 0.0;
+    int totalSKS = 0;
+    
+    for (const auto& mk : matakuliah) {
+      totalNilai += mk.getNilaiAngka() * mk.sks;
+      totalSKS += mk.sks;
+    }
+    
+    return totalSKS > 0 ? totalNilai / totalSKS : 0.0;
+  }
+  
+  void printTranskrip() const {
+    std::cout << "\n=== Transkrip Nilai ===\n";
+    std::cout << "Nama: " << nama << "\n";
+    std::cout << "NIM: " << nim << "\n\n";
+    std::cout << std::left << std::setw(30) << "Matakuliah"
+              << std::setw(5) << "SKS"
+              << std::setw(7) << "Nilai" << "\n";
+    std::cout << std::string(42, '-') << "\n";
+    
+    int totalSKS = 0;
+    for (const auto& mk : matakuliah) {
+      std::cout << std::left << std::setw(30) << mk.nama
+                << std::setw(5) << mk.sks
+                << std::setw(7) << mk.nilai << "\n";
+      totalSKS += mk.sks;
+    }
+    
+    std::cout << std::string(42, '-') << "\n";
+    std::cout << "Total SKS: " << totalSKS << "\n";
+    std::cout << "IPK: " << std::fixed << std::setprecision(2)
+              << hitungIPK() << "\n";
+  }
+};
+
+class SistemAkademik {
+private:
+  std::vector<Mahasiswa> daftarMahasiswa;
+  
+public:
+  void tambahMahasiswa(const std::string& nama, 
+                       const std::string& nim) {
+    daftarMahasiswa.push_back({nama, nim, {}});
+    std::cout << "Mahasiswa " << nama << " berhasil ditambahkan.\n";
+  }
+  
+  Mahasiswa* cariMahasiswa(const std::string& nim) {
+    auto it = std::find_if(daftarMahasiswa.begin(), 
+                          daftarMahasiswa.end(),
+                          [&nim](const Mahasiswa& m) {
+                            return m.nim == nim;
+                          });
+    return it != daftarMahasiswa.end() ? &(*it) : nullptr;
+  }
+  
+  void tampilkanSemuaMahasiswa() const {
+    std::cout << "\n=== Daftar Mahasiswa ===\n";
+    std::cout << std::left << std::setw(30) << "Nama"
+              << std::setw(15) << "NIM"
+              << std::setw(10) << "IPK" << "\n";
+    std::cout << std::string(55, '-') << "\n";
+    
+    for (const auto& mhs : daftarMahasiswa) {
+      std::cout << std::left << std::setw(30) << mhs.nama
+                << std::setw(15) << mhs.nim
+                << std::fixed << std::setprecision(2)
+                << std::setw(10) << mhs.hitungIPK() << "\n";
+    }
+  }
+  
+  void tampilkanMahasiswaTerbaik() const {
+    if (daftarMahasiswa.empty()) return;
+    
+    auto best = std::max_element(daftarMahasiswa.begin(),
+                                 daftarMahasiswa.end(),
+                                 [](const Mahasiswa& a, 
+                                    const Mahasiswa& b) {
+                                   return a.hitungIPK() < b.hitungIPK();
+                                 });
+    
+    std::cout << "\n=== Mahasiswa Terbaik ===\n";
+    std::cout << "Nama: " << best->nama << "\n";
+    std::cout << "NIM: " << best->nim << "\n";
+    std::cout << "IPK: " << std::fixed << std::setprecision(2)
+              << best->hitungIPK() << "\n";
+  }
+};
+
+int main() {
+  SistemAkademik sistem;
+  
+  // Tambah mahasiswa
+  sistem.tambahMahasiswa("John Doe", "001");
+  sistem.tambahMahasiswa("Jane Smith", "002");
+  sistem.tambahMahasiswa("Bob Lee", "003");
+  
+  // Tambah nilai untuk mahasiswa
+  Mahasiswa* john = sistem.cariMahasiswa("001");
+  if (john) {
+    john->tambahMatakuliah("Algoritma Pemrograman", 3, 'A');
+    john->tambahMatakuliah("Struktur Data", 3, 'A');
+    john->tambahMatakuliah("Basis Data", 3, 'B');
+    john->tambahMatakuliah("Jaringan Komputer", 3, 'A');
+  }
+  
+  Mahasiswa* jane = sistem.cariMahasiswa("002");
+  if (jane) {
+    jane->tambahMatakuliah("Algoritma Pemrograman", 3, 'A');
+    jane->tambahMatakuliah("Struktur Data", 3, 'A');
+    jane->tambahMatakuliah("Basis Data", 3, 'A');
+    jane->tambahMatakuliah("Jaringan Komputer", 3, 'A');
+  }
+  
+  Mahasiswa* bob = sistem.cariMahasiswa("003");
+  if (bob) {
+    bob->tambahMatakuliah("Algoritma Pemrograman", 3, 'B');
+    bob->tambahMatakuliah("Struktur Data", 3, 'B');
+    bob->tambahMatakuliah("Basis Data", 3, 'C');
+  }
+  
+  // Tampilkan semua mahasiswa
+  sistem.tampilkanSemuaMahasiswa();
+  
+  // Tampilkan transkrip John
+  if (john) {
+    john->printTranskrip();
+  }
+  
+  // Tampilkan mahasiswa terbaik
+  sistem.tampilkanMahasiswaTerbaik();
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Enumerasi (Enum)}
+
+Enumerasi adalah tipe data yang terdiri dari sekumpulan konstanta bernama, berguna untuk merepresentasikan pilihan terbatas.
+
+\subsection{Enum di Pascal}
+
+\begin{lstlisting}[language=Pascal, caption={Enum di Pascal}]
+type
+  THari = (Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, Minggu);
+  TStatus = (Aktif, Nonaktif, Lulus, Drop);
+  
+  TMahasiswa = record
+    nama: string;
+    nim: string;
+    status: TStatus;
+  end;
+
+var
+  hari: THari;
+  mhs: TMahasiswa;
+
+begin
+  hari := Senin;
+  
+  if hari = Senin then
+    Writeln('Hari ini Senin');
+  
+  mhs.status := Aktif;
+  
+  case mhs.status of
+    Aktif: Writeln('Mahasiswa aktif');
+    Lulus: Writeln('Mahasiswa lulus');
+    else Writeln('Status lain');
+  end;
+end.
+\end{lstlisting}
+
+\subsection{Enum di C}
+
+\begin{lstlisting}[language=C, caption={Enum di C}]
+#include <stdio.h>
+
+typedef enum {
+  SENIN, SELASA, RABU, KAMIS, JUMAT, SABTU, MINGGU
+} Hari;
+
+typedef enum {
+  AKTIF = 1,
+  NONAKTIF = 0,
+  LULUS = 2,
+  DROP = 3
+} Status;
+
+typedef struct {
+  char nama[50];
+  char nim[15];
+  Status status;
+} Mahasiswa;
+
+const char* namaHari(Hari h) {
+  const char* hari[] = {
+    "Senin", "Selasa", "Rabu", "Kamis",
+    "Jumat", "Sabtu", "Minggu"
+  };
+  return hari[h];
+}
+
+const char* namaStatus(Status s) {
+  switch(s) {
+    case AKTIF: return "Aktif";
+    case NONAKTIF: return "Nonaktif";
+    case LULUS: return "Lulus";
+    case DROP: return "Drop";
+    default: return "Unknown";
+  }
+}
+
+int main() {
+  Hari hari = SENIN;
+  printf("Hari ini: %s\n", namaHari(hari));
+  
+  Mahasiswa mhs = {"John", "001", AKTIF};
+  printf("Status: %s\n", namaStatus(mhs.status));
+  
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Enum di C++}
+
+\begin{lstlisting}[language=C++, caption={Enum class di C++}]
+#include <iostream>
+#include <string>
+
+// Unscoped enum (C-style, bisa implicit conversion)
+enum Hari {
+  Senin, Selasa, Rabu, Kamis, Jumat, Sabtu, Minggu
+};
+
+// Scoped enum (C++11, lebih aman)
+enum class Status {
+  Aktif,
+  Nonaktif,
+  Lulus,
+  Drop
+};
+
+struct Mahasiswa {
+  std::string nama;
+  std::string nim;
+  Status status;
+};
+
+std::string namaStatus(Status s) {
+  switch(s) {
+    case Status::Aktif: return "Aktif";
+    case Status::Nonaktif: return "Nonaktif";
+    case Status::Lulus: return "Lulus";
+    case Status::Drop: return "Drop";
+    default: return "Unknown";
+  }
+}
+
+int main() {
+  Hari hari = Senin;
+  std::cout << "Hari: " << hari << "\n";  // Prints 0
+  
+  Mahasiswa mhs{"John", "001", Status::Aktif};
+  std::cout << "Status: " << namaStatus(mhs.status) << "\n";
+  
+  // Enum class lebih aman - tidak bisa implicit conversion
+  // int x = Status::Aktif;  // ERROR!
+  // if (hari == Status::Aktif) {}  // ERROR! Type mismatch
+  
+  return 0;
+}
+\end{lstlisting}
+
+\section{Best Practices dan Tips}
+
+\subsection{Desain Struct yang Baik}
+
+\begin{enumerate}
+  \item \textbf{Nama yang deskriptif:} Gunakan nama yang jelas menggambarkan entitas
+  \item \textbf{Kohesi tinggi:} Field dalam struct harus saling terkait
+  \item \textbf{Ukuran wajar:} Struct terlalu besar pertimbangkan dipecah
+  \item \textbf{Inisialisasi:} Selalu inisialisasi field untuk menghindari garbage value
+  \item \textbf{Const-correctness:} Gunakan const untuk data yang tidak berubah
+  \item \textbf{Dokumentasi:} Jelaskan purpose dan constraint setiap field
+\end{enumerate}
+
+\subsection{Memory Layout dan Padding}
+
+\begin{lstlisting}[language=C, caption={Struct padding di C}]
+#include <stdio.h>
+
+// Struct dengan padding
+struct BadLayout {
+  char a;      // 1 byte + 3 bytes padding
+  int b;       // 4 bytes
+  char c;      // 1 byte + 3 bytes padding
+  int d;       // 4 bytes
+};  // Total: 16 bytes
+
+// Struct dengan layout optimal
+struct GoodLayout {
+  int b;       // 4 bytes
+  int d;       // 4 bytes
+  char a;      // 1 byte
+  char c;      // 1 byte + 2 bytes padding
+};  // Total: 12 bytes
+
+int main() {
+  printf("BadLayout size: %zu\n", sizeof(struct BadLayout));
+  printf("GoodLayout size: %zu\n", sizeof(struct GoodLayout));
+  return 0;
+}
+\end{lstlisting}
+
+\textbf{Tips mengoptimalkan struct:}
+\begin{itemize}
+  \item Kelompokkan field dengan tipe sama
+  \item Urutkan dari terbesar ke terkecil
+  \item Gunakan \texttt{\_\_attribute\_\_((packed))} atau \texttt{\#pragma pack} jika perlu
+  \item Hati-hati dengan unaligned access (performance hit)
+\end{itemize}
+
+\subsection{Kesalahan Umum}
+
+\begin{enumerate}
+  \item \textbf{Uninitialized fields:} Lupa menginisialisasi field
+  \item \textbf{String handling di C:} Lupa null terminator atau buffer overflow
+  \item \textbf{Shallow vs deep copy:} Pointer/reference di dalam struct
+  \item \textbf{Struct comparison:} Tidak bisa menggunakan \texttt{==} di C (perlu memcmp)
+  \item \textbf{Return large struct:} Inefficient return by value
+  \item \textbf{Memory alignment:} Asumsi salah tentang layout memori
+\end{enumerate}
+
+\section{Rangkuman}
+
+Record/Struct adalah tipe data terstruktur fundamental yang memungkinkan pengelompokan data heterogen menjadi satu entitas logis. Pemahaman yang baik tentang deklarasi, inisialisasi, dan manipulasi struct sangat penting untuk pemrograman yang efektif.
+
+\subsection{Poin-Poin Penting}
+
+\begin{itemize}
+  \item Struct mengelompokkan data terkait dengan tipe berbeda
+  \item Pascal menggunakan \texttt{record}, C/C++ menggunakan \texttt{struct}
+  \item Akses field menggunakan operator dot (\texttt{.})
+  \item Array of struct berguna untuk koleksi entitas
+  \item Nested struct memungkinkan hierarki data
+  \item Passing struct by reference/pointer lebih efisien
+  \item Enum memperkaya struct dengan nilai terbatas yang jelas
+  \item Memory padding memengaruhi ukuran struct
+\end{itemize}
+
+\subsection{Perbandingan Antar Bahasa}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Aspek} & \textbf{Pascal} & \textbf{C} & \textbf{C++} \\
+\hline
+Kata kunci & record & struct & struct/class \\
+\hline
+Constructor & Tidak & Tidak & Ya \\
+\hline
+Metode & Tidak & Tidak & Ya \\
+\hline
+Access control & Tidak & Tidak & Ya (public/private) \\
+\hline
+Operator overload & Tidak & Tidak & Ya \\
+\hline
+Inheritance & Tidak & Tidak & Ya \\
+\hline
+\end{tabular}
+\caption{Perbandingan struct/record di Pascal, C, dan C++}
 \end{table}
 
-Untuk kode portabel, hindari asumsi tentang packing dan urutan bidang; gunakan fungsi akses yang stabil untuk mengurangi ketergantungan terhadap tata letak memori. Uji regresi perlu memastikan bahwa perubahan pada struktur tidak mematahkan kode klien yang memanipulasi pointer ke struktur tersebut.
-\subsection{Catatan Eksekusi (OnlineGDB, Lazarus, Code::Blocks)}
-\begin{itemize}
-  \item \textbf{OnlineGDB}: \url{https://www.onlinegdb.com/} \textrightarrow{} pilih Pascal/C/C++, tempel contoh, Run.
-  \item \textbf{Lazarus (Pascal)}: Console Application, tempel contoh Pascal, Run.
-  \item \textbf{Code::Blocks (C/C++)}: Console application, pilih C/C++, tempel ke \texttt{main.c}/\texttt{main.cpp}, Build \& Run.
-\end{itemize}
+Struct/record adalah building blocks untuk struktur data yang lebih kompleks seperti linked list, tree, dan graph. Penguasaan yang baik akan memudahkan pembelajaran konsep pemrograman lanjutan!
+
 \end{document}
