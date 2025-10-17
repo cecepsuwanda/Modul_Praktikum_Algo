@@ -75,6 +75,8 @@ end.
 
 Misalkan kita memiliki program kalkulator sederhana dalam satu file besar:
 
+Program monolitik berikut menampung semua fungsi dan logika dalam satu file, yang akan kita pecah menjadi beberapa unit terpisah:
+
 \begin{lstlisting}[language=Pascal, caption={Program monolitik (kalkulator\_monolitik.pas)}]
 program KalkulatorMonolitik;
 var
@@ -146,6 +148,9 @@ end.
 Sekarang kita pecah menjadi modul-modul terpisah berdasarkan fungsi:
 
 \subsubsection{Unit 1: Operasi Aritmatika Dasar}
+
+Unit pertama berisi fungsi-fungsi operasi matematika dasar yang dapat digunakan kembali di berbagai program:
+
 \begin{lstlisting}[language=Pascal, caption={mathbasic.pas - operasi aritmatika dasar}]
 unit MathBasic;
 
@@ -189,6 +194,9 @@ end.
 \end{lstlisting}
 
 \subsubsection{Unit 2: Operasi Lanjutan}
+
+Unit kedua berisi operasi matematika yang lebih kompleks seperti pangkat, faktorial, dan akar kuadrat:
+
 \begin{lstlisting}[language=Pascal, caption={mathadvanced.pas - operasi matematika lanjutan}]
 unit MathAdvanced;
 
@@ -244,6 +252,9 @@ end.
 \end{lstlisting}
 
 \subsubsection{Unit 3: Input/Output Interface}
+
+Unit ketiga menangani semua interaksi dengan pengguna, memisahkan UI dari logika bisnis:
+
 \begin{lstlisting}[language=Pascal, caption={calcui.pas - antarmuka pengguna}]
 unit CalcUI;
 
@@ -299,6 +310,9 @@ end.
 \end{lstlisting}
 
 \subsubsection{Program Utama Modular}
+
+Program utama yang telah direfaktor sekarang jauh lebih ringkas dan fokus pada alur kontrol, menggunakan fungsi dari unit-unit yang telah dibuat:
+
 \begin{lstlisting}[language=Pascal, caption={kalkulator.pas - program utama modular}]
 program Kalkulator;
 
@@ -423,12 +437,12 @@ Include guards mencegah definisi ganda saat header disertakan dari banyak tempat
 \begin{table}[H]
   \centering
   \caption{Perbandingan teknik include guard}
-  \begin{tabular}{@{}p{3cm}p{5cm}p{5cm}@{}}
+  \begin{tabular}{@{}p{3.8cm}p{4.8cm}p{4.4cm}@{}}
     \toprule
     \textbf{Teknik} & \textbf{Kelebihan} & \textbf{Kekurangan} \\
     \midrule
-    Include guard tradisional & Portabel, standar, eksplisit & Butuh nama makro unik, lebih verbose \\
-    \texttt{\#pragma once} & Ringkas, cepat, tidak perlu nama unik & Non-standar (tapi dukungan universal) \\
+    Include guard tradisional & Portabel, standar, eksplisit & Memerlukan nama makro unik, lebih verbose \\
+    \texttt{\#pragma once} & Ringkas, cepat, tidak perlu nama unik & Nonstandar (namun didukung universal) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -453,6 +467,8 @@ Include guards mencegah definisi ganda saat header disertakan dari banyak tempat
 \subsection{Contoh: Memecah Program Kalkulator Monolitik (C)}
 
 Program monolitik dalam satu file:
+
+Program C monolitik berikut akan kita pecah menjadi beberapa file header dan implementasi:
 
 \begin{lstlisting}[language=C, caption={kalkulator\_monolitik.c}]
 #include <stdio.h>
@@ -509,6 +525,9 @@ int main() {
 Sekarang dipecah menjadi modul-modul:
 
 \subsubsection{Modul 1: Operasi Matematika Dasar}
+
+Header file pertama mendeklarasikan fungsi-fungsi matematika dasar:
+
 \begin{lstlisting}[language=C, caption={mathbasic.h - header operasi dasar}]
 #ifndef MATHBASIC_H
 #define MATHBASIC_H
@@ -521,6 +540,8 @@ double bagi(double a, double b);
 
 #endif  // MATHBASIC_H
 \end{lstlisting}
+
+File implementasi berisi definisi fungsi yang dideklarasikan di header:
 
 \begin{lstlisting}[language=C, caption={mathbasic.c - implementasi operasi dasar}]
 #include "mathbasic.h"
@@ -549,6 +570,9 @@ double bagi(double a, double b) {
 \end{lstlisting}
 
 \subsubsection{Modul 2: Operasi Matematika Lanjutan}
+
+Header kedua untuk operasi matematika yang lebih kompleks:
+
 \begin{lstlisting}[language=C, caption={mathadvanced.h - header operasi lanjutan}]
 #ifndef MATHADVANCED_H
 #define MATHADVANCED_H
@@ -560,6 +584,8 @@ double logaritma(double x);
 
 #endif  // MATHADVANCED_H
 \end{lstlisting}
+
+Implementasi fungsi-fungsi matematika lanjutan dengan validasi error:
 
 \begin{lstlisting}[language=C, caption={mathadvanced.c - implementasi operasi lanjutan}]
 #include "mathadvanced.h"
@@ -601,6 +627,9 @@ double logaritma(double x) {
 \end{lstlisting}
 
 \subsubsection{Modul 3: User Interface}
+
+Header untuk fungsi-fungsi user interface:
+
 \begin{lstlisting}[language=C, caption={calcui.h - header antarmuka pengguna}]
 #ifndef CALCUI_H
 #define CALCUI_H
@@ -613,6 +642,8 @@ void clear_input_buffer(void);
 
 #endif  // CALCUI_H
 \end{lstlisting}
+
+Implementasi fungsi UI untuk tampilan menu dan input/output:
 
 \begin{lstlisting}[language=C, caption={calcui.c - implementasi UI}]
 #include "calcui.h"
@@ -657,6 +688,9 @@ void clear_input_buffer(void) {
 \end{lstlisting}
 
 \subsubsection{Program Utama Modular}
+
+Program utama yang telah dimodularisasi sekarang hanya perlu include header dan fokus pada logika alur:
+
 \begin{lstlisting}[language=C, caption={kalkulator.c - program utama}]
 #include <stdio.h>
 #include <stdlib.h>
@@ -781,13 +815,14 @@ Beberapa cara umum untuk memecah program besar:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+\small
+\begin{tabular}{|p{3.5cm}|p{6.5cm}|p{4cm}|}
 \hline
 \textbf{Strategi} & \textbf{Contoh} & \textbf{Kapan Digunakan} \\ \hline
-Berdasarkan fungsi bisnis & \texttt{payment.c}, \texttt{inventory.c}, \texttt{shipping.c} & Program dengan domain kompleks \\ \hline
-Berdasarkan layer & \texttt{ui.c}, \texttt{logic.c}, \texttt{database.c} & Aplikasi dengan arsitektur berlapis \\ \hline
+Domain bisnis & \texttt{payment.c}, \texttt{inventory.c}, \texttt{shipping.c} & Program domain kompleks \\ \hline
+Berdasarkan layer & \texttt{ui.c}, \texttt{logic.c}, \texttt{database.c} & Aplikasi berlapis \\ \hline
 Berdasarkan tipe data & \texttt{vector.c}, \texttt{matrix.c}, \texttt{list.c} & Library struktur data \\ \hline
-Berdasarkan utility & \texttt{string\_utils.c}, \texttt{math\_utils.c}, \texttt{file\_utils.c} & Fungsi helper umum \\ \hline
+Berdasarkan utilitas & \texttt{string\_utils.c}, \texttt{math\_utils.c} & Fungsi bantu umum \\ \hline
 \end{tabular}
 \caption{Strategi pemecahan modul}
 \end{table}
@@ -853,23 +888,23 @@ Organisasi direktori yang konsisten memudahkan navigasi dan kolaborasi:
 
 \begin{lstlisting}[caption={Struktur direktori proyek modular}]
 project/
-├── src/                    # Source files
-│   ├── main.c
-│   ├── mathbasic.c
-│   ├── mathadvanced.c
-│   └── calcui.c
-├── include/                # Header files
-│   ├── mathbasic.h
-│   ├── mathadvanced.h
-│   └── calcui.h
-├── obj/                    # Object files (generated)
-├── bin/                    # Binary output (generated)
-├── tests/                  # Unit tests
-│   ├── test_mathbasic.c
-│   └── test_mathadvanced.c
-├── docs/                   # Documentation
-├── Makefile atau CMakeLists.txt
-└── README.md
+  src/                      # Source files
+    main.c
+    mathbasic.c
+    mathadvanced.c
+    calcui.c
+  include/                  # Header files
+    mathbasic.h
+    mathadvanced.h
+    calcui.h
+  obj/                      # Object files (generated)
+  bin/                      # Binary output (generated)
+  tests/                    # Unit tests
+    test_mathbasic.c
+    test_mathadvanced.c
+  docs/                     # Documentation
+  Makefile atau CMakeLists.txt
+  README.md
 \end{lstlisting}
 
 \subsection{Diagram Kompilasi dan Linking}
@@ -898,6 +933,8 @@ Keuntungan kompilasi terpisah: jika hanya satu file yang berubah, hanya file itu
 \subsection{Automasi Build dengan Makefile}
 
 Makefile mengotomasi proses kompilasi dan menangani dependensi:
+
+Makefile berikut mengotomasi kompilasi, dengan target untuk build, clean, rebuild, dan run:
 
 \begin{lstlisting}[language=make, caption={Makefile lengkap untuk kalkulator}]
 # Compiler dan flags
@@ -971,6 +1008,8 @@ make clean
 \subsection{Build System Modern: CMake}
 
 CMake adalah build system generator yang lebih portabel:
+
+CMakeLists.txt berikut mendefinisikan proyek, source files, compiler flags, dan target secara deklaratif untuk build lintas platform:
 
 \begin{lstlisting}[caption={CMakeLists.txt lengkap}]
 cmake_minimum_required(VERSION 3.10)
@@ -1105,7 +1144,7 @@ Untuk kualitas, integrasikan linter dan unit test ke dalam proses build agar reg
 \begin{itemize}
   \item Alasan modularisasi: keterbacaan, pemeliharaan, reusabilitas, kecepatan kompilasi, kolaborasi.
   \item Unit Pascal dan header/implementasi C/C++: pemisahan interface vs implementasi.
-  \item Include guards vs \texttt{#pragma once}; forward declaration untuk hindari circular dependency.
+  \item Include guards vs \texttt{\#pragma once}; forward declaration untuk hindari circular dependency.
   \item Contoh pemecahan program kalkulator menjadi modul dan implikasi pengujian.
   \item Struktur proyek, Makefile/CMake, dan proses build terotomasi untuk skala tim.
   \item Best practices: single responsibility, high cohesion, low coupling, dokumentasi API.

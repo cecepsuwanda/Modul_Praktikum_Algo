@@ -50,7 +50,7 @@ Representasi kontigu di memori memaksimalkan locality cache dan performa operasi
 Array satu dimensi adalah bentuk array paling sederhana, di mana elemen-elemen tersusun dalam satu baris linear. Dapat dibayangkan seperti daftar atau barisan data yang berurutan \parencite{tutorialspoint-c-arrays,galuhratna-array-c}.
 
 \subsection{Deklarasi Array Satu Dimensi}
-Deklarasi array mendefinisikan nama, tipe elemen, dan ukuran. Setiap bahasa memiliki sintaks berbeda namun konsep dasarnya sama \parencite{tutorialspoint-c-arrays,learncpp-arrays,free-pascal-docs,tutorialpemrograman-array-c}.
+Deklarasi array mendefinisikan nama, tipe elemen, dan ukuran. Setiap bahasa memiliki sintaks berbeda namun konsep sama \parencite{tutorialspoint-c-arrays,learncpp-arrays,free-pascal-docs,tutorialpemrograman-array-c}.
 
 \textbf{Poin penting dalam deklarasi:}
 \begin{itemize}
@@ -222,7 +222,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Operasi Dasar pada Array Satu Dimensi}
-Operasi umum meliputi iterasi, pencarian, transformasi, dan validasi. Pada C++ pertimbangkan algoritme standar untuk menggantikan loop manual \parencite{cppreference-algorithm,gnu-c-manual}.
+Operasi umum meliputi iterasi, pencarian, transformasi, dan validasi. Pada C++ gunakan algoritme standar untuk menggantikan loop manual \parencite{cppreference-algorithm,gnu-c-manual}.
+
+Program berikut mendemonstrasikan operasi dasar pada array: mengisi dengan nilai kuadrat, menghitung jumlah total, dan mencari nilai maksimum:
 
 \begin{lstlisting}[language=Pascal, caption={Operasi dasar array di Pascal}]
 var
@@ -249,17 +251,17 @@ begin
 end.
 \end{lstlisting}
 
+Versi C yang serupa untuk operasi array dasar:
+
 \begin{lstlisting}[language=C, caption={Operasi dasar array di C}]
 #include <stdio.h>
 
-void fill(int *p, int n) {
-  for (int i = 0; i < n; ++i)
-    p[i] = i * i;
-}
-
 int main() {
-int a[5];
-fill(a, 5);  // a terdegradasi menjadi int*
+  int a[5];
+  
+  // Isi array dengan kuadrat
+  for (int i = 0; i < 5; i++)
+    a[i] = i * i;
   
   // Hitung jumlah
   int jumlah = 0;
@@ -270,6 +272,8 @@ fill(a, 5);  // a terdegradasi menjadi int*
   return 0;
 }
 \end{lstlisting}
+
+C++ menyediakan algoritme standar yang lebih expressif untuk operasi array. Program berikut menggunakan \texttt{std::generate}, \texttt{std::accumulate}, dan \texttt{std::max\_element}:
 
 \begin{lstlisting}[language=C++, caption={Operasi dengan std::array dan algoritme}]
 #include <array>
@@ -325,7 +329,8 @@ bool sama = (a == b); // std::array mendukung perbandingan leksikografis
 
 Berikut adalah contoh program lengkap yang mendemonstrasikan deklarasi, pengisian, dan operasi pada array satu dimensi untuk mengelola data nilai mahasiswa.
 
-\textbf{Pascal:} Program pengolahan nilai mahasiswa
+Program Pascal berikut membaca data nilai mahasiswa, menghitung statistik (jumlah, rata-rata, maksimum, minimum), dan menampilkan hasil analisis:
+
 \begin{lstlisting}[language=Pascal, caption={Program lengkap array 1D di Pascal}]
 program PengolahanNilai;
 var
@@ -370,7 +375,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:} Program pengolahan nilai mahasiswa
+Versi C yang serupa dengan validasi input untuk memastikan jumlah mahasiswa dalam rentang yang valid:
+
 \begin{lstlisting}[language=C, caption={Program lengkap array 1D di C}]
 #include <stdio.h>
 
@@ -420,7 +426,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:} Program dengan \texttt{std::array}
+Program C++ menggunakan \texttt{std::array} dan algoritme STL untuk operasi yang lebih aman dan ekspresif:
+
 \begin{lstlisting}[language=C++, caption={Program lengkap array 1D di C++}]
 #include <iostream>
 #include <array>
@@ -549,36 +556,35 @@ Formula akses linear untuk array 2D berukuran \texttt{M×N}:
 \end{figure}
 
 \subsection{Representasi Datar (Flattened Buffer) dan Akses}
-Pada representasi datar, elemen 2D disimpan dalam satu array 1D. Indeks liniernya \texttt{idx = baris * lebar + kolom}. Pendekatan ini mengurangi alokasi berulang dan meningkatkan locality memori.
+Pada representasi datar, elemen 2D disimpan dalam satu array 1D. Indeks liniernya dihitung dengan rumus: \texttt{idx = baris * lebar + kolom}. Pendekatan ini mengurangi alokasi berulang dan meningkatkan locality memori.
 
-\begin{lstlisting}[language=C, caption={Helper untuk indeks linier 2D pada buffer datar (C)}]
-#include <stddef.h>
-
-static inline size_t idx2d(size_t row, size_t col, size_t ncols) {
-  return row * ncols + col;
-}
-
-// contoh akses
-// int *buf = malloc(nrows * ncols * sizeof *buf);
-// buf[idx2d(i, j, ncols)] = 42;
-\end{lstlisting}
+Program berikut menunjukkan cara menyimpan matriks 2D dalam vector 1D dan mengakses elemennya menggunakan perhitungan indeks manual:
 
 \begin{lstlisting}[language=C++, caption={Representasi datar dengan std::vector (C++)}]
 #include <vector>
-#include <stdexcept>
+#include <iostream>
+using namespace std;
 
-struct Matrix {
-  size_t rows{}, cols{};
-  std::vector<int> data; // ukuran = rows*cols
-  Matrix(size_t r, size_t c): rows(r), cols(c), data(r*c) {}
-  int& at(size_t r, size_t c) {
-    if (r >= rows || c >= cols) throw std::out_of_range("idx");
-    return data[r*cols + c];
+int main() {
+  size_t rows = 3, cols = 4;
+  vector<int> data(rows * cols); // buffer datar untuk matriks 3x4
+  
+  // Isi data dengan perhitungan indeks manual
+  // Formula: indeks = baris * cols + kolom
+  for (size_t r = 0; r < rows; r++) {
+    for (size_t c = 0; c < cols; c++) {
+      data[r * cols + c] = r * 10 + c;
+    }
   }
-};
+  
+  // Akses data
+  cout << "Elemen [1][2] = " << data[1 * cols + 2] << "\n";
+  
+  return 0;
+}
 \end{lstlisting}
 
-C++ dapat menggunakan array multidimensi built-in atau buffer datar dengan perhitungan indeks manual untuk kontrol performa yang lebih baik.
+Representasi datar efisien untuk operasi numerik intensif dan memudahkan integrasi dengan library eksternal yang mengharapkan buffer kontigu.
 
 \subsection{Deklarasi Array Dua Dimensi}
 
@@ -777,6 +783,8 @@ int main() {
 
 Operasi umum pada matriks: penjumlahan, perkalian, transpose, dan pencarian elemen \parencite{geeksforgeeks-matrix-operations}.
 
+Program berikut mendemonstrasikan operasi transpose matriks, yaitu menukar baris menjadi kolom:
+
 \begin{lstlisting}[language=Pascal, caption={Transpose matriks di Pascal}]
 var
   mat, trans: array[1..3, 1..3] of integer;
@@ -802,22 +810,22 @@ begin
 end.
 \end{lstlisting}
 
+Program C berikut menjumlahkan dua matriks dengan mengiterasi setiap elemen dan menjumlahkan elemen yang berkorespondensi:
+
 \begin{lstlisting}[language=C, caption={Penjumlahan matriks di C}]
 #include <stdio.h>
-
-void tambah_matriks(int a[3][3], int b[3][3], int hasil[3][3]) {
-  for (int i = 0; i < 3; i++)
-    for (int j = 0; j < 3; j++)
-      hasil[i][j] = a[i][j] + b[i][j];
-}
 
 int main() {
   int a[3][3] = {{1,2,3}, {4,5,6}, {7,8,9}};
   int b[3][3] = {{9,8,7}, {6,5,4}, {3,2,1}};
   int hasil[3][3];
   
-  tambah_matriks(a, b, hasil);
+  // Penjumlahan matriks
+  for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++)
+      hasil[i][j] = a[i][j] + b[i][j];
   
+  // Tampilkan hasil
   printf("Hasil penjumlahan:\n");
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++)
@@ -829,33 +837,33 @@ int main() {
 }
 \end{lstlisting}
 
+Versi C++ menggunakan \texttt{std::array} untuk transpose matriks dengan type safety yang lebih baik:
+
 \begin{lstlisting}[language=C++, caption={Operasi matriks di C++}]
 #include <iostream>
 #include <array>
-
-template<size_t N>
-void transpose(const std::array<std::array<int, N>, N>& mat,
-               std::array<std::array<int, N>, N>& trans) {
-  for (size_t i = 0; i < N; i++)
-    for (size_t j = 0; j < N; j++)
-      trans[j][i] = mat[i][j];
-}
+using namespace std;
 
 int main() {
-  std::array<std::array<int, 3>, 3> mat = {{
+  array<array<int, 3>, 3> mat = {{
     {1, 2, 3},
     {4, 5, 6},
     {7, 8, 9}
   }};
   
-  std::array<std::array<int, 3>, 3> trans;
-  transpose(mat, trans);
+  array<array<int, 3>, 3> trans;
   
-  std::cout << "Matriks transpose:\n";
+  // Transpose matriks
+  for (size_t i = 0; i < 3; i++)
+    for (size_t j = 0; j < 3; j++)
+      trans[j][i] = mat[i][j];
+  
+  // Tampilkan hasil
+  cout << "Matriks transpose:\n";
   for (const auto& baris : trans) {
     for (int elem : baris)
-      std::cout << elem << " ";
-    std::cout << "\n";
+      cout << elem << " ";
+    cout << "\n";
   }
   
   return 0;
@@ -868,242 +876,219 @@ Pada representasi datar, indeks linier dapat dihitung dengan rumus \texttt{indek
 
 Berikut adalah contoh program lengkap yang mendemonstrasikan operasi matriks menggunakan array dua dimensi.
 
-\textbf{Pascal:} Program penjumlahan dan perkalian matriks
+Program Pascal berikut membaca dua matriks dari input pengguna, menjumlahkannya, dan menampilkan kedua matriks input beserta hasilnya:
+
 \begin{lstlisting}[language=Pascal, caption={Program operasi matriks di Pascal}]
 program OperasiMatriks;
 const
-  MAKS = 10;
+  BARIS = 3;
+  KOLOM = 3;
 var
-  A, B, Hasil: array[1..MAKS, 1..MAKS] of integer;
-  baris, kolom, i, j, k: integer;
-  pilihan: integer;
+  A, B, Hasil: array[1..BARIS, 1..KOLOM] of integer;
+  i, j: integer;
 
-procedure InputMatriks(var M: array of integer; 
-                       br, kl: integer; nama: string);
-var i, j: integer;
 begin
-  Writeln('Input matriks ', nama, ' (', br, 'x', kl, '):');
-  for i := 1 to br do
-    for j := 1 to kl do
+  // Input matriks A
+  Writeln('Input matriks A (', BARIS, 'x', KOLOM, '):');
+  for i := 1 to BARIS do
+    for j := 1 to KOLOM do
     begin
-      Write('Elemen [', i, ',', j, ']: ');
-      Readln(M[i, j]);
+      Write('A[', i, ',', j, ']: ');
+      Readln(A[i, j]);
     end;
-end;
-
-procedure TampilMatriks(M: array of integer; 
-                        br, kl: integer; nama: string);
-var i, j: integer;
-begin
-  Writeln('Matriks ', nama, ':');
-  for i := 1 to br do
-  begin
-    for j := 1 to kl do
-      Write(M[i, j]:4);
-    Writeln;
-  end;
+  
   Writeln;
-end;
-
-procedure JumlahMatriks(A, B: array of integer;
-                        var Hasil: array of integer;
-                        br, kl: integer);
-var i, j: integer;
-begin
-  for i := 1 to br do
-    for j := 1 to kl do
+  
+  // Input matriks B
+  Writeln('Input matriks B (', BARIS, 'x', KOLOM, '):');
+  for i := 1 to BARIS do
+    for j := 1 to KOLOM do
+    begin
+      Write('B[', i, ',', j, ']: ');
+      Readln(B[i, j]);
+    end;
+  
+  // Penjumlahan matriks
+  for i := 1 to BARIS do
+    for j := 1 to KOLOM do
       Hasil[i, j] := A[i, j] + B[i, j];
-end;
-
-begin
-  Write('Masukkan jumlah baris: ');
-  Readln(baris);
-  Write('Masukkan jumlah kolom: ');
-  Readln(kolom);
-  
-  if (baris > MAKS) or (kolom > MAKS) then
-  begin
-    Writeln('Ukuran terlalu besar! Maksimum ', MAKS, 'x', MAKS);
-    Exit;
-  end;
-  
-  // Input dua matriks
-  InputMatriks(A, baris, kolom, 'A');
-  Writeln;
-  InputMatriks(B, baris, kolom, 'B');
-  Writeln;
-  
-  // Penjumlahan
-  JumlahMatriks(A, B, Hasil, baris, kolom);
   
   // Tampilkan hasil
-  TampilMatriks(A, baris, kolom, 'A');
-  TampilMatriks(B, baris, kolom, 'B');
-  TampilMatriks(Hasil, baris, kolom, 'A + B');
+  Writeln;
+  Writeln('Matriks A:');
+  for i := 1 to BARIS do
+  begin
+    for j := 1 to KOLOM do
+      Write(A[i, j]:4);
+    Writeln;
+  end;
+  
+  Writeln;
+  Writeln('Matriks B:');
+  for i := 1 to BARIS do
+  begin
+    for j := 1 to KOLOM do
+      Write(B[i, j]:4);
+    Writeln;
+  end;
+  
+  Writeln;
+  Writeln('Matriks A + B:');
+  for i := 1 to BARIS do
+  begin
+    for j := 1 to KOLOM do
+      Write(Hasil[i, j]:4);
+    Writeln;
+  end;
 end.
 \end{lstlisting}
 
-\textbf{C:} Program operasi matriks dengan fungsi
+Versi C yang mengimplementasikan operasi yang sama dengan array multidimensi gaya C:
+
 \begin{lstlisting}[language=C, caption={Program operasi matriks di C}]
 #include <stdio.h>
-#define MAKS 10
+#define BARIS 3
+#define KOLOM 3
 
-void input_matriks(int mat[][MAKS], int br, int kl, 
-                   char nama) {
-  printf("Input matriks %c (%dx%d):\n", nama, br, kl);
-  for (int i = 0; i < br; i++) {
-    for (int j = 0; j < kl; j++) {
-      printf("Elemen [%d][%d]: ", i, j);
-      scanf("%d", &mat[i][j]);
+int main() {
+  int A[BARIS][KOLOM], B[BARIS][KOLOM], Hasil[BARIS][KOLOM];
+  int i, j;
+  
+  // Input matriks A
+  printf("Input matriks A (%dx%d):\n", BARIS, KOLOM);
+  for (i = 0; i < BARIS; i++) {
+    for (j = 0; j < KOLOM; j++) {
+      printf("A[%d][%d]: ", i, j);
+      scanf("%d", &A[i][j]);
     }
   }
+  
   printf("\n");
-}
-
-void tampil_matriks(int mat[][MAKS], int br, int kl, 
-                    char nama) {
-  printf("Matriks %c:\n", nama);
-  for (int i = 0; i < br; i++) {
-    for (int j = 0; j < kl; j++) {
-      printf("%4d", mat[i][j]);
+  
+  // Input matriks B
+  printf("Input matriks B (%dx%d):\n", BARIS, KOLOM);
+  for (i = 0; i < BARIS; i++) {
+    for (j = 0; j < KOLOM; j++) {
+      printf("B[%d][%d]: ", i, j);
+      scanf("%d", &B[i][j]);
+    }
+  }
+  
+  // Penjumlahan matriks
+  for (i = 0; i < BARIS; i++)
+    for (j = 0; j < KOLOM; j++)
+      Hasil[i][j] = A[i][j] + B[i][j];
+  
+  // Tampilkan matriks A
+  printf("\nMatriks A:\n");
+  for (i = 0; i < BARIS; i++) {
+    for (j = 0; j < KOLOM; j++) {
+      printf("%4d", A[i][j]);
     }
     printf("\n");
   }
-  printf("\n");
-}
-
-void jumlah_matriks(int A[][MAKS], int B[][MAKS],
-                    int hasil[][MAKS], int br, int kl) {
-  for (int i = 0; i < br; i++)
-    for (int j = 0; j < kl; j++)
-      hasil[i][j] = A[i][j] + B[i][j];
-}
-
-void kali_matriks(int A[][MAKS], int B[][MAKS],
-                  int hasil[][MAKS], 
-                  int br_a, int kl_a, int kl_b) {
-  // Inisialisasi hasil dengan 0
-  for (int i = 0; i < br_a; i++)
-    for (int j = 0; j < kl_b; j++)
-      hasil[i][j] = 0;
   
-  // Perkalian matriks
-  for (int i = 0; i < br_a; i++)
-    for (int j = 0; j < kl_b; j++)
-      for (int k = 0; k < kl_a; k++)
-        hasil[i][j] += A[i][k] * B[k][j];
-}
-
-int main() {
-  int A[MAKS][MAKS], B[MAKS][MAKS], Hasil[MAKS][MAKS];
-  int baris, kolom;
-  
-  printf("Masukkan jumlah baris: ");
-  scanf("%d", &baris);
-  printf("Masukkan jumlah kolom: ");
-  scanf("%d", &kolom);
-  
-  if (baris > MAKS || kolom > MAKS) {
-    printf("Ukuran terlalu besar!\n");
-    return 1;
+  // Tampilkan matriks B
+  printf("\nMatriks B:\n");
+  for (i = 0; i < BARIS; i++) {
+    for (j = 0; j < KOLOM; j++) {
+      printf("%4d", B[i][j]);
+    }
+    printf("\n");
   }
   
-  // Input matriks
-  input_matriks(A, baris, kolom, 'A');
-  input_matriks(B, baris, kolom, 'B');
-  
-  // Penjumlahan
-  jumlah_matriks(A, B, Hasil, baris, kolom);
-  
-  // Tampilkan hasil
-  tampil_matriks(A, baris, kolom, 'A');
-  tampil_matriks(B, baris, kolom, 'B');
-  tampil_matriks(Hasil, baris, kolom, 'C');
-  printf("C = A + B\n");
+  // Tampilkan hasil C = A + B
+  printf("\nMatriks C (A + B):\n");
+  for (i = 0; i < BARIS; i++) {
+    for (j = 0; j < KOLOM; j++) {
+      printf("%4d", Hasil[i][j]);
+    }
+    printf("\n");
+  }
   
   return 0;
 }
 \end{lstlisting}
 
-\textbf{C++:} Program dengan \texttt{std::array} dan template
+Program C++ berikut melakukan penjumlahan dan transpose matriks menggunakan \texttt{std::array} untuk type safety yang lebih baik:
+
 \begin{lstlisting}[language=C++, caption={Program operasi matriks di C++}]
 #include <iostream>
 #include <array>
 #include <iomanip>
-
-template<size_t N, size_t M>
-void inputMatriks(std::array<std::array<int, M>, N>& mat,
-                  char nama) {
-  std::cout << "Input matriks " << nama 
-            << " (" << N << "x" << M << "):\n";
-  for (size_t i = 0; i < N; i++) {
-    for (size_t j = 0; j < M; j++) {
-      std::cout << "Elemen [" << i << "][" << j << "]: ";
-      std::cin >> mat[i][j];
-    }
-  }
-  std::cout << "\n";
-}
-
-template<size_t N, size_t M>
-void tampilMatriks(
-    const std::array<std::array<int, M>, N>& mat,
-    char nama) {
-  std::cout << "Matriks " << nama << ":\n";
-  for (const auto& baris : mat) {
-    for (int elem : baris) {
-      std::cout << std::setw(4) << elem;
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
-}
-
-template<size_t N, size_t M>
-auto jumlahMatriks(
-    const std::array<std::array<int, M>, N>& A,
-    const std::array<std::array<int, M>, N>& B) {
-  std::array<std::array<int, M>, N> hasil;
-  for (size_t i = 0; i < N; i++)
-    for (size_t j = 0; j < M; j++)
-      hasil[i][j] = A[i][j] + B[i][j];
-  return hasil;
-}
-
-template<size_t N, size_t M>
-auto transposeMatriks(
-    const std::array<std::array<int, M>, N>& mat) {
-  std::array<std::array<int, N>, M> hasil;
-  for (size_t i = 0; i < N; i++)
-    for (size_t j = 0; j < M; j++)
-      hasil[j][i] = mat[i][j];
-  return hasil;
-}
+using namespace std;
 
 int main() {
-  constexpr size_t BARIS = 3;
-  constexpr size_t KOLOM = 3;
+  const size_t BARIS = 3;
+  const size_t KOLOM = 3;
   
-  std::array<std::array<int, KOLOM>, BARIS> A, B;
+  array<array<int, KOLOM>, BARIS> A, B, C, AT;
   
-  // Input matriks
-  inputMatriks(A, 'A');
-  inputMatriks(B, 'B');
+  // Input matriks A
+  cout << "Input matriks A (" << BARIS << "x" << KOLOM << "):\n";
+  for (size_t i = 0; i < BARIS; i++) {
+    for (size_t j = 0; j < KOLOM; j++) {
+      cout << "A[" << i << "][" << j << "]: ";
+      cin >> A[i][j];
+    }
+  }
   
-  // Operasi penjumlahan
-  auto C = jumlahMatriks(A, B);
+  cout << "\n";
   
-  // Operasi transpose
-  auto AT = transposeMatriks(A);
+  // Input matriks B
+  cout << "Input matriks B (" << BARIS << "x" << KOLOM << "):\n";
+  for (size_t i = 0; i < BARIS; i++) {
+    for (size_t j = 0; j < KOLOM; j++) {
+      cout << "B[" << i << "][" << j << "]: ";
+      cin >> B[i][j];
+    }
+  }
   
-  // Tampilkan hasil
-  tampilMatriks(A, 'A');
-  tampilMatriks(B, 'B');
-  tampilMatriks(C, 'C');
-  std::cout << "C = A + B\n\n";
+  // Penjumlahan: C = A + B
+  for (size_t i = 0; i < BARIS; i++)
+    for (size_t j = 0; j < KOLOM; j++)
+      C[i][j] = A[i][j] + B[i][j];
   
-  tampilMatriks(AT, 'A');
-  std::cout << "A^T (Transpose A)\n";
+  // Transpose A
+  for (size_t i = 0; i < BARIS; i++)
+    for (size_t j = 0; j < KOLOM; j++)
+      AT[j][i] = A[i][j];
+  
+  // Tampilkan matriks A
+  cout << "\nMatriks A:\n";
+  for (const auto& baris : A) {
+    for (int elem : baris) {
+      cout << setw(4) << elem;
+    }
+    cout << "\n";
+  }
+  
+  // Tampilkan matriks B
+  cout << "\nMatriks B:\n";
+  for (const auto& baris : B) {
+    for (int elem : baris) {
+      cout << setw(4) << elem;
+    }
+    cout << "\n";
+  }
+  
+  // Tampilkan matriks C
+  cout << "\nMatriks C (A + B):\n";
+  for (const auto& baris : C) {
+    for (int elem : baris) {
+      cout << setw(4) << elem;
+    }
+    cout << "\n";
+  }
+  
+  // Tampilkan transpose A
+  cout << "\nMatriks A^T (Transpose A):\n";
+  for (const auto& baris : AT) {
+    for (int elem : baris) {
+      cout << setw(4) << elem;
+    }
+    cout << "\n";
+  }
   
   return 0;
 }
@@ -1112,6 +1097,9 @@ int main() {
 \subsection{Aplikasi Praktis Array 2D}
 
 \textbf{1. Sistem Penyimpanan Data Tabular}
+
+Program berikut menggunakan array 2D untuk menyimpan data penjualan dan menghitung total penjualan per produk:
+
 \begin{lstlisting}[language=C, caption={Tabel data penjualan}]
 // Penjualan 4 produk dalam 7 hari
 int penjualan[7][4];  // [hari][produk]
@@ -1127,6 +1115,9 @@ for (int produk = 0; produk < 4; produk++) {
 \end{lstlisting}
 
 \textbf{2. Representasi Grid/Papan Permainan}
+
+Contoh berikut menunjukkan penggunaan array 2D untuk merepresentasikan papan catur dan menginisialisasi posisi awal beberapa bidak:
+
 \begin{lstlisting}[language=C++, caption={Papan catur 8x8}]
 std::array<std::array<char, 8>, 8> papan;
 
@@ -1141,6 +1132,9 @@ papan[0][4] = 'K';  // King (Raja) hitam
 \end{lstlisting}
 
 \textbf{3. Pengolahan Citra Sederhana}
+
+Program berikut menggunakan array 2D untuk merepresentasikan gambar grayscale dan melakukan operasi inversi warna:
+
 \begin{lstlisting}[language=C, caption={Matriks pixel grayscale}]
 #define LEBAR 640
 #define TINGGI 480
@@ -1152,57 +1146,9 @@ for (int i = 0; i < TINGGI; i++)
     gambar[i][j] = 255 - gambar[i][j];
 \end{lstlisting}
 
-\section{Alokasi Dinamis pada Array}
-Ketika ukuran tidak diketahui di awal, gunakan alokasi dinamis. Di C, fungsi \texttt{malloc}, \texttt{free}, \texttt{realloc}; di C++ gunakan operator \texttt{new}/\texttt{delete} untuk alokasi manual; pada Pascal modern, array dinamis didukung \parencite{iso-c-draft-n1570,cpp-reference,free-pascal-docs,pascal-dynarray}.
+\paragraph{Catatan tentang Array Dinamis.} Array statis yang telah kita pelajari memiliki ukuran tetap yang harus ditentukan saat kompilasi. Untuk array dengan ukuran yang ditentukan saat runtime, diperlukan alokasi memori dinamis menggunakan pointer (akan dipelajari di Bab 9 dan Bab 11). Pascal modern menyediakan fitur \texttt{array of type} dan \texttt{SetLength} untuk array dinamis yang akan dibahas lebih lanjut setelah memahami konsep pointer dan alokasi memori \parencite{pascal-dynarray}.
 
-\subsection{Contoh Dinamis}
-\begin{lstlisting}[language=C, caption={malloc/realloc/free di C}]
-#include <stdlib.h>
-
-int *a = malloc(n * sizeof *a);
-// ... isi a ...
-int *tmp = realloc(a, m * sizeof *a);
-if (tmp)
-  a = tmp;
-free(a);
-\end{lstlisting}
-
-\begin{lstlisting}[language=C++, caption={Alokasi dinamis array di C++}]
-#include <iostream>
-using namespace std;
-
-int main() {
-  int kapasitas = 100;
-  int* arr = new int[kapasitas];
-  int ukuran = 0;
-  
-  // Isi array
-  for (int i = 0; i < 50; ++i) {
-    arr[ukuran++] = i;
-  }
-  
-  cout << "Ukuran: " << ukuran << ", Kapasitas: " << kapasitas << "\n";
-  
-  // Jangan lupa bebaskan memori
-  delete[] arr;
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=Pascal, caption={Array dinamis di Free Pascal}]
-var
-  a: array of integer;
-  i: integer;
-begin
-  SetLength(a, 10);
-  for i := 0 to High(a) do
-    a[i] := i;
-  SetLength(a, 20);
-end.
-\end{lstlisting}
-
-Pastikan invarian kepemilikan memori dipertahankan pada semua jalur eksekusi, termasuk cabang kesalahan. Pada C++, gunakan RAII untuk memastikan pembebasan sumber daya meskipun terjadi pengecualian. Hindari penyalinan yang tidak perlu dengan menerapkan strategi \emph{move} dan peminjaman referensi yang jelas.
-
-\section{Rangkuman}
+\section{Rangkuman Materi}
 
 Array merupakan struktur data fundamental yang sangat penting dalam pemrograman. Bab ini telah membahas konsep array dari dasar hingga aplikasi praktisnya.
 
@@ -1238,7 +1184,7 @@ Array merupakan struktur data fundamental yang sangat penting dalam pemrograman.
   \item Gunakan nama variabel yang deskriptif untuk indeks (bukan hanya \texttt{i, j})
 \end{itemize}
 
-\section{Rangkuman Materi}
+\textbf{Ringkasan Teknis:}
 \begin{itemize}
   \item Array 1D/2D: deklarasi, inisialisasi, iterasi, dan operasi umum.
   \item Row-major memory layout dan pemetaan 2D\(\to\)1D (dengan diagram); helper indeks untuk buffer datar.
@@ -1249,7 +1195,7 @@ Array merupakan struktur data fundamental yang sangat penting dalam pemrograman.
 
 \subsection{Perbandingan Array di Berbagai Bahasa}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|c|c|c|}
 \hline
@@ -1296,7 +1242,7 @@ Inisialisasi & Manual/loop & List initializer & Uniform initialization \\
   \caption{Kompleksitas waktu (asumsi array berukuran $n$)}
   \begin{tabular}{@{}lll@{}}
     \toprule
-    Operasi & 1D & 2D (ukuran $n\\times n$) \\
+    Operasi & 1D & 2D (ukuran $n\times n$) \\
     \midrule
     Akses indeks & $O(1)$ & $O(1)$ \\
     Pencarian linear & $O(n)$ & $O(n^2)$ \\
@@ -1322,3 +1268,4 @@ Untuk memperdalam pemahaman tentang array, coba implementasikan:
 Array adalah fondasi untuk memahami struktur data yang lebih kompleks. Penguasaan array yang baik akan memudahkan pembelajaran konsep-konsep pemrograman lanjutan seperti pointer, dynamic memory allocation, dan struktur data kompleks lainnya.
 
 \end{document}
+

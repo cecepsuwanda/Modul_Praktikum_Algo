@@ -45,6 +45,8 @@ Ukuran tipe di sistem 64-bit bergantung model data yang dipakai: \textbf{LP64} (
 \subsection{Tipe Bilangan Tetap-Lebar di C/C++}
 Header \texttt{<stdint.h>} (C) / \texttt{<cstdint>} (C++) menyediakan tipe dengan lebar pasti (mis. \texttt{int32\_t}, \texttt{uint64\_t}) serta batas \texttt{INT32\_MAX}, dst. Gunakan ini untuk portabilitas format data dan protokol \parencite{c-std-integer-types,cpp-numeric-limits}.
 
+Contoh berikut mendemonstrasikan penggunaan tipe bilangan dengan lebar tetap untuk memastikan ukuran variabel konsisten di berbagai platform:
+
 \begin{lstlisting}[language=C, caption={Contoh penggunaan <stdint.h> di C}]
 #include <stdint.h>
 #include <stdio.h>
@@ -56,6 +58,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Di C++, penggunaan tipe fixed-width terintegrasi dengan library \texttt{<limits>} untuk query batasan nilai:
 
 \begin{lstlisting}[language=C++, caption={Contoh penggunaan <cstdint> di C++}]
 #include <cstdint>
@@ -122,10 +126,29 @@ int main() {
   \\Sumber: \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-fundamental-types}
 \end{table}
 
+\subsection{Representasi Variabel di Memori}
+Variabel disimpan dalam memori sebagai deret byte. Penyelarasan (alignment) dapat menambah padding pada struktur. Pahami hal ini saat melakukan serialisasi/interop antar-bahasa.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=0.5cm]
+    \tikzstyle{cell}=[draw, minimum width=0.7cm, minimum height=0.7cm]
+    \node at (0,0) [cell] {b0};
+    \node at (0.8,0) [cell] {b1};
+    \node at (1.6,0) [cell] {b2};
+    \node at (2.4,0) [cell] {b3};
+    \node at (1.2,1) {int 32-bit};
+  \end{tikzpicture}
+  \caption{Contoh representasi integer 32-bit sebagai 4 byte}
+\end{figure}
+
 \section{Deklarasi \& Inisialisasi Variabel}
 Deklarasi menetapkan nama, tipe, cakupan; inisialisasi awal mencegah nilai sampah (khususnya di C). C++ mendukung inisialisasi terbraket yang lebih aman, sedangkan Pascal memiliki bagian \texttt{var} yang eksplisit \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
 \subsection{Contoh Deklarasi dan Inisialisasi}
+
+Program berikut menunjukkan cara mendeklarasikan variabel dengan berbagai tipe data dan menginisialisasinya dengan nilai awal:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan inisialisasi di Pascal}]
 program Vars;
 var
@@ -168,12 +191,67 @@ Disiplin penamaan yang konsisten meningkatkan keterbacaan. Bila lingkup variabel
 Pada C/C++, pahami durasi penyimpanan (otomatis, statik, dinamis) untuk mengelola siklus hidup. Deklarasi dekat titik penggunaan menurunkan kompleksitas. Pada Pascal, bagian \texttt{var} menjaga struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Input / Output Dasar}
-Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai \texttt{std::cin/std::cout} dan manipulator \texttt{\textless iomanip\textgreater} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
+Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai stream \texttt{std::cin/std::cout} dan manipulator \texttt{<iomanip>} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
 
-Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudahkan otomasi. Pada C, gunakan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, gunakan \texttt{std::setw}, \texttt{std::setprecision} untuk keluaran yang rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
+\subsection{Perbandingan Sintaks I/O Dasar}
+\begin{table}[H]
+  \centering
+  \caption{Perbandingan ringkas perintah I/O}
+  \label{tab:io-basic}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Bahasa & Output & Input \\
+    \midrule
+    Pascal & \texttt{Writeln('...')} & \texttt{Readln(x)} \\
+    C      & \texttt{printf("...")} & \texttt{scanf("\%d", \&x)} \\
+    C++    & \texttt{std::cout << "..."} & \texttt{std::cin >> x} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi lebih terkendali. Pada C/C++, gabungkan \texttt{fgets}/\texttt{std::getline} dengan pemeriksaan konversi numerik. Dokumentasi standar merinci format dan status stream untuk diagnosa \parencite{iso-c-draft-n1570,cpp-reference}.
+\subsection{Contoh Input/Output Dasar}
+Berikut contoh membaca dua bilangan bulat dan menampilkan hasil penjumlahannya. Perhatikan perbedaan I/O \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
 
+Contoh pertama mendemonstrasikan cara membaca dua bilangan dari pengguna, menjumlahkannya, dan menampilkan hasilnya di Pascal:
+
+\begin{lstlisting}[language=Pascal, caption={Menjumlah dua bilangan pada Pascal}]
+program SumTwo;
+var
+  a, b, total: integer;
+begin
+  Readln(a);
+  Readln(b);
+  total := a + b;
+  Writeln('Jumlah = ', total);
+end.
+\end{lstlisting}
+
+Di C, operasi yang sama menggunakan \texttt{scanf} untuk input dan \texttt{printf} untuk output:
+
+\begin{lstlisting}[language=C, caption={Menjumlah dua bilangan pada C}]
+#include <stdio.h>
+
+int main(void) {
+  int a, b;
+  scanf("%d %d", &a, &b);
+  printf("Jumlah = %d\n", a + b);
+  return 0;
+}
+\end{lstlisting}
+
+C++ menggunakan stream operator (\texttt{cin} dan \texttt{cout}) untuk I/O yang lebih type-safe:
+
+\begin{lstlisting}[language=C++, caption={Menjumlah dua bilangan pada C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  int a, b;
+  cin >> a >> b;
+  cout << "Jumlah = " << (a + b) << '\n';
+  return 0;
+}
+\end{lstlisting}
 
 \begin{table}[H]
   \centering
@@ -193,6 +271,8 @@ Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi
   \\\parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}
 \end{table}
 
+Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudahkan otomasi. Pada C, gunakan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, gunakan \texttt{std::setw}, \texttt{std::setprecision} untuk keluaran yang rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
+
 \subsection{Diagram Arus I/O}
 \begin{figure}[H]
   \centering
@@ -209,6 +289,9 @@ Untuk masukan yang tangguh, baca satu baris lalu parsing eksplisit agar validasi
 \end{figure}
 
 \subsection{Contoh I/O Angka dan Pemformatan}
+
+Program berikut menunjukkan cara memformat output angka dengan jumlah desimal tertentu dan membaca input dari pengguna:
+
 \begin{lstlisting}[language=Pascal, caption={Baca integer dan format keluaran (Pascal)}]
 program IOFmt;
 
@@ -222,20 +305,21 @@ begin
 end.
 \end{lstlisting}
 
+Di C, pemformatan output menggunakan format specifier dalam \texttt{printf}:
+
 \begin{lstlisting}[language=C, caption={Baca integer dan format keluaran (C)}]
 #include <stdio.h>
 int main(void) {
   int n;
   printf("Masukkan angka: ");
-  if (scanf("%d", &n) == 1) {
-    printf("Kuadrat = %d\n", n*n);
-    printf("Pi ~ %.2f\n", 3.14159);
-  } else {
-    fprintf(stderr, "Input tidak valid\n");
-  }
+  scanf("%d", &n);
+  printf("Kuadrat = %d\n", n*n);
+  printf("Pi ~ %.2f\n", 3.14159);
   return 0;
 }
 \end{lstlisting}
+
+C++ menggunakan manipulator dari \texttt{<iomanip>} untuk mengontrol format output:
 
 \begin{lstlisting}[language=C++, caption={Baca integer dan format keluaran (C++)}]
 #include <iostream>
@@ -245,16 +329,17 @@ using namespace std;
 int main() {
   int n;
   cout << "Masukkan angka: ";
-  if (cin >> n) {
-    cout << "Kuadrat = " << n*n << "\n";
-    cout << fixed << setprecision(2) << "Pi ~ " << 3.14159 << "\n";
-  } else {
-    cerr << "Input tidak valid\n";
-  }
+  cin >> n;
+  cout << "Kuadrat = " << n*n << "\n";
+  cout << fixed << setprecision(2) << "Pi ~ " << 3.14159 << "\n";
+  return 0;
 }
 \end{lstlisting}
 
 \subsection{Contoh I/O String (Program Interaktif)}
+
+Program interaktif berikut membaca nama pengguna dan menampilkan salam. Ini mendemonstrasikan cara kerja I/O string dasar:
+
 \begin{lstlisting}[language=Pascal, caption={Input nama pada Pascal}]
 program Greet;
 
@@ -267,28 +352,31 @@ begin
 end.
 \end{lstlisting}
 
+Di C, input string memerlukan array karakter dan fungsi \texttt{fgets} yang lebih aman daripada \texttt{gets}:
+
 \begin{lstlisting}[language=C, caption={Input nama pada C}]
 #include <stdio.h>
 int main(void) {
   char name[64];
   printf("Nama Anda? ");
-  if (fgets(name, sizeof name, stdin)) {
-    printf("Halo, %s", name); // fgets menyertakan newline
-  }
+  fgets(name, sizeof name, stdin);
+  printf("Halo, %s", name); // fgets menyertakan newline
   return 0;
 }
 \end{lstlisting}
 
+C++ menggunakan \texttt{getline} untuk membaca string dengan spasi, berbeda dengan operator \texttt{>>} yang berhenti di whitespace:
+
 \begin{lstlisting}[language=C++, caption={Input nama pada C++}]
 #include <iostream>
-#include <string>
 using namespace std;
 
 int main() {
-  string name;
+  char name[64];
   cout << "Nama Anda? ";
-  getline(cin, name);
+  cin.getline(name, sizeof(name));
   cout << "Halo, " << name << "!\n";
+  return 0;
 }
 \end{lstlisting}
 
@@ -301,7 +389,7 @@ int main() {
     Bahasa & Contoh & Keterangan \\
     \midrule
     Pascal & \texttt{real:0:2} & 2 digit desimal \\
-    C & \texttt{"\%.2f"} & 2 digit desimal (\texttt{printf}) \\
+    C & \texttt{"\textbackslash\%.2f"} & 2 digit desimal (\texttt{printf}) \\
     C++ & \texttt{std::fixed}, \texttt{std::setprecision(2)} & 2 digit desimal \\
     \bottomrule
   \end{tabular}
@@ -317,79 +405,23 @@ int main() {
     \toprule
     Nilai & \texttt{printf} & \texttt{scanf} & Catatan \\
     \midrule
-    \texttt{int} & \texttt{"%d"} & \texttt{"%d"} & basis desimal \\
-    \texttt{long} & \texttt{"%ld"} & \texttt{"%ld"} & \texttt{l} untuk long \\
-    \texttt{long long} & \texttt{"%lld"} & \texttt{"%lld"} & \texttt{ll} untuk long long \\
-    \texttt{unsigned} & \texttt{"%u"} & \texttt{"%u"} & tanpa tanda \\
-    \texttt{double} & \texttt{"%f"} & \texttt{"%lf"} & beda antara printf dan scanf \\
-    \texttt{char} & \texttt{"%c"} & \texttt{"%c"} & satu karakter \\
-    string C & \texttt{"%s"} & \texttt{"%s"} & hati-hati overflow (batasi lebar) \\
-    pointer & \texttt{"%p"} & - & tampilkan alamat \\
+    \texttt{int} & \texttt{\%d} & \texttt{\%d} & basis desimal \\
+    \texttt{long} & \texttt{\%ld} & \texttt{\%ld} & \texttt{l} untuk long \\
+    \texttt{long long} & \texttt{\%lld} & \texttt{\%lld} & \texttt{ll} untuk long long \\
+    \texttt{unsigned} & \texttt{\%u} & \texttt{\%u} & tanpa tanda \\
+    \texttt{double} & \texttt{\%f} & \texttt{\%lf} & beda antara printf dan scanf \\
+    \texttt{char} & \texttt{\%c} & \texttt{\%c} & satu karakter \\
+    string C & \texttt{\%s} & \texttt{\%s} & hati-hati overflow (batasi lebar) \\
+    pointer & \texttt{\%p} & - & tampilkan alamat \\
     \bottomrule
   \end{tabular}
   \\\parencite{c-printf,c-scanf}
 \end{table}
 
-\paragraph{Tips.} Pada \texttt{scanf}, tambahkan lebar maksimum: \texttt{"%63s"} untuk buffer 64 byte. Periksa nilai kembalian untuk memastikan jumlah item yang berhasil diparse benar.
-
-\subsection{Contoh Input Tangguh (Parsing Angka)}
-\begin{lstlisting}[language=C, caption={Membaca integer secara tangguh (C)}]
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <limits.h>
-
-int main(void) {
-  char buf[128];
-  if (!fgets(buf, sizeof buf, stdin)) return 1;
-  char *end = NULL;
-  errno = 0;
-  long v = strtol(buf, &end, 10);
-  if (errno || end == buf || *end != '\n' || v < INT_MIN || v > INT_MAX) {
-    fprintf(stderr, "Input tidak valid\n");
-    return 1;
-  }
-  printf("OK: %ld\n", v);
-}
-\end{lstlisting}
+\paragraph{Tips.} Pada \texttt{scanf}, tambahkan lebar maksimum: \texttt{"\%63s"} untuk buffer 64 byte. Periksa nilai kembalian untuk memastikan jumlah item yang berhasil diparse benar.
 
 \subsection{Sinkronisasi I/O C++ dan Kinerja}
-Secara bawaan, \texttt{iostream} disinkronkan dengan stdio untuk kompatibilitas. Untuk kinerja lebih baik pada input besar, nonaktifkan sinkronisasi (dan hindari mencampur pemanggilan stdio dan iostream):
-\begin{lstlisting}[language=C++, caption={Percepat I/O C++ pada input besar}]
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  // ... I/O intensif di sini ...
-}
-\end{lstlisting}
-\noindent Lihat \parencite{cpp-sync-with-stdio} untuk detail.
-
-\section{Representasi Variabel di Memori}
-Variabel disimpan dalam memori sebagai deret byte. Penyelarasan (alignment) dapat menambah padding pada struktur. Pahami hal ini saat melakukan serialisasi/interop antar-bahasa.
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[node distance=0.5cm]
-    \tikzstyle{cell}=[draw, minimum width=0.7cm, minimum height=0.7cm]
-    \node at (0,0) [cell] {b0};
-    \node at (0.8,0) [cell] {b1};
-    \node at (1.6,0) [cell] {b2};
-    \node at (2.4,0) [cell] {b3};
-    \node at (1.2,1) {int 32-bit};
-  \end{tikzpicture}
-  \caption{Contoh representasi integer 32-bit sebagai 4 byte}
-\end{figure}
-
-\section{Troubleshooting Umum}
-\begin{itemize}
-  \item \textbf{Format specifier salah}: tipe dan spesifier harus cocok (mis. \texttt{double} dengan \texttt{"%lf"} di \texttt{scanf}).
-  \item \textbf{Overflow/underflow}: validasi rentang sebelum konversi tipe yang lebih kecil.
-  \item \textbf{Karakter newline tersisa}: gunakan \texttt{getline}/\texttt{fgets} atau buang whitespace eksplisit.
-  \item \textbf{Ukuran tipe berbeda di platform lain}: gunakan tipe tetap-lebar dari \texttt{<stdint.h>}.
-\end{itemize}
+Secara bawaan, \texttt{iostream} disinkronkan dengan stdio untuk kompatibilitas. Untuk kinerja lebih baik pada input besar, dapat dinonaktifkan sinkronisasi dengan \texttt{ios::sync\_\allowbreak{}with\_\allowbreak{}stdio(false)} dan \texttt{cin.tie(nullptr)}. Namun, hindari mencampur pemanggilan stdio dan iostream. Lihat \parencite{cpp-sync-with-stdio} untuk detail teknis.
 
 \section{Rangkuman Materi}
 \begin{itemize}

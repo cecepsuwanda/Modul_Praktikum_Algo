@@ -22,6 +22,9 @@ Strategi pengalokasian harus menyatakan dengan jelas pemilik data dan jalur pemb
 Pertimbangkan dampak fragmentasi memori dan biaya realokasi pada struktur yang sering berubah ukuran. Di C++, \texttt{std::string} mengelola pertumbuhan kapasitas otomatis, namun untuk array dinamis dapat menggunakan operator \texttt{new}/\texttt{delete} dengan manajemen manual atau penunjuk pintar.
 
 \subsection{Contoh C dan C++}
+
+Program C berikut mendemonstrasikan pola cleanup yang aman dengan \texttt{goto} untuk memastikan semua resource dibebaskan meskipun terjadi error:
+
 \begin{lstlisting}[language=C, caption={Pola cleanup bertahap di C}]
 #include <stdlib.h>
 
@@ -43,6 +46,8 @@ done:
   return rc;
 }
 \end{lstlisting}
+
+Di C++, RAII (Resource Acquisition Is Initialization) dengan \texttt{unique\_ptr} memastikan pembebasan otomatis:
 
 \begin{lstlisting}[language=C++, caption={RAII dengan unique\_ptr di C++}]
 #include <memory>
@@ -78,6 +83,9 @@ Diagram di atas menunjukkan bagaimana pointer \texttt{p} menyimpan alamat memori
 
 \section{Pointer ke Array / Pointer ke Pointer}
 \subsection{Contoh Alokasi 2D}
+
+Program berikut menunjukkan alokasi array 2D dinamis menggunakan pointer to pointer, dengan pembebasan bertahap:
+
 \begin{lstlisting}[language=C, caption={Matriks dinamis 2D di C (pointer ganda)}]
 int **m = malloc(r * sizeof *m);
 for (int i = 0; i < r; ++i)
@@ -87,6 +95,8 @@ for (int i = 0; i < r; ++i)
   free(m[i]);
 free(m);
 \end{lstlisting}
+
+Alternatif C++ menggunakan buffer datar 1D dengan \texttt{unique\_ptr} dan lambda untuk akses 2D:
 
 \begin{lstlisting}[language=C++, caption={std::unique\_ptr\textless T[]\textgreater{} untuk buffer 2D datar}]
 #include <memory>
@@ -228,6 +238,8 @@ Memory alignment adalah penataan data di memori pada boundary tertentu (biasanya
 \subsection{Padding dalam Struct}
 Compiler menambahkan padding untuk memastikan setiap field aligned dengan benar.
 
+Program berikut mendemonstrasikan bagaimana urutan field dalam struct memengaruhi ukuran total karena padding alignment:
+
 \begin{lstlisting}[language=C, caption={Padding dalam struct}]
 #include <stdio.h>
 #include <stddef.h>
@@ -266,6 +278,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Alignment Specification di C++11}
+
+Program berikut menunjukkan penggunaan \texttt{alignas} untuk menentukan alignment struct dan \texttt{alignof} untuk query alignment:
+
 \begin{lstlisting}[language=C++, caption={alignas dan alignof di C++11}]
 #include <iostream>
 #include <cstddef>
@@ -309,6 +324,9 @@ Move semantics adalah fitur C++11 yang memungkinkan transfer kepemilikan resourc
 \end{itemize}
 
 \subsection{Move Constructor dan Move Assignment}
+
+Program lengkap berikut mengimplementasikan class String dengan move semantics untuk menghindari copy yang mahal:
+
 \begin{lstlisting}[language=C++, caption={Implementasi move semantics}]
 #include <iostream>
 #include <cstring>
@@ -396,6 +414,8 @@ int main() {
 \subsection{Perfect Forwarding}
 Perfect forwarding mempertahankan value category (lvalue/rvalue) saat meneruskan parameter ke fungsi lain, penting untuk template dan wrapper functions \parencite{cpp-reference}.
 
+Program berikut mendemonstrasikan perfect forwarding dengan \texttt{std::forward}:
+
 \begin{lstlisting}[language=C++, caption={Perfect forwarding dengan std::forward}]
 #include <iostream>
 #include <utility>
@@ -430,6 +450,9 @@ int main() {
 Placement new adalah fitur C++ yang memungkinkan konstruksi objek pada alamat memori yang sudah dialokasikan, memberikan kontrol penuh atas alokasi dan konstruksi \parencite{cpp-reference}.
 
 \subsection{Dasar Placement New}
+
+Program berikut menunjukkan placement new untuk konstruksi objek pada buffer yang sudah dialokasikan:
+
 \begin{lstlisting}[language=C++, caption={Penggunaan placement new}]
 #include <iostream>
 #include <new>
@@ -467,6 +490,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Memory Pool dengan Placement New}
+
+Contoh advanced berikut mengimplementasikan memory pool sederhana menggunakan placement new untuk alokasi efisien:
+
 \begin{lstlisting}[language=C++, caption={Simple memory pool}]
 #include <iostream>
 #include <cstddef>
@@ -550,6 +576,9 @@ Compiler mengasumsikan pointer ke tipe berbeda tidak alias (menunjuk memori yang
 Melanggar aturan ini adalah undefined behavior dan dapat menghasilkan bug subtle!
 
 \subsection{Cara Aman: Union}
+
+Program berikut menggunakan union untuk type punning yang aman, menampilkan representasi bit dari floating point:
+
 \begin{lstlisting}[language=C, caption={Type punning dengan union}]
 #include <stdio.h>
 #include <stdint.h>
@@ -767,6 +796,9 @@ Organisasi data yang mempertimbangkan cache hierarchy CPU dapat meningkatkan per
 \end{itemize}
 
 \subsection{Array of Structures vs Structure of Arrays}
+
+Program benchmark berikut membandingkan performa AoS (Array of Structures) dengan SoA (Structure of Arrays) untuk demonstrasi cache locality:
+
 \begin{lstlisting}[language=C++, caption={AoS vs SoA comparison}]
 #include <iostream>
 #include <chrono>
@@ -848,6 +880,8 @@ int main() {
 
 \subsection{False Sharing}
 False sharing terjadi ketika thread berbeda mengakses data berbeda yang berada di cache line yang sama, menyebabkan cache invalidation dan degradasi performa.
+
+Program berikut mendemonstrasikan masalah false sharing pada multithreading dan solusinya dengan padding:
 
 \begin{lstlisting}[language=C++, caption={False sharing dan solusinya}]
 #include <iostream>

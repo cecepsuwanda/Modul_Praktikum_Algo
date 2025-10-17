@@ -22,12 +22,32 @@
 \usepackage{setspace}
 \onehalfspacing
 
+% Header and footer with horizontal lines
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{15pt}
+\fancyhf{} % Clear all header and footer fields
+\fancyhead[L]{\nouppercase{\leftmark}} % Chapter name on left
+\fancyhead[R]{\thepage} % Page number on right
+\fancyfoot[C]{} % Footer kosong, hanya garis
+\renewcommand{\headrulewidth}{0.5pt} % Horizontal line in header
+\renewcommand{\footrulewidth}{0.5pt} % Horizontal line in footer
+
+% Style for chapter first page (plain style)
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\thepage} % Nomor halaman di footer untuk halaman judul bab
+  \renewcommand{\headrulewidth}{0pt} % No header line
+  \renewcommand{\footrulewidth}{0.5pt} % Footer line only
+}
+
 % Graphics, tables, code listings
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \hypersetup{
   breaklinks=true,
@@ -52,34 +72,28 @@
   showstringspaces=false,
   frame=single,
   breaklines=true,
-  columns=fullflexible
+  columns=fullflexible,
+  float=H,
+  floatplacement=H
 }
 \lstset{style=codestyle}
 
-% Bibliography (biblatex)
-\usepackage[backend=biber,style=authoryear,sorting=nyt,autolang=other,maxbibnames=99]{biblatex}
+% Bibliography (biblatex) - IEEE numeric style
+\usepackage[backend=biber,style=ieee,sorting=none,autolang=other,maxbibnames=99]{biblatex}
 \addbibresource{references.bib}
 
 % Explicitly set bibliography language to English
 \DeclareLanguageMapping{indonesian}{english}
 
-% Define custom strings for bibliography
-\DefineBibliographyStrings{english}{%
-  andothers = {et~al\adddot},
-  and = {and},
-  in = {in},
-  page = {p\adddot},
-  pages = {pp\adddot},
-  urlseen = {accessed},
-}
-
 % Configure URL breaking in bibliography
-\setcounter{biburlnumpenalty}{9000}
-\setcounter{biburlucpenalty}{9000}
-\setcounter{biburllcpenalty}{9000}
+\setcounter{biburlnumpenalty}{7000}
+\setcounter{biburlucpenalty}{7000}
+\setcounter{biburllcpenalty}{7000}
 
 % Allow more flexibility in line breaking
-\emergencystretch=1em
+\emergencystretch=2em
+\tolerance=2000
+\hfuzz=0.5pt
 
 % Subfiles per chapter
 \usepackage{subfiles}

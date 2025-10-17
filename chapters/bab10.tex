@@ -41,6 +41,9 @@ tipe_kembalian nama_fungsi(tipe_param1 param1, tipe_param2 param2, ...);
 \end{verbatim}
 
 \subsubsection{Contoh dalam Pascal}
+
+Program berikut menunjukkan cara mendeklarasikan dan mendefinisikan berbagai fungsi di Pascal, dari fungsi sederhana hingga yang menggunakan loop:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan definisi fungsi (Pascal)}]
 // Fungsi yang mengembalikan jumlah dua bilangan
 function Tambah(a, b: integer): integer;
@@ -78,6 +81,9 @@ end.
 \end{lstlisting}
 
 \subsubsection{Contoh dalam C}
+
+Program C berikut mendemonstrasikan deklarasi forward (function prototype) dan implementasi fungsi terpisah:
+
 \begin{lstlisting}[language=C, caption={Deklarasi dan definisi fungsi (C)}]
 #include <stdio.h>
 
@@ -117,6 +123,9 @@ int main() {
 \end{lstlisting}
 
 \subsubsection{Contoh dalam C++}
+
+Program C++ berikut menunjukkan fungsi dengan berbagai tipe return, termasuk tipe kompleks seperti string dan auto return type:
+
 \begin{lstlisting}[language=C++, caption={Deklarasi dan definisi fungsi (C++)}]
 #include <iostream>
 #include <string>
@@ -173,6 +182,9 @@ Pada mekanisme \emph{pass by value}, nilai argumen disalin ke parameter fungsi. 
 \end{itemize}
 
 \subsubsection{Contoh Implementasi}
+
+Program berikut menunjukkan bahwa perubahan pada parameter di dalam fungsi tidak memengaruhi variabel asli di pemanggil:
+
 \begin{lstlisting}[language=Pascal, caption={Pass by value (Pascal)}]
 function TambahSepuluh(x: integer): integer;
 begin
@@ -188,6 +200,8 @@ begin
   Writeln('Nilai asli: ', angka);                    // 5 (tidak berubah)
 end.
 \end{lstlisting}
+
+Contoh C yang menunjukkan konsep yang sama:
 
 \begin{lstlisting}[language=C, caption={Pass by value (C)}]
 #include <stdio.h>
@@ -207,6 +221,8 @@ int main() {
   return 0;
 }
 \end{lstlisting}
+
+Di C++, pass by value juga berlaku untuk objek kompleks seperti \texttt{std::string}:
 
 \begin{lstlisting}[language=C++, caption={Pass by value dengan objek (C++)}]
 #include <iostream>
@@ -242,6 +258,9 @@ Pada mekanisme \emph{pass by reference}, fungsi menerima referensi (alamat) ke v
 \end{itemize}
 
 \subsubsection{Contoh Implementasi}
+
+Program berikut mendemonstrasikan fungsi yang dapat menukar nilai dua variabel dan mengembalikan jumlahnya menggunakan parameter \texttt{var}:
+
 \begin{lstlisting}[language=Pascal, caption={Pass by reference (Pascal)}]
 function TukarDanJumlah(var a, b: integer): integer;
 var
@@ -337,6 +356,9 @@ Fungsi rekursif adalah fungsi yang memanggil dirinya sendiri untuk memecahkan ma
 \end{figure}
 
 \subsubsection{Contoh Rekursi}
+
+Program berikut menunjukkan implementasi fungsi rekursif untuk menghitung faktorial dan bilangan Fibonacci:
+
 \begin{lstlisting}[language=Pascal, caption={Fungsi rekursif (Pascal)}]
 function Faktorial(n: integer): integer;
 begin
@@ -354,6 +376,8 @@ begin
     Fibonacci := Fibonacci(n - 1) + Fibonacci(n - 2);
 end;
 \end{lstlisting}
+
+Contoh C membandingkan implementasi faktorial rekursif dengan iteratif, serta contoh fungsi pangkat rekursif:
 
 \begin{lstlisting}[language=C, caption={Fungsi rekursif vs iteratif (C)}]
 // Faktorial rekursif
@@ -378,6 +402,8 @@ double pangkat(double base, int exp) {
   return base * pangkat(base, exp - 1);
 }
 \end{lstlisting}
+
+C++ berikut menunjukkan tail recursion yang dapat dioptimasi kompilator dan binary search rekursif:
 
 \begin{lstlisting}[language=C++, caption={Rekursi dengan optimasi (C++)}]
 #include <iostream>
@@ -415,6 +441,9 @@ Rekursi efektif untuk masalah yang memiliki struktur rekursif alami seperti trav
 
 \subsection{Fitur Lanjutan Fungsi C++}
 \subsubsection{Function Overloading}
+
+Program berikut menunjukkan function overloading di C++ - mendefinisikan beberapa fungsi dengan nama sama tetapi parameter berbeda:
+
 \begin{lstlisting}[language=C++, caption={Overloading fungsi}]
 #include <iostream>
 #include <string>
@@ -448,6 +477,9 @@ int main() {
 \end{lstlisting}
 
 \subsubsection{Default Arguments}
+
+Contoh berikut menunjukkan fungsi dengan parameter default yang membuat pemanggilan lebih fleksibel:
+
 \begin{lstlisting}[language=C++, caption={Default argument}]
 #include <iostream>
 using namespace std;
@@ -550,6 +582,9 @@ void nama_prosedur(tipe1 param1, tipe2 param2, ...) {
 \end{verbatim}
 
 \subsubsection{Contoh dalam Pascal}
+
+Program berikut mendemonstrasikan berbagai jenis prosedur di Pascal: tanpa parameter, dengan parameter, dan dengan parameter referensi:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan definisi prosedur (Pascal)}]
 // Prosedur tanpa parameter
 procedure CetakGaris;
@@ -606,6 +641,9 @@ end.
 \end{lstlisting}
 
 \subsubsection{Contoh dalam C}
+
+Program C berikut menunjukkan prosedur (fungsi void) dengan berbagai jenis parameter, termasuk multiple outputs via pointer:
+
 \begin{lstlisting}[language=C, caption={Definisi prosedur (C)}]
 #include <stdio.h>
 #include <string.h>
@@ -663,6 +701,9 @@ int main() {
 \end{lstlisting}
 
 \subsubsection{Contoh dalam C++}
+
+Versi C++ menggunakan reference dan vector untuk prosedur yang lebih aman dan ekspresif:
+
 \begin{lstlisting}[language=C++, caption={Definisi prosedur (C++)}]
 #include <iostream>
 #include <vector>
@@ -739,6 +780,9 @@ int main() {
 Pada prosedur dengan \emph{pass by value}, parameter menerima salinan nilai argumen. Modifikasi pada parameter tidak mempengaruhi variabel asli. Mekanisme ini cocok ketika prosedur hanya perlu membaca data tanpa mengubahnya.
 
 \subsubsection{Contoh Implementasi}
+
+Program berikut menunjukkan bahwa prosedur dengan pass by value tidak dapat mengubah variabel asli:
+
 \begin{lstlisting}[language=Pascal, caption={Pass by value pada prosedur (Pascal)}]
 procedure CetakDanTambah(x: integer; penambah: integer);
 begin
@@ -801,6 +845,9 @@ Mekanisme \emph{pass by reference} memungkinkan prosedur memodifikasi variabel a
 \end{itemize}
 
 \subsubsection{Contoh Implementasi}
+
+Program berikut mendemonstrasikan prosedur yang mengubah nilai variabel pemanggil dan menghasilkan multiple outputs:
+
 \begin{lstlisting}[language=Pascal, caption={Pass by reference pada prosedur (Pascal)}]
 // Prosedur mengubah nilai melalui var parameter
 procedure IncByOne(var x: integer);
@@ -940,6 +987,8 @@ int main() {
 \subsection{Prosedur Rekursif}
 Prosedur juga dapat memanggil dirinya sendiri untuk menyelesaikan masalah secara rekursif. Prosedur rekursif sering digunakan untuk traversal struktur data atau menghasilkan efek samping berulang.
 
+Program Pascal berikut menunjukkan prosedur rekursif untuk mencetak mundur dan menyelesaikan puzzle Menara Hanoi:
+
 \begin{lstlisting}[language=Pascal, caption={Prosedur rekursif (Pascal)}]
 procedure CetakMundur(n: integer);
 begin
@@ -962,6 +1011,8 @@ begin
   end;
 end;
 \end{lstlisting}
+
+Contoh C dengan prosedur rekursif untuk cetak mundur, konversi biner, dan Menara Hanoi:
 
 \begin{lstlisting}[language=C, caption={Prosedur rekursif (C)}]
 #include <stdio.h>
@@ -1003,6 +1054,8 @@ int main() {
   return 0;
 }
 \end{lstlisting}
+
+Program C++ berikut menunjukkan prosedur rekursif untuk generate permutasi dengan backtracking:
 
 \begin{lstlisting}[language=C++, caption={Prosedur rekursif (C++)}]
 #include <iostream>
@@ -1102,4 +1155,3 @@ Pemilihan strategi parameter memengaruhi performa dan kebenaran program. Gunakan
 
 \end{document}
 
-\end{document}

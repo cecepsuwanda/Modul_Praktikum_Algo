@@ -28,7 +28,7 @@ Setiap bahasa pemrograman memiliki cara berbeda dalam merepresentasikan dan meng
   
   \item \textbf{C:} String adalah array karakter (\texttt{char[]}) yang diakhiri dengan karakter null (\texttt{'\textbackslash 0'}). Programmer bertanggung jawab penuh untuk manajemen memori dan memastikan null terminator ada \parencite{iso-c-draft-n1570,c-strings-h,tutorialspoint-c-strings}.
   
-  \item \textbf{C++:} Menyediakan dua pendekatan: array karakter gaya C dan kelas \texttt{std::\allowbreak string}. Kelas string mengelola memori otomatis, ukuran dinamis, dan menyediakan metode manipulasi yang kaya~\parencite{cpp-strings,cplusplus-string,yuliaagustin-string-cpp}.
+  \item \textbf{C++:} Menyediakan dua pendekatan: array karakter gaya C dan kelas \texttt{std::\allowbreak string}. Kelas string mengelola memori otomatis, ukuran dinamis, dan metode manipulasi yang kaya~\parencite{cpp-strings,cplusplus-string,yuliaagustin-string-cpp}.
 \end{itemize}
 
 \paragraph{Catatan Unicode dan UTF-8.} Encoding umum saat ini adalah UTF-8 yang kompatibel dengan ASCII dan efisien untuk teks multibahasa \parencite{rfc3629,utf8-everywhere}. Pada C++ modern tersedia tipe \texttt{char8\_t} (C++20) untuk byte UTF-8, serta literal \texttt{u8"..."} untuk menandai string literal UTF-8 \parencite{cpp-char8,cpp-string-literals}. Di C/Pascal, pastikan file sumber disimpan sebagai UTF-8 agar karakter non-ASCII muncul benar.
@@ -57,6 +57,8 @@ Setiap bahasa pemrograman memiliki cara berbeda dalam merepresentasikan dan meng
 
 Pascal menyediakan tipe \texttt{string} yang fleksibel dengan manajemen memori otomatis.
 
+Contoh berikut menunjukkan berbagai cara mendeklarasikan string di Pascal dengan ukuran dinamis atau ukuran maksimum yang ditentukan:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi string di Pascal}]
 var
   nama: string;                    // String dengan panjang dinamis
@@ -82,6 +84,8 @@ var
 \subsection{Deklarasi String di C}
 
 Di C, string adalah array karakter yang diakhiri dengan \texttt{'\textbackslash 0'}.
+
+Program berikut mendemonstrasikan berbagai cara mendeklarasikan dan menginisialisasi string dalam C, termasuk array karakter dan pointer ke string literal:
 
 \begin{lstlisting}[language=C, caption={Deklarasi string di C}]
 #include <stdio.h>
@@ -116,6 +120,8 @@ char buffer[256] = "";            // String kosong dengan buffer
 \subsection{Deklarasi String di C++}
 
 C++ menyediakan \texttt{std::string} modern dan array karakter gaya C.
+
+Contoh berikut menunjukkan berbagai cara mendeklarasikan string di C++, dari \texttt{std::string} modern hingga kompatibilitas dengan C-style string:
 
 \begin{lstlisting}[language=C++, caption={Deklarasi string di C++}]
 #include <string>
@@ -155,6 +161,8 @@ auto hello8 = u8"Halo"; // byte UTF-8
 
 \subsection{Inisialisasi String di Pascal}
 
+Program berikut mendemonstrasikan berbagai cara untuk menginisialisasi dan memanipulasi string di Pascal, termasuk concatenation dan escape karakter:
+
 \begin{lstlisting}[language=Pascal, caption={Inisialisasi string di Pascal}]
 var
   nama: string;
@@ -185,6 +193,8 @@ end.
 \end{lstlisting}
 
 \subsection{Inisialisasi String di C}
+
+Contoh berikut menunjukkan berbagai metode inisialisasi string di C, termasuk pentingnya null terminator dan penggunaan fungsi yang aman:
 
 \begin{lstlisting}[language=C, caption={Inisialisasi string di C}]
 #include <string.h>
@@ -226,6 +236,8 @@ int main() {
 \end{lstlisting}
 
 \subsection{Inisialisasi String di C++}
+
+Program berikut mendemonstrasikan berbagai cara menginisialisasi \texttt{std::string} di C++, dari constructor hingga move semantics:
 
 \begin{lstlisting}[language=C++, caption={Inisialisasi string di C++}]
 #include <string>
@@ -270,6 +282,8 @@ int main() {
 
 \subsection{Input String di Pascal}
 
+Program berikut menunjukkan cara membaca string dari pengguna menggunakan \texttt{Readln} di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Input string di Pascal}]
 var
   nama: string;
@@ -296,6 +310,8 @@ end.
 \end{lstlisting}
 
 \subsection{Input String di C}
+
+Contoh berikut mendemonstrasikan cara aman membaca string di C menggunakan \texttt{fgets}, termasuk teknik menghapus newline dan membersihkan buffer:
 
 \begin{lstlisting}[language=C, caption={Input string di C}]
 #include <stdio.h>
@@ -347,6 +363,8 @@ int main() {
 \end{itemize}
 
 \subsection{Input String di C++}
+
+Program berikut menunjukkan cara membaca input string di C++ dengan \texttt{std::getline} dan validasi input:
 
 \begin{lstlisting}[language=C++, caption={Input string di C++}]
 #include <iostream>
@@ -402,6 +420,8 @@ int main() {
 
 \subsection{Output String di Pascal}
 
+Program berikut mendemonstrasikan berbagai cara output string dengan pemformatan di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Output string di Pascal}]
 var
   nama: string;
@@ -434,6 +454,8 @@ end.
 \end{lstlisting}
 
 \subsection{Output String di C}
+
+Contoh berikut menunjukkan berbagai teknik output string di C menggunakan \texttt{printf}, \texttt{puts}, dan \texttt{sprintf}:
 
 \begin{lstlisting}[language=C, caption={Output string di C}]
 #include <stdio.h>
@@ -484,6 +506,8 @@ int main() {
 \end{itemize}
 
 \subsection{Output String di C++}
+
+Program berikut mendemonstrasikan output string di C++ dengan berbagai manipulator untuk mengontrol format:
 
 \begin{lstlisting}[language=C++, caption={Output string di C++}]
 #include <iostream>
@@ -540,7 +564,8 @@ int main() {
 
 \subsection{Panjang String}
 
-\textbf{Pascal:}
+Mendapatkan panjang string adalah operasi fundamental. Berikut cara melakukannya di Pascal menggunakan fungsi \texttt{Length}:
+
 \begin{lstlisting}[language=Pascal, caption={Panjang string di Pascal}]
 var
   teks: string;
@@ -552,7 +577,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, fungsi \texttt{strlen} dari header \texttt{<string.h>} menghitung panjang dengan mencari null terminator:
+
 \begin{lstlisting}[language=C, caption={Panjang string di C}]
 #include <string.h>
 #include <stdio.h>
@@ -565,7 +591,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:}
+C++ menyediakan metode \texttt{length()} atau \texttt{size()} yang ekuivalen pada objek \texttt{std::string}:
+
 \begin{lstlisting}[language=C++, caption={Panjang string di C++}]
 #include <string>
 #include <iostream>
@@ -580,7 +607,8 @@ int main() {
 
 \subsection{Konkatenasi (Penggabungan) String}
 
-\textbf{Pascal:}
+Program berikut menunjukkan cara menggabungkan dua atau lebih string menjadi satu di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Konkatenasi di Pascal}]
 var
   str1, str2, hasil: string;
@@ -598,7 +626,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, konkatenasi dilakukan menggunakan \texttt{strcat} atau \texttt{strncat} (lebih aman) yang memodifikasi string tujuan:
+
 \begin{lstlisting}[language=C, caption={Konkatenasi di C}]
 #include <string.h>
 #include <stdio.h>
@@ -621,7 +650,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:}
+C++ menyediakan operator \texttt{+} dan \texttt{+=} untuk konkatenasi string yang lebih intuitif:
+
 \begin{lstlisting}[language=C++, caption={Konkatenasi di C++}]
 #include <string>
 #include <iostream>
@@ -649,7 +679,8 @@ int main() {
 
 \subsection{Perbandingan String}
 
-\textbf{Pascal:}
+Program berikut mendemonstrasikan cara membandingkan string di Pascal menggunakan operator relasional dan fungsi \texttt{CompareStr}:
+
 \begin{lstlisting}[language=Pascal, caption={Perbandingan di Pascal}]
 var
   str1, str2: string;
@@ -678,7 +709,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, fungsi \texttt{strcmp} digunakan untuk membandingkan string secara leksikografis:
+
 \begin{lstlisting}[language=C, caption={Perbandingan di C}]
 #include <string.h>
 #include <stdio.h>
@@ -710,7 +742,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:}
+C++ memungkinkan perbandingan string langsung menggunakan operator relasional, serta menyediakan metode \texttt{compare}:
+
 \begin{lstlisting}[language=C++, caption={Perbandingan di C++}]
 #include <string>
 #include <iostream>
@@ -749,7 +782,8 @@ int main() {
 
 \subsection{Substring (Mengambil Bagian String)}
 
-\textbf{Pascal:}
+Program berikut menunjukkan cara mengambil sebagian dari string menggunakan fungsi \texttt{Copy} di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Substring di Pascal}]
 var
   teks: string;
@@ -766,7 +800,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, substring dapat dibuat menggunakan \texttt{strncpy} dengan hati-hati menambahkan null terminator:
+
 \begin{lstlisting}[language=C, caption={Substring di C}]
 #include <string.h>
 #include <stdio.h>
@@ -789,7 +824,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:}
+C++ menyediakan metode \texttt{substr} yang aman dan mudah digunakan untuk mengekstrak bagian string:
+
 \begin{lstlisting}[language=C++, caption={Substring di C++}]
 #include <string>
 #include <iostream>
@@ -815,7 +851,8 @@ int main() {
 
 \subsection{Pencarian dalam String}
 
-\textbf{Pascal:}
+Program berikut mendemonstrasikan cara mencari substring dalam string menggunakan fungsi \texttt{Pos} di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Pencarian di Pascal}]
 var
   teks: string;
@@ -834,7 +871,8 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, fungsi \texttt{strstr} dan \texttt{strchr} digunakan untuk mencari substring dan karakter dalam string:
+
 \begin{lstlisting}[language=C, caption={Pencarian di C}]
 #include <string.h>
 #include <stdio.h>
@@ -862,7 +900,8 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{C++:}
+C++ menyediakan berbagai metode pencarian yang powerful termasuk \texttt{find}, \texttt{rfind}, dan \texttt{find\_first\_of}:
+
 \begin{lstlisting}[language=C++, caption={Pencarian di C++}]
 #include <string>
 #include <iostream>
@@ -924,30 +963,31 @@ end.
 #include <string.h>
 #include <stdio.h>
 
-void replace(char *str, const char *old, const char *new) {
-  char buffer[1000];
-  char *pos;
-  
-  if (!(pos = strstr(str, old)))
-    return;
-  
-  // Copy sebelum substring
-  strncpy(buffer, str, pos - str);
-  buffer[pos - str] = '\0';
-  
-  // Tambah replacement
-  strcat(buffer, new);
-  
-  // Tambah sisanya
-  strcat(buffer, pos + strlen(old));
-  
-  // Copy kembali
-  strcpy(str, buffer);
-}
-
 int main() {
   char teks[100] = "Hello World";
-  replace(teks, "World", "C");
+  char buffer[1000];
+  char *pos;
+  const char *old = "World";
+  const char *new = "C";
+  
+  // Cari substring
+  pos = strstr(teks, old);
+  
+  if (pos) {
+    // Copy sebelum substring
+    strncpy(buffer, teks, pos - teks);
+    buffer[pos - teks] = '\0';
+    
+    // Tambah replacement
+    strcat(buffer, new);
+    
+    // Tambah sisanya
+    strcat(buffer, pos + strlen(old));
+    
+    // Copy kembali
+    strcpy(teks, buffer);
+  }
+  
   printf("%s\n", teks);  // "Hello C"
   return 0;
 }
@@ -1009,26 +1049,20 @@ end.
 #include <stdio.h>
 #include <string.h>
 
-void toUpper(char *str) {
-  for (int i = 0; str[i]; i++) {
-    str[i] = toupper(str[i]);
-  }
-}
-
-void toLower(char *str) {
-  for (int i = 0; str[i]; i++) {
-    str[i] = tolower(str[i]);
-  }
-}
-
 int main() {
   char teks1[50] = "Hello World";
   char teks2[50] = "Hello World";
   
-  toUpper(teks1);
+  // Konversi ke uppercase
+  for (int i = 0; teks1[i]; i++) {
+    teks1[i] = toupper(teks1[i]);
+  }
   printf("%s\n", teks1);  // "HELLO WORLD"
   
-  toLower(teks2);
+  // Konversi ke lowercase
+  for (int i = 0; teks2[i]; i++) {
+    teks2[i] = tolower(teks2[i]);
+  }
   printf("%s\n", teks2);  // "hello world"
   
   return 0;
@@ -1308,6 +1342,8 @@ int main() {
 
 \subsection{Program Pengolahan Teks di Pascal}
 
+Program lengkap berikut menganalisis teks dengan menghitung jumlah huruf besar, huruf kecil, angka, dan spasi, serta menampilkan versi uppercase dan lowercase:
+
 \begin{lstlisting}[language=Pascal, caption={Program analisis teks di Pascal}]
 program AnalisTeks;
 uses SysUtils;
@@ -1358,39 +1394,18 @@ end.
 
 \subsection{Program Manipulasi String di C}
 
+Program C berikut melakukan analisis karakter dan konversi case menggunakan fungsi dari \texttt{<ctype.h>}:
+
 \begin{lstlisting}[language=C, caption={Program manipulasi string di C}]
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-void countChars(const char *str, int *upper, int *lower, 
-                int *digit, int *space) {
-  *upper = *lower = *digit = *space = 0;
-  
-  for (int i = 0; str[i]; i++) {
-    if (isupper(str[i])) (*upper)++;
-    else if (islower(str[i])) (*lower)++;
-    else if (isdigit(str[i])) (*digit)++;
-    else if (isspace(str[i])) (*space)++;
-  }
-}
-
-void toUpperStr(char *str) {
-  for (int i = 0; str[i]; i++) {
-    str[i] = toupper(str[i]);
-  }
-}
-
-void toLowerStr(char *str) {
-  for (int i = 0; str[i]; i++) {
-    str[i] = tolower(str[i]);
-  }
-}
-
 int main() {
   char teks[256];
   char upper[256], lower[256];
   int nUpper, nLower, nDigit, nSpace;
+  int i;
   
   // Input
   printf("Masukkan teks: ");
@@ -1402,14 +1417,26 @@ int main() {
     teks[len-1] = '\0';
   }
   
-  // Analisis
-  countChars(teks, &nUpper, &nLower, &nDigit, &nSpace);
+  // Analisis karakter
+  nUpper = nLower = nDigit = nSpace = 0;
+  for (i = 0; teks[i]; i++) {
+    if (isupper(teks[i])) nUpper++;
+    else if (islower(teks[i])) nLower++;
+    else if (isdigit(teks[i])) nDigit++;
+    else if (isspace(teks[i])) nSpace++;
+  }
   
-  // Prepare uppercase dan lowercase versions
+  // Buat versi uppercase
   strcpy(upper, teks);
+  for (i = 0; upper[i]; i++) {
+    upper[i] = toupper(upper[i]);
+  }
+  
+  // Buat versi lowercase
   strcpy(lower, teks);
-  toUpperStr(upper);
-  toLowerStr(lower);
+  for (i = 0; lower[i]; i++) {
+    lower[i] = tolower(lower[i]);
+  }
   
   // Output
   printf("\n=== Hasil Analisis ===\n");
@@ -1427,89 +1454,75 @@ int main() {
 
 \subsection{Program Pengolahan String di C++}
 
+Program C++ lengkap berikut menggunakan range-based for loop dan algoritme STL untuk analisis dan manipulasi string:
+
 \begin{lstlisting}[language=C++, caption={Program pengolahan string di C++}]
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <cctype>
-
-struct StringAnalysis {
-  int length;
-  int uppercase;
-  int lowercase;
-  int digits;
-  int spaces;
-};
-
-StringAnalysis analyzeString(const std::string& str) {
-  StringAnalysis result = {0, 0, 0, 0, 0};
-  result.length = str.length();
-  
-  for (char ch : str) {
-    if (std::isupper(ch)) result.uppercase++;
-    else if (std::islower(ch)) result.lowercase++;
-    else if (std::isdigit(ch)) result.digits++;
-    else if (std::isspace(ch)) result.spaces++;
-  }
-  
-  return result;
-}
-
-std::string toUpper(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(), 
-                 ::toupper);
-  return str;
-}
-
-std::string toLower(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(), 
-                 ::tolower);
-  return str;
-}
+using namespace std;
 
 int main() {
-  std::string teks;
+  string teks;
+  int panjang, hurufBesar, hurufKecil, angka, spasi;
   
   // Input
-  std::cout << "Masukkan teks: ";
-  std::getline(std::cin, teks);
+  cout << "Masukkan teks: ";
+  getline(cin, teks);
   
-  // Analisis
-  StringAnalysis analysis = analyzeString(teks);
+  // Analisis dengan loop
+  panjang = teks.length();
+  hurufBesar = 0;
+  hurufKecil = 0;
+  angka = 0;
+  spasi = 0;
+  
+  for (char ch : teks) {
+    if (isupper(ch)) hurufBesar++;
+    else if (islower(ch)) hurufKecil++;
+    else if (isdigit(ch)) angka++;
+    else if (isspace(ch)) spasi++;
+  }
   
   // Output
-  std::cout << "\n=== Hasil Analisis ===\n";
-  std::cout << "Panjang teks: " << analysis.length << "\n";
-  std::cout << "Huruf besar: " << analysis.uppercase << "\n";
-  std::cout << "Huruf kecil: " << analysis.lowercase << "\n";
-  std::cout << "Angka: " << analysis.digits << "\n";
-  std::cout << "Spasi: " << analysis.spaces << "\n";
-  std::cout << "\nUppercase: " << toUpper(teks) << "\n";
-  std::cout << "Lowercase: " << toLower(teks) << "\n";
+  cout << "\n=== Hasil Analisis ===\n";
+  cout << "Panjang teks: " << panjang << "\n";
+  cout << "Huruf besar: " << hurufBesar << "\n";
+  cout << "Huruf kecil: " << hurufKecil << "\n";
+  cout << "Angka: " << angka << "\n";
+  cout << "Spasi: " << spasi << "\n";
   
-  // Demonstrasi operasi lain
-  std::cout << "\n=== Operasi Tambahan ===\n";
+  // Konversi ke uppercase
+  string upper = teks;
+  transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+  cout << "\nUppercase: " << upper << "\n";
+  
+  // Konversi ke lowercase
+  string lower = teks;
+  transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+  cout << "Lowercase: " << lower << "\n";
+  
+  // Demonstrasi operasi tambahan
+  cout << "\n=== Operasi Tambahan ===\n";
   
   // Substring
   if (teks.length() >= 5) {
-    std::cout << "5 karakter pertama: " 
-              << teks.substr(0, 5) << "\n";
+    cout << "5 karakter pertama: " << teks.substr(0, 5) << "\n";
   }
   
   // Find
   size_t pos = teks.find("a");
-  if (pos != std::string::npos) {
-    std::cout << "Huruf 'a' pertama di posisi: " 
-              << pos << "\n";
+  if (pos != string::npos) {
+    cout << "Huruf 'a' pertama di posisi: " << pos << "\n";
   }
   
   // Replace
-  std::string modified = teks;
+  string modified = teks;
   pos = modified.find(" ");
-  if (pos != std::string::npos) {
+  if (pos != string::npos) {
     modified.replace(pos, 1, "_");
-    std::cout << "Spasi pertama diganti underscore: " 
-              << modified << "\n";
+    cout << "Spasi pertama diganti underscore: " << modified << "\n";
   }
   
   return 0;
@@ -1583,7 +1596,7 @@ int main() {
   \item \textbf{Memory leak}: Lupa free string yang dialokasi dinamis
 \end{enumerate}
 
-\section{Rangkuman}
+\section{Rangkuman Materi}
 
 String adalah tipe data fundamental untuk merepresentasikan teks dalam pemrograman. Pemahaman yang baik tentang representasi, operasi, dan manipulasi string sangat penting untuk pengembangan aplikasi.
 
@@ -1594,6 +1607,7 @@ String adalah tipe data fundamental untuk merepresentasikan teks dalam pemrogram
   \item Pascal: Tipe \texttt{string} dengan manajemen otomatis
   \item C: Array \texttt{char} dengan null terminator
   \item C++: \texttt{std::string} dengan manajemen memori otomatis
+  \item Unicode/UTF-8, literal \texttt{u8"..."}, tipe \texttt{char8\_t}, dan isu encoding
 \end{itemize}
 
 \textbf{Operasi Dasar:}
@@ -1603,6 +1617,7 @@ String adalah tipe data fundamental untuk merepresentasikan teks dalam pemrogram
   \item Panjang string, konkatenasi, perbandingan
   \item Substring, pencarian, penggantian
   \item Konversi case (upper/lower)
+  \item I/O string dan karakter; escape sequences
 \end{itemize}
 
 \textbf{Keamanan:}
@@ -1611,6 +1626,7 @@ String adalah tipe data fundamental untuk merepresentasikan teks dalam pemrogram
   \item Gunakan fungsi aman (strncpy, fgets, snprintf)
   \item Prefer \texttt{std::string} di C++ untuk keamanan otomatis
   \item Hindari fungsi deprecated seperti \texttt{gets()}
+  \item Fungsi pustaka C dan metode string untuk manipulasi aman
 \end{itemize}
 
 \subsection{Perbandingan Antar Bahasa}
@@ -1665,14 +1681,5 @@ Bounds checking & Ya & Tidak & at() method \\
 \end{itemize}
 
 String adalah fondasi pemrosesan teks dalam pemrograman. Penguasaan operasi string yang baik akan memudahkan pengembangan berbagai aplikasi, dari parsing data, validasi input, hingga pemrosesan teks kompleks. Selalu prioritaskan keamanan dan clarity dalam code Anda!
-
-\section{Rangkuman Materi}
-\begin{itemize}
-  \item Representasi lintas bahasa: Pascal (managed), C (null-terminated), C++ (\texttt{std::string}).
-  \item Unicode/UTF-8, literal \texttt{u8"..."}, tipe \texttt{char8\_t}, dan isu encoding.
-  \item Operasi pokok: panjang, konkatenasi, substring, pencarian, penggantian, dan konversi case.
-  \item I/O string dan karakter; escape sequences; fungsi pustaka C dan metode \texttt{std::string}.
-  \item Praktik keamanan: batasi input, hindari fungsi unsafe, gunakan \texttt{std::string} untuk code modern.
-\end{itemize}
 
 \end{document}

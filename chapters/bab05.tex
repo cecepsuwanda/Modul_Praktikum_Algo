@@ -70,6 +70,9 @@ Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan 
 \end{figure}
 
 \subsection{Contoh Loop \texttt{for}}
+
+Program berikut menggunakan loop \texttt{for} untuk mencetak tabel perkalian dari sebuah angka yang diinput oleh pengguna:
+
 \begin{lstlisting}[language=Pascal, caption={Cetak tabel perkalian dengan for (Pascal)}]
 program TabelPerkalian;
 var
@@ -83,6 +86,8 @@ begin
   end;
 end.
 \end{lstlisting}
+
+Di C, loop \texttt{for} digunakan untuk menghitung faktorial dengan iterasi dari 1 hingga n:
 
 \begin{lstlisting}[language=C, caption={Hitung faktorial dengan for (C)}]
 #include <stdio.h>
@@ -99,6 +104,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Program C++ berikut menggunakan loop untuk membaca beberapa nilai dan menghitung total serta rata-ratanya:
 
 \begin{lstlisting}[language=C++, caption={Loop for dengan hitung total (C++)}]
 #include <iostream>
@@ -121,6 +128,8 @@ int main() {
 }
 \end{lstlisting}
 
+C++11 memperkenalkan range-based for loop yang lebih ringkas untuk iterasi koleksi tanpa perlu indeks eksplisit:
+
 \begin{lstlisting}[language=C++, caption={Range-based for pada koleksi (C++11+)}]
 #include <iostream>
 #include <vector>
@@ -137,6 +146,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Contoh Loop \texttt{while}}
+
+Program berikut menggunakan loop \texttt{while} untuk validasi input, meminta pengguna memasukkan angka positif hingga input valid diberikan:
+
 \begin{lstlisting}[language=Pascal, caption={Input validasi dengan while (Pascal)}]
 program ValidasiInput;
 var
@@ -152,6 +164,8 @@ begin
   Writeln('Angka valid: ', angka);
 end.
 \end{lstlisting}
+
+Program C berikut menggunakan \texttt{while} untuk menghitung jumlah digit dalam sebuah bilangan dengan membagi berulang kali dengan 10:
 
 \begin{lstlisting}[language=C, caption={Hitung digit dengan while (C)}]
 #include <stdio.h>
@@ -170,6 +184,8 @@ int main(void) {
 }
 \end{lstlisting}
 
+Contoh membaca data dari input hingga mencapai end-of-file (EOF), berguna untuk pemrosesan batch data:
+
 \begin{lstlisting}[language=Pascal, caption={Baca hingga EOF (Pascal)}]
 program ReadUntilEOF;
 var
@@ -181,6 +197,8 @@ begin
   end;
 end.
 \end{lstlisting}
+
+Program C++ berikut menggunakan \texttt{while} untuk mengecek apakah suatu bilangan prima dengan mencoba membaginya dengan semua pembagi potensial:
 
 \begin{lstlisting}[language=C++, caption={Hitung bilangan prima dengan while (C++)}]
 #include <iostream>
@@ -208,6 +226,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Contoh Loop \texttt{repeat-until} / \texttt{do-while}}
+
+Program menu berikut menggunakan \texttt{repeat-until} untuk memastikan menu ditampilkan minimal satu kali dan terus berjalan hingga pengguna memilih keluar:
+
 \begin{lstlisting}[language=Pascal, caption={Menu dengan repeat-until (Pascal)}]
 program MenuLoop;
 var
@@ -232,6 +253,8 @@ begin
 end.
 \end{lstlisting}
 
+Di C, \texttt{do-while} memastikan blok kode dieksekusi minimal sekali sebelum kondisi diperiksa. Program berikut memproses angka dan menanyakan apakah pengguna ingin mengulang:
+
 \begin{lstlisting}[language=C, caption={Input ulang dengan do-while (C)}]
 #include <stdio.h>
 int main(void) {
@@ -251,6 +274,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Program kalkulator sederhana berikut mendemonstrasikan \texttt{do-while} untuk menu yang berulang, mengkombinasikan loop dengan percabangan \texttt{switch}:
 
 \begin{lstlisting}[language=C++, caption={Validasi input dengan do-while (C++)}]
 #include <iostream>
@@ -324,6 +349,9 @@ Perulangan bersarang adalah loop di dalam loop lainnya. Loop luar dieksekusi sek
 \end{figure}
 
 \subsection{Contoh Nested Loop}
+
+Program berikut menggunakan dua loop bersarang untuk mencetak pola segitiga bintang. Loop luar mengontrol jumlah baris, loop dalam mengontrol jumlah bintang per baris:
+
 \begin{lstlisting}[language=Pascal, caption={Pola segitiga dengan nested loop (Pascal)}]
 program PolaBintang;
 var
@@ -340,6 +368,8 @@ begin
 end.
 \end{lstlisting}
 
+Program C berikut menghasilkan tabel perkalian menggunakan nested loop untuk iterasi baris dan kolom:
+
 \begin{lstlisting}[language=C, caption={Tabel perkalian dengan nested loop (C)}]
 #include <stdio.h>
 int main(void) {
@@ -355,6 +385,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Versi C++ yang serupa untuk membuat pola segitiga dengan nested loop:
 
 \begin{lstlisting}[language=C++, caption={Pola bintang dengan nested loop (C++)}]
 #include <iostream>
@@ -381,6 +413,9 @@ Pada nested loop, kompleksitas waktu menjadi perkalian iterasi loop luar dan dal
 \texttt{break} menghentikan loop sepenuhnya dan keluar ke pernyataan setelah loop. \texttt{continue} melompati sisa iterasi saat ini dan langsung ke iterasi berikutnya. Gunakan seperlunya agar alur tetap jelas; terlalu banyak \texttt{break}/\texttt{continue} dapat membingungkan \parencite{gnu-c-manual,cpp-reference}.
 
 \subsection{Contoh \texttt{break} dan \texttt{continue}}
+
+Program berikut mendemonstrasikan penggunaan \texttt{continue} untuk melewati iterasi tertentu dan \texttt{break} untuk keluar dari loop lebih awal:
+
 \begin{lstlisting}[language=Pascal, caption={break dan continue di Pascal}]
 program BreakContinue;
 var
@@ -403,6 +438,8 @@ begin
   end;
 end.
 \end{lstlisting}
+
+Di C, contoh berikut menunjukkan bagaimana \texttt{continue} melewati bilangan ganjil dan \texttt{break} membatasi proses, serta aplikasinya pada nested loop:
 
 \begin{lstlisting}[language=C, caption={break dan continue di C}]
 #include <stdio.h>
@@ -428,6 +465,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Program berikut mendemonstrasikan penggunaan \texttt{break} untuk menghentikan pencarian saat elemen yang dicari ditemukan:
 
 \begin{lstlisting}[language=C++, caption={break saat menemukan kondisi (C++)}]
 #include <iostream>

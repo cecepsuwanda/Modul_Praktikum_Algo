@@ -34,6 +34,8 @@ File teks adalah berkas yang berisi karakter ASCII atau Unicode yang dapat dibac
 \subsubsection{Pascal}
 Dalam Pascal, tipe \texttt{text} digunakan untuk file teks. Deklarasi dan operasi dasar:
 
+Program berikut mendemonstrasikan berbagai mode pembukaan file teks di Pascal (write, read, append):
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan mode file teks Pascal}]
 var
   f: text;           // Deklarasi variabel file teks
@@ -64,6 +66,8 @@ end.
 
 \subsubsection{C}
 C menggunakan pointer \texttt{FILE*} dengan mode string untuk file teks:
+
+Program C berikut menunjukkan berbagai mode file (r, w, a, r+) dan penggunaan \texttt{fopen}, \texttt{fprintf}, \texttt{fgets}:
 
 \begin{lstlisting}[language=C, caption={Mode file teks di C}]
 #include <stdio.h>
@@ -104,6 +108,8 @@ int main() {
 
 \subsubsection{C++}
 C++ menyediakan stream object dengan manipulator yang lebih type-safe:
+
+Program C++ berikut menggunakan \texttt{ifstream}, \texttt{ofstream}, dan \texttt{fstream} dengan berbagai mode untuk operasi file:
 
 \begin{lstlisting}[language=C++, caption={Mode file teks di C++}]
 #include <fstream>
@@ -162,6 +168,8 @@ Cek EOF & \texttt{Eof(f)} & \texttt{feof(fp)} & \texttt{ifs.eof()} \\ \hline
 
 \subsection{Contoh Aplikasi File Teks}
 
+Program berikut mendemonstrasikan parsing file konfigurasi sederhana dengan format key=value, melewati baris komentar:
+
 \begin{lstlisting}[language=C, caption={Membaca file konfigurasi sederhana}]
 #include <stdio.h>
 #include <string.h>
@@ -206,6 +214,8 @@ File binary menyimpan data dalam format biner mentah (raw bytes) yang tidak dapa
 \subsubsection{Pascal}
 Pascal menggunakan \texttt{file of <type>} untuk file binary dengan tipe tertentu:
 
+Program Pascal berikut menunjukkan file binary bertipe dan untyped untuk akses byte-level:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan mode file binary Pascal}]
 type
   TRecord = record
@@ -245,6 +255,8 @@ end.
 
 \subsubsection{C}
 C menggunakan mode dengan suffix \texttt{b} untuk binary:
+
+Program C berikut mendemonstrasikan operasi file binary (rb, wb, ab, rb+) menggunakan \texttt{fread} dan \texttt{fwrite}:
 
 \begin{lstlisting}[language=C, caption={Mode file binary di C}]
 #include <stdio.h>
@@ -293,6 +305,8 @@ int main() {
 \subsubsection{C++}
 C++ menggunakan flag \texttt{ios::binary} untuk mode binary:
 
+Program C++ berikut menggunakan stream dengan flag \texttt{ios::binary} untuk read/write data binary:
+
 \begin{lstlisting}[language=C++, caption={Mode file binary di C++}]
 #include <fstream>
 #include <iostream>
@@ -338,14 +352,15 @@ int main() {
 
 \begin{table}[H]
 \centering
+\small
 \begin{tabular}{|l|l|l|l|}
 \hline
 \textbf{Operasi} & \textbf{Pascal} & \textbf{C} & \textbf{C++} \\ \hline
-Tulis data & \texttt{Write(f, v)} & \texttt{fwrite(\&v, sz, n, fp)} & \texttt{ofs.write((char*)\&v, sz)} \\ \hline
-Baca data & \texttt{Read(f, v)} & \texttt{fread(\&v, sz, n, fp)} & \texttt{ifs.read((char*)\&v, sz)} \\ \hline
-Tulis blok & \texttt{BlockWrite(f, buf, n)} & \texttt{fwrite(buf, 1, n, fp)} & \texttt{ofs.write(buf, n)} \\ \hline
-Baca blok & \texttt{BlockRead(f, buf, n)} & \texttt{fread(buf, 1, n, fp)} & \texttt{ifs.read(buf, n)} \\ \hline
-Seek posisi & \texttt{Seek(f, pos)} & \texttt{fseek(fp, pos, orig)} & \texttt{fs.seekg(pos)} \\ \hline
+Tulis data & \texttt{Write(f, v)} & \texttt{fwrite(\&v, sz, n, fp)} & \begin{tabular}[t]{@{}l@{}}\texttt{ofs.write}\\\texttt{((char*)\&v, sz)}\end{tabular} \\ \hline
+Baca data & \texttt{Read(f, v)} & \texttt{fread(\&v, sz, n, fp)} & \begin{tabular}[t]{@{}l@{}}\texttt{ifs.read}\\\texttt{((char*)\&v, sz)}\end{tabular} \\ \hline
+Tulis blok & \begin{tabular}[t]{@{}l@{}}\texttt{BlockWrite}\\\texttt{(f, buf, n)}\end{tabular} & \texttt{fwrite(buf, 1, n, fp)} & \texttt{ofs.write(buf, n)} \\ \hline
+Baca blok & \begin{tabular}[t]{@{}l@{}}\texttt{BlockRead}\\\texttt{(f, buf, n)}\end{tabular} & \texttt{fread(buf, 1, n, fp)} & \texttt{ifs.read(buf, n)} \\ \hline
+Seek posisi & \texttt{Seek(f, pos)} & \begin{tabular}[t]{@{}l@{}}\texttt{fseek}\\\texttt{(fp, pos, orig)}\end{tabular} & \texttt{fs.seekg(pos)} \\ \hline
 Posisi saat ini & \texttt{FilePos(f)} & \texttt{ftell(fp)} & \texttt{fs.tellg()} \\ \hline
 Ukuran file & \texttt{FileSize(f)} & seek+ftell & seekg+tellg \\ \hline
 \end{tabular}
@@ -355,6 +370,8 @@ Ukuran file & \texttt{FileSize(f)} & seek+ftell & seekg+tellg \\ \hline
 \subsection{Akses Acak dan Posisi dalam File Binary}
 
 File binary mendukung akses acak (random access) yang memungkinkan membaca/menulis pada posisi arbitrary tanpa harus membaca seluruh file:
+
+Program berikut mendemonstrasikan penggunaan \texttt{fseek} dan \texttt{ftell} untuk navigasi file dan update record pada posisi tertentu:
 
 \begin{lstlisting}[language=C, caption={fseek/ftell untuk akses acak}]
 #include <stdio.h>
@@ -386,6 +403,8 @@ int main() {
   return 0;
 }
 \end{lstlisting}
+
+Versi C++ menggunakan \texttt{seekg}/\texttt{seekp} dan \texttt{tellg}/\texttt{tellp} untuk operasi yang sama:
 
 \begin{lstlisting}[language=C++, caption={seekg/tellg untuk akses acak}]
 #include <fstream>
@@ -472,6 +491,8 @@ Operasi file dapat gagal karena berbagai alasan: file tidak ditemukan, izin dito
 
 \subsection{Pemeriksaan Kesalahan}
 
+Program berikut mendemonstrasikan cara memeriksa dan menangani error file operation di C menggunakan \texttt{errno}, \texttt{perror}, dan \texttt{ferror}:
+
 \begin{lstlisting}[language=C, caption={Penanganan kesalahan di C}]
 #include <stdio.h>
 #include <errno.h>
@@ -500,6 +521,8 @@ int main() {
   return 0;
 }
 \end{lstlisting}
+
+Di C++, exception dapat digunakan untuk error handling yang lebih terstruktur:
 
 \begin{lstlisting}[language=C++, caption={Penanganan kesalahan di C++}]
 #include <fstream>
@@ -539,6 +562,8 @@ int main() {
 \subsection{Tulis Atomik untuk Keamanan Data}
 
 Untuk mencegah korupsi data saat terjadi kegagalan di tengah penulisan, gunakan strategi tulis ke file temporary kemudian rename:
+
+Program berikut mengimplementasikan atomic write dengan menulis ke file temporary terlebih dahulu, kemudian rename untuk menggantikan file tujuan:
 
 \begin{lstlisting}[language=C, caption={Menulis ke file sementara lalu rename (C, POSIX)}]
 #include <stdio.h>

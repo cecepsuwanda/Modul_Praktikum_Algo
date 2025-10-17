@@ -66,6 +66,8 @@ Bayangkan alamat rumah:
 
 \subsection{Pointer di Pascal}
 
+Program berikut mendemonstrasikan deklarasi pointer di Pascal, pengambilan alamat dengan operator \texttt{@}, dan dereferensi dengan operator \texttt{\^{}}:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi pointer di Pascal}]
 var
   x: integer;
@@ -99,6 +101,8 @@ end.
 \end{lstlisting}
 
 \subsection{Pointer di C}
+
+Contoh C berikut menunjukkan deklarasi pointer, operator address-of (\&) dan dereference (*), serta pengecekan NULL pointer:
 
 \begin{lstlisting}[language=C, caption={Deklarasi pointer di C}]
 #include <stdio.h>
@@ -143,6 +147,8 @@ int main() {
 \end{itemize}
 
 \subsection{Pointer di C++}
+
+Program C++ berikut mendemonstrasikan pointer, reference, nullptr (C++11), dan berbagai jenis const pointer:
 
 \begin{lstlisting}[language=C++, caption={Pointer dan reference di C++}]
 #include <iostream>
@@ -218,6 +224,8 @@ Pointer arithmetic memungkinkan navigasi melalui memori menggunakan operasi arit
 
 \subsection{Operasi Pointer di C}
 
+Program berikut mendemonstrasikan pointer arithmetic untuk navigasi array, termasuk increment, decrement, dan operasi aritmetika pointer:
+
 \begin{lstlisting}[language=C, caption={Pointer arithmetic di C}]
 #include <stdio.h>
 
@@ -282,6 +290,8 @@ Array dan pointer sangat terkait erat dalam C/C++.
 
 \subsection{Hubungan Array dan Pointer}
 
+Program berikut mendemonstrasikan hubungan erat antara array dan pointer, menunjukkan equivalensi notasi array dan pointer:
+
 \begin{lstlisting}[language=C, caption={Array dan pointer di C}]
 #include <stdio.h>
 
@@ -323,54 +333,15 @@ int main() {
   \item Pointer variable bisa di-reassign
 \end{itemize}
 
-\subsection{Passing Array ke Fungsi}
-
-\begin{lstlisting}[language=C, caption={Array sebagai parameter fungsi}]
-#include <stdio.h>
-
-// Array decay to pointer
-void printArray1(int arr[], int size) {
-  for (int i = 0; i < size; i++) {
-    printf("%d ", arr[i]);
-  }
-  printf("\n");
-}
-
-// Equivalent: explicit pointer
-void printArray2(int *arr, int size) {
-  for (int i = 0; i < size; i++) {
-    printf("%d ", *(arr + i));
-  }
-  printf("\n");
-}
-
-// Modify array through pointer
-void doubleValues(int *arr, int size) {
-  for (int i = 0; i < size; i++) {
-    arr[i] *= 2;
-  }
-}
-
-int main() {
-  int numbers[] = {1, 2, 3, 4, 5};
-  int size = sizeof(numbers) / sizeof(numbers[0]);
-  
-  printArray1(numbers, size);
-  printArray2(numbers, size);
-  
-  doubleValues(numbers, size);
-  printf("After doubling: ");
-  printArray1(numbers, size);
-  
-  return 0;
-}
-\end{lstlisting}
+\paragraph{Catatan tentang Fungsi.} Pointer sering digunakan sebagai parameter fungsi untuk memodifikasi data secara efisien. Konsep passing array dan struct melalui pointer akan dijelaskan lebih detail di Bab 10 tentang Fungsi dan Prosedur. Untuk saat ini, fokus pada pemahaman dasar pointer, dereferensi, dan pointer arithmetic.
 
 \section{Pointer ke Struct}
 
 Pointer sangat berguna untuk bekerja dengan struct, terutama untuk struktur data dinamis.
 
 \subsection{Pointer ke Struct di C}
+
+Program berikut menunjukkan cara menggunakan pointer untuk mengakses dan memodifikasi field struct menggunakan operator arrow (->):
 
 \begin{lstlisting}[language=C, caption={Pointer to struct di C}]
 #include <stdio.h>
@@ -382,35 +353,26 @@ typedef struct {
   float ipk;
 } Mahasiswa;
 
-void printMahasiswa(const Mahasiswa *m) {
-  // Akses dengan ->
-  printf("Nama: %s\n", m->nama);
-  printf("Umur: %d\n", m->umur);
-  printf("IPK: %.2f\n", m->ipk);
-  
-  // Equivalent dengan (*m).field
-  printf("IPK (syntax alt): %.2f\n", (*m).ipk);
-}
-
-void updateIPK(Mahasiswa *m, float ipkBaru) {
-  m->ipk = (m->ipk + ipkBaru) / 2.0;
-}
-
 int main() {
   Mahasiswa mhs = {"John Doe", 20, 3.5};
   Mahasiswa *ptr = &mhs;
   
-  // Akses melalui pointer
+  // Akses melalui pointer dengan ->
   printf("Nama via pointer: %s\n", ptr->nama);
+  printf("Umur via pointer: %d\n", ptr->umur);
+  printf("IPK via pointer: %.2f\n", ptr->ipk);
+  
+  // Equivalent dengan (*ptr).field
+  printf("IPK (syntax alt): %.2f\n", (*ptr).ipk);
   
   // Modifikasi melalui pointer
   ptr->umur = 21;
-  ptr->ipk = 3.7;
+  ptr->ipk = (ptr->ipk + 3.9) / 2.0;
   
-  // Passing pointer ke fungsi
-  printMahasiswa(ptr);
-  updateIPK(ptr, 3.9);
-  printMahasiswa(ptr);
+  // Tampilkan setelah modifikasi
+  printf("\nSetelah modifikasi:\n");
+  printf("Umur: %d\n", ptr->umur);
+  printf("IPK: %.2f\n", ptr->ipk);
   
   return 0;
 }
@@ -424,6 +386,8 @@ int main() {
 \end{itemize}
 
 \subsection{Array of Pointers}
+
+Program berikut mendemonstrasikan array yang berisi pointer, berguna untuk menyimpan referensi ke string atau variabel:
 
 \begin{lstlisting}[language=C, caption={Array of pointers di C}]
 #include <stdio.h>
@@ -466,6 +430,8 @@ Alokasi memori dinamis memungkinkan program mengalokasikan memori saat runtime.
 
 \subsection{Alokasi Dinamis di Pascal}
 
+Program berikut menunjukkan cara mengalokasikan dan mendealokasikan memori secara dinamis di Pascal menggunakan \texttt{New} dan \texttt{Dispose}:
+
 \begin{lstlisting}[language=Pascal, caption={New dan Dispose di Pascal}]
 type
   PInteger = ^integer;
@@ -504,6 +470,8 @@ end.
 \end{lstlisting}
 
 \subsection{Alokasi Dinamis di C}
+
+Program berikut mendemonstrasikan fungsi-fungsi alokasi memori dinamis di C (\texttt{malloc}, \texttt{calloc}, \texttt{realloc}) dan pentingnya dealokasi dengan \texttt{free}:
 
 \begin{lstlisting}[language=C, caption={malloc, calloc, realloc, free di C}]
 #include <stdio.h>
@@ -595,6 +563,8 @@ int main() {
 
 \subsection{Smart Pointers di C++}
 
+Program berikut mendemonstrasikan smart pointers di C++ (\texttt{unique\_ptr}, \texttt{shared\_ptr}, \texttt{weak\_ptr}) untuk manajemen memori otomatis:
+
 \begin{lstlisting}[language=C++, caption={Smart pointers di C++}]
 #include <iostream>
 #include <memory>
@@ -684,6 +654,8 @@ Pointer dapat menunjuk ke pointer lain, membentuk multiple levels of indirection
 
 \subsection{Double Pointer di C}
 
+Program berikut menunjukkan penggunaan pointer to pointer untuk mengubah nilai dan mengubah ke mana pointer menunjuk melalui fungsi:
+
 \begin{lstlisting}[language=C, caption={Pointer to pointer di C}]
 #include <stdio.h>
 
@@ -725,6 +697,8 @@ int main() {
 \end{lstlisting}
 
 \subsection{Aplikasi Double Pointer}
+
+Contoh berikut menunjukkan alokasi array 2D dinamis menggunakan double pointer dengan fungsi helper untuk alokasi dan dealokasi:
 
 \begin{lstlisting}[language=C, caption={Double pointer untuk 2D array}]
 #include <stdio.h>
@@ -775,9 +749,13 @@ int main() {
 
 Linked list adalah struktur data dinamis yang menggunakan pointer untuk menghubungkan node.
 
-\subsection{Singly Linked List di C}
+\paragraph{Catatan.} Implementasi linked list yang lengkap memerlukan pemahaman tentang fungsi dan prosedur yang akan dipelajari di Bab 10. Contoh di bawah memberikan gambaran dasar tentang bagaimana pointer digunakan untuk membangun struktur data dinamis. Setelah mempelajari Bab 10, Anda akan dapat membuat implementasi yang lebih modular dan reusable.
 
-\begin{lstlisting}[language=C, caption={Linked list implementation di C}]
+\subsection{Contoh Sederhana Linked List di C}
+
+Program berikut mendemonstrasikan pembuatan linked list sederhana dengan alokasi dinamis node, traversal untuk menampilkan isi, dan pembersihan memori:
+
+\begin{lstlisting}[language=C, caption={Linked list sederhana di C}]
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -786,201 +764,88 @@ typedef struct Node {
   struct Node *next;
 } Node;
 
-// Create new node
-Node* createNode(int data) {
-  Node *newNode = (Node*)malloc(sizeof(Node));
-  if (newNode != NULL) {
-    newNode->data = data;
-    newNode->next = NULL;
-  }
-  return newNode;
-}
-
-// Insert at beginning
-void pushFront(Node **head, int data) {
-  Node *newNode = createNode(data);
-  if (newNode != NULL) {
-    newNode->next = *head;
-    *head = newNode;
-  }
-}
-
-// Insert at end
-void pushBack(Node **head, int data) {
-  Node *newNode = createNode(data);
-  if (newNode == NULL) return;
+int main() {
+  Node *head = NULL;
+  Node *newNode, *current;
   
-  if (*head == NULL) {
-    *head = newNode;
-    return;
-  }
+  // Buat node pertama
+  newNode = (Node*)malloc(sizeof(Node));
+  newNode->data = 1;
+  newNode->next = NULL;
+  head = newNode;
   
-  Node *current = *head;
-  while (current->next != NULL) {
-    current = current->next;
-  }
-  current->next = newNode;
-}
-
-// Print list
-void printList(Node *head) {
-  Node *current = head;
-  printf("List: ");
+  // Tambah node kedua
+  newNode = (Node*)malloc(sizeof(Node));
+  newNode->data = 2;
+  newNode->next = NULL;
+  head->next = newNode;
+  
+  // Tambah node ketiga
+  newNode = (Node*)malloc(sizeof(Node));
+  newNode->data = 3;
+  newNode->next = NULL;
+  head->next->next = newNode;
+  
+  // Tampilkan isi linked list
+  printf("Isi linked list: ");
+  current = head;
   while (current != NULL) {
     printf("%d ", current->data);
     current = current->next;
   }
   printf("\n");
-}
-
-// Free list
-void freeList(Node **head) {
-  Node *current = *head;
+  
+  // Bebaskan memori
+  current = head;
   while (current != NULL) {
     Node *next = current->next;
     free(current);
     current = next;
   }
-  *head = NULL;
-}
-
-// Delete node with value
-void deleteValue(Node **head, int value) {
-  Node *current = *head;
-  Node *prev = NULL;
   
-  // If head needs to be deleted
-  if (current != NULL && current->data == value) {
-    *head = current->next;
-    free(current);
-    return;
-  }
-  
-  // Search for the node
-  while (current != NULL && current->data != value) {
-    prev = current;
-    current = current->next;
-  }
-  
-  // If not found
-  if (current == NULL) return;
-  
-  // Delete node
-  prev->next = current->next;
-  free(current);
-}
-
-int main() {
-  Node *head = NULL;
-  
-  // Build list
-  pushFront(&head, 3);
-  pushFront(&head, 2);
-  pushFront(&head, 1);
-  pushBack(&head, 4);
-  pushBack(&head, 5);
-  
-  printList(head);  // 1 2 3 4 5
-  
-  // Delete a value
-  deleteValue(&head, 3);
-  printList(head);  // 1 2 4 5
-  
-  // Clean up
-  freeList(&head);
-  
+  printf("Linked list berhasil dibersihkan.\n");
   return 0;
 }
 \end{lstlisting}
 
-\subsection{Linked List di C++}
+\subsection{Contoh Sederhana Linked List di C++}
 
-\begin{lstlisting}[language=C++, caption={Linked list dengan smart pointers di C++}]
+Versi C++ menggunakan \texttt{unique\_ptr} untuk manajemen memori otomatis pada linked list:
+
+\begin{lstlisting}[language=C++, caption={Linked list sederhana di C++}]
 #include <iostream>
 #include <memory>
+using namespace std;
 
 struct Node {
   int data;
-  std::unique_ptr<Node> next;
-  
-  Node(int d) : data(d), next(nullptr) {}
-};
-
-class LinkedList {
-private:
-  std::unique_ptr<Node> head;
-  
-public:
-  LinkedList() : head(nullptr) {}
-  
-  void pushFront(int data) {
-    auto newNode = std::make_unique<Node>(data);
-    newNode->next = std::move(head);
-    head = std::move(newNode);
-  }
-  
-  void pushBack(int data) {
-    auto newNode = std::make_unique<Node>(data);
-    
-    if (!head) {
-      head = std::move(newNode);
-      return;
-    }
-    
-    Node *current = head.get();
-    while (current->next) {
-      current = current->next.get();
-    }
-    current->next = std::move(newNode);
-  }
-  
-  void print() const {
-    std::cout << "List: ";
-    Node *current = head.get();
-    while (current) {
-      std::cout << current->data << " ";
-      current = current->next.get();
-    }
-    std::cout << "\n";
-  }
-  
-  void deleteValue(int value) {
-    if (!head) return;
-    
-    // If head needs to be deleted
-    if (head->data == value) {
-      head = std::move(head->next);
-      return;
-    }
-    
-    Node *current = head.get();
-    while (current->next && current->next->data != value) {
-      current = current->next.get();
-    }
-    
-    if (current->next) {
-      current->next = std::move(current->next->next);
-    }
-  }
-  
-  // Destructor automatic with unique_ptr!
+  unique_ptr<Node> next;
 };
 
 int main() {
-  LinkedList list;
+  // Buat linked list dengan smart pointers
+  unique_ptr<Node> head = make_unique<Node>();
+  head->data = 1;
   
-  list.pushFront(3);
-  list.pushFront(2);
-  list.pushFront(1);
-  list.pushBack(4);
-  list.pushBack(5);
+  // Tambah node kedua
+  head->next = make_unique<Node>();
+  head->next->data = 2;
   
-  list.print();  // 1 2 3 4 5
+  // Tambah node ketiga
+  head->next->next = make_unique<Node>();
+  head->next->next->data = 3;
   
-  list.deleteValue(3);
-  list.print();  // 1 2 4 5
+  // Tampilkan isi linked list
+  cout << "Isi linked list: ";
+  Node *current = head.get();
+  while (current != nullptr) {
+    cout << current->data << " ";
+    current = current->next.get();
+  }
+  cout << "\n";
   
-  // No manual cleanup needed!
+  // Smart pointer otomatis membersihkan memori
+  cout << "Memori akan otomatis dibersihkan.\n";
   return 0;
 }
 \end{lstlisting}
@@ -992,19 +857,20 @@ int main() {
 Pointer yang menunjuk ke memori yang sudah didealokasi.
 
 \begin{lstlisting}[language=C, caption={Dangling pointer problem}]
-int* createDanglingPointer() {
-  int x = 42;
-  return &x;  // BAD! x destroyed after return
-}
-
 int main() {
-  int *p = createDanglingPointer();
+  int *p;
+  
+  // SALAH: Pointer ke variabel lokal yang sudah hilang
+  {
+    int x = 42;
+    p = &x;
+  }  // x keluar dari scope, p menjadi dangling
   // *p is undefined behavior!
   
-  // Correct version
+  // BENAR: Gunakan dynamic allocation
   int *q = (int*)malloc(sizeof(int));
   *q = 42;
-  // Use q...
+  printf("Nilai: %d\n", *q);
   free(q);
   q = NULL;  // Good practice to avoid dangling pointer
   
@@ -1017,16 +883,20 @@ int main() {
 Alokasi memori yang tidak pernah didealokasi.
 
 \begin{lstlisting}[language=C, caption={Memory leak}]
-void memoryLeak() {
+int main() {
+  // SALAH: Memory leak
   int *p = (int*)malloc(sizeof(int));
   *p = 42;
-  // Forgot to free(p)!
-}  // Memory leak!
-
-void correct() {
-  int *p = (int*)malloc(sizeof(int));
-  *p = 42;
-  free(p);  // Properly deallocated
+  // Lupa free(p)!
+  // Memory leak saat program selesai
+  
+  // BENAR: Selalu free
+  int *q = (int*)malloc(sizeof(int));
+  *q = 100;
+  printf("Nilai: %d\n", *q);
+  free(q);  // Properly deallocated
+  
+  return 0;
 }
 \end{lstlisting}
 
@@ -1102,7 +972,7 @@ int main() {
   \item \textbf{Static analyzers:} Cppcheck, Clang-Tidy untuk deteksi dini
 \end{itemize}
 
-\section{Rangkuman}
+\section{Rangkuman Materi}
 
 Pointer adalah konsep fundamental yang memberikan kontrol langsung atas memori dan memungkinkan struktur data dinamis.
 
@@ -1168,7 +1038,8 @@ Smart pointers & Tidak & Tidak & Ya \\
 
 Pointer adalah tool yang powerful namun memerlukan kehati-hatian. Dengan pemahaman yang baik tentang konsep dan best practices, Anda dapat menggunakan pointer dengan aman dan efektif untuk membangun program yang efisien dan fleksibel!
 
-\section{Rangkuman Materi}
+\subsection{Ringkasan Teknis}
+
 \begin{itemize}
   \item Deklarasi, inisialisasi, dereferensi pointer; perbandingan dengan reference di C++ (kontrak non-null).
   \item Aritmetika pointer, relasi array–pointer, dan passing array via pointer.

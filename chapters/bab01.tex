@@ -7,11 +7,8 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \begin{itemize}
   \item Memahami sejarah dan peran Pascal, C, dan C++ dalam pembelajaran pemrograman
   \item Menginstal dan mengkonfigurasi lingkungan pengembangan (IDE) untuk Pascal, C, dan C++
-  \item Menggunakan IDE baik online (OnlineGDB) maupun offline (Lazarus, Code::Blocks)
+  \item Menggunakan IDE online (OnlineGDB) atau offline (Lazarus, Code::Blocks)
   \item Menulis, mengkompilasi, dan menjalankan program "Hello World" dalam ketiga bahasa
-  \item Memahami perbedaan dasar sintaks input/output antara Pascal, C, dan C++
-  \item Memahami alur kompilasi, linking, hingga eksekusi program \parencite{gnu-c-manual,free-pascal-docs}
-  \item Mengatasi kesalahan kompilasi/eksekusi umum pada lingkungan praktikum
 \end{itemize}
 
 \section{Sejarah dan Posisi Pascal, C, C++}
@@ -85,8 +82,45 @@ Langkah penggunaan:
   \item Klik \texttt{Build \& Run} atau tekan F9
 \end{enumerate}
 
+\section{Struktur Program Dasar}
+Sebelum menulis program yang lebih kompleks, pahami kerangka minimal tiap bahasa.
+
+Setiap bahasa pemrograman memiliki struktur dasar yang harus diikuti. Berikut adalah kerangka minimal program Pascal yang menunjukkan bagian-bagian wajib dalam sebuah program:
+
+\begin{lstlisting}[language=Pascal, caption={Kerangka program Pascal}]
+program Main;
+begin
+  { kode dieksekusi di sini }
+end.
+\end{lstlisting}
+
+Dalam bahasa C, program minimal memerlukan fungsi \texttt{main()} sebagai titik masuk eksekusi. Berikut struktur dasarnya:
+
+\begin{lstlisting}[language=C, caption={Kerangka program C}]
+#include <stdio.h>
+
+int main(void) {
+  /* kode dieksekusi di sini */
+  return 0;
+}
+\end{lstlisting}
+
+C++ memiliki struktur yang mirip dengan C, namun menyediakan namespace dan stream I/O yang lebih modern:
+
+\begin{lstlisting}[language=C++, caption={Kerangka program C++}]
+#include <iostream>
+using namespace std;
+
+int main() {
+  // kode dieksekusi di sini
+  return 0;
+}
+\end{lstlisting}
+
 \section{Program Pertama}
 Program pertama memastikan instalasi dan alur kompilasi-pengejalan (\emph{run}) bekerja. Perbedaan I/O dasar: Pascal memakai \texttt{Writeln}, C memakai \texttt{printf}, C++ memakai \texttt{std::cout} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+
+Program Hello World adalah program pertama yang biasanya dibuat untuk memverifikasi bahwa lingkungan pengembangan sudah ter-setup dengan benar. Program ini menampilkan teks "Hello, World!" ke layar:
 
 \begin{lstlisting}[language=Pascal, caption={Hello World pada Pascal}]
 program Hello;
@@ -118,126 +152,9 @@ Untuk menjalankan program di atas, gunakan salah satu IDE yang direkomendasikan 
 \begin{itemize}
   \item Peran Pascal, C, C++ dalam pembelajaran dan konteks industri.
   \item Menyiapkan lingkungan: OnlineGDB, Lazarus (Pascal), Code::Blocks (C/C++).
-  \item Alur build dasar: tulis sumber \textrightarrow{} kompilasi \textrightarrow{} linking \textrightarrow{} eksekusi (\Cref{fig:build-run-flow}).
+  \item Alur build dasar: tulis sumber \textrightarrow{} kompilasi \textrightarrow{} linking \textrightarrow{} eksekusi.
   \item Kerangka program minimal di Pascal, C, C++ dan contoh \emph{Hello World}.
-  \item Perbandingan I/O dasar (Writeln/printf/cout) dan contoh program interaktif sederhana.
-  \item Tabel ringkas perintah I/O dan kiat troubleshooting umum (kompilator, path, newline).
 \end{itemize}
 
-\section{Konsep Dasar: Kompilasi, Linking, dan Eksekusi}
-Secara garis besar, proses membangun program terdiri dari: menulis \emph{source code}, kompilasi menjadi \emph{object file}, menggabungkannya lewat linker menjadi \emph{binary}, lalu menjalankannya melalui sistem operasi. Pada Pascal prosesnya ditangani oleh FPC/Lazarus; pada C/C++ umumnya GCC atau Clang \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[node distance=1.8cm, >=Stealth]
-    \tikzstyle{block}=[draw, rounded corners, minimum width=3.2cm, minimum height=1cm, align=center]
-    \node[block] (src) {Source code \\\small(.pas, .c, .cpp)};
-    \node[block, right=of src] (cc) {Compiler \\\small(FPC/GCC/Clang)};
-    \node[block, right=of cc] (ld) {Linker};
-    \node[block, right=of ld] (bin) {Program \\\small(EXE/ELF)};
-    \node[block, below=of bin] (rt) {OS + Runtime};
-    \draw[->] (src) -- (cc);
-    \draw[->] (cc) -- (ld);
-    \draw[->] (ld) -- (bin);
-    \draw[->] (bin) -- (rt);
-  \end{tikzpicture}
-  \caption{Alur singkat build dan eksekusi}
-  \label{fig:build-run-flow}
-\end{figure}
-
-\paragraph{Implikasi Praktis.} Jika kompilasi gagal, periksa pesan kesalahan pada baris dan kolom yang disebutkan. Jika gagal saat menjalankan, periksa input, akses file, atau izin eksekusi. Dokumentasi resmi sangat membantu untuk memahami pesan kesalahan dan opsi kompilator \parencite{free-pascal-docs,gnu-c-manual}.
-
-\section{Struktur Program Dasar}
-Sebelum menulis program yang lebih kompleks, pahami kerangka minimal tiap bahasa.
-
-\begin{lstlisting}[language=Pascal, caption={Kerangka program Pascal}]
-program Main;
-begin
-  { kode dieksekusi di sini }
-end.
-\end{lstlisting}
-
-\begin{lstlisting}[language=C, caption={Kerangka program C}]
-#include <stdio.h>
-
-int main(void) {
-  /* kode dieksekusi di sini */
-  return 0;
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=C++, caption={Kerangka program C++}]
-#include <iostream>
-using namespace std;
-
-int main() {
-  // kode dieksekusi di sini
-  return 0;
-}
-\end{lstlisting}
-
-\section{Contoh Input/Output Dasar}
-Berikut contoh membaca dua bilangan bulat dan menampilkan hasil penjumlahannya. Perhatikan perbedaan I/O \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
-
-\begin{lstlisting}[language=Pascal, caption={Menjumlah dua bilangan pada Pascal}]
-program SumTwo;
-var
-  a, b, total: integer;
-begin
-  Readln(a);
-  Readln(b);
-  total := a + b;
-  Writeln('Jumlah = ', total);
-end.
-\end{lstlisting}
-
-\begin{lstlisting}[language=C, caption={Menjumlah dua bilangan pada C}]
-#include <stdio.h>
-
-int main(void) {
-  int a, b;
-  if (scanf("%d %d", &a, &b) != 2) {
-    return 1; // input tidak valid
-  }
-  printf("Jumlah = %d\n", a + b);
-  return 0;
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=C++, caption={Menjumlah dua bilangan pada C++}]
-#include <iostream>
-using namespace std;
-
-int main() {
-  int a, b;
-  if (!(cin >> a >> b)) return 1; // input tidak valid
-  cout << "Jumlah = " << (a + b) << '\n';
-}
-\end{lstlisting}
-
-\section{Perbandingan Sintaks I/O Dasar}
-\begin{table}[H]
-  \centering
-  \caption{Perbandingan ringkas perintah I/O}
-  \label{tab:io-basic}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Bahasa & Output & Input \\
-    \midrule
-    Pascal & \texttt{Writeln('...')} & \texttt{Readln(x)} \\
-    C      & \texttt{printf("...")} & \texttt{scanf("\%d", \&x)} \\
-    C++    & \texttt{std::cout << "..."} & \texttt{std::cin >> x} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\section{Troubleshooting Umum}
-\begin{itemize}
-  \item \textbf{Kompilator tidak ditemukan}: pastikan FPC/GCC terpasang dan terdeteksi IDE.
-  \item \textbf{Karakter non-ASCII}: simpan berkas sebagai UTF-8 (lihat pengaturan editor).
-  \item \textbf{Path dengan spasi}: hindari spasi pada nama folder proyek.
-  \item \textbf{Kesalahan linker}: cek ulang nama fungsi/berkas sumber yang disertakan.
-  \item \textbf{I/O tidak tampil}: tambahkan karakter baris baru (\texttt{\n}) pada C/C++ atau gunakan \texttt{Writeln} pada Pascal.
-\end{itemize}
 \end{document}
 

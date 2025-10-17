@@ -53,23 +53,12 @@ int main(void) {
 \end{lstlisting}
 
 \subsection{Short-Circuit dan Operator Kondisional}
-Pada C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan short-circuit — operand kanan tidak dievaluasi bila hasil sudah pasti. Operator kondisional (ternary) \texttt{?:} memilih salah satu dari dua ekspresi berdasarkan kondisi \parencite{c-conditional-operator,cpp-conditional-operator}.
-
-\begin{lstlisting}[language=C++, caption={Short-circuit dan operator kondisional}]
-#include <iostream>
-using namespace std;
-
-bool sideEffect() { cout << "called\n"; return true; }
-
-int main() {
-  bool a = false;
-  if (a && sideEffect()) { /* tidak mencetak "called" */ }
-  int x = a ? 1 : 2; // 2
-  cout << x << "\n";
-}
-\end{lstlisting}
+Pada C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan short-circuit — operand kanan tidak dievaluasi bila hasil sudah pasti. Operator kondisional (ternary) \texttt{?:} memilih salah satu dari dua ekspresi berdasarkan kondisi. Konsep ini akan lebih jelas dipahami setelah mempelajari percabangan di bab selanjutnya \parencite{c-conditional-operator,cpp-conditional-operator}.
 
 \subsection{Contoh Operator Aritmetika}
+
+Contoh berikut mendemonstrasikan semua operator aritmetika dasar dan perbedaan antara pembagian real (/) dengan pembagian bulat (div):
+
 \begin{lstlisting}[language=Pascal, caption={Operator aritmetika di Pascal}]
 program OperatorAritmatika;
 var
@@ -86,6 +75,8 @@ begin
 end.
 \end{lstlisting}
 
+Program C berikut menunjukkan operator aritmetika dengan penekanan pada casting untuk pembagian real:
+
 \begin{lstlisting}[language=C, caption={Operator aritmetika di C}]
 #include <stdio.h>
 int main(void) {
@@ -99,6 +90,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Versi C++ dengan sintaks yang sedikit lebih modern namun logika yang sama:
 
 \begin{lstlisting}[language=C++, caption={Operator aritmetika di C++}]
 #include <iostream>
@@ -116,6 +109,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Contoh Operator Relasional dan Logika}
+
+Program berikut mendemonstrasikan operator perbandingan dan operator logika untuk membentuk ekspresi boolean:
+
 \begin{lstlisting}[language=Pascal, caption={Operator relasional dan logika di Pascal}]
 program OperatorRelasionalLogika;
 var
@@ -141,6 +137,8 @@ begin
 end.
 \end{lstlisting}
 
+Di C, operator relasional dan logika mengembalikan nilai integer (0 untuk false, non-zero untuk true):
+
 \begin{lstlisting}[language=C, caption={Operator relasional dan logika di C}]
 #include <stdio.h>
 int main(void) {
@@ -163,6 +161,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+C++ memiliki tipe \texttt{bool} yang lebih eksplisit untuk nilai boolean:
 
 \begin{lstlisting}[language=C++, caption={Operator relasional dan logika di C++}]
 #include <iostream>
@@ -245,6 +245,9 @@ Untuk memvisualisasikan bagaimana precedence bekerja, perhatikan pohon ekspresi 
 Pada pohon di atas, operator \texttt{*} (perkalian) berada paling bawah sehingga dievaluasi terlebih dahulu, diikuti \texttt{+}, lalu \texttt{==}, dan terakhir \texttt{\&\&}. Ini menunjukkan ekspresi: \texttt{(a + b * c) == d \&\& e}.
 
 \subsection{Contoh Demonstrasi Precedence}
+
+Program berikut mendemonstrasikan bagaimana precedence operator memengaruhi urutan evaluasi ekspresi, dan bagaimana tanda kurung dapat mengubah urutan tersebut:
+
 \begin{lstlisting}[language=Pascal, caption={Precedence operator di Pascal}]
 program PrecedenceDemo;
 var
@@ -264,6 +267,8 @@ begin
   Writeln('a - (b + c) = ', a - (b + c)); { Output: 3 }
 end.
 \end{lstlisting}
+
+Versi C menunjukkan konsep yang sama dengan tambahan demonstrasi operator relasional dan logika:
 
 \begin{lstlisting}[language=C, caption={Precedence operator di C}]
 #include <stdio.h>
@@ -286,6 +291,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Versi C++ dengan tipe boolean yang eksplisit untuk demonstrasi operator logika:
 
 \begin{lstlisting}[language=C++, caption={Precedence operator di C++}]
 #include <iostream>
@@ -315,6 +322,8 @@ Contoh di atas menunjukkan bagaimana precedence memengaruhi hasil evaluasi. Tanp
 \section{Perilaku Tak Terdefinisi: Contoh Klasik}
 Hindari ekspresi dengan efek samping berulang pada objek yang sama tanpa pemisahan yang jelas.
 
+Contoh berikut menunjukkan kode yang memiliki undefined behavior karena mengubah dan menggunakan variabel yang sama berkali-kali dalam satu ekspresi:
+
 \begin{lstlisting}[language=C, caption={Contoh UB: increment dan penggunaan berulang}]
 #include <stdio.h>
 int main(void) {
@@ -324,7 +333,8 @@ int main(void) {
 }
 \end{lstlisting}
 
-Pisahkan langkahnya agar portabel dan jelas:
+Pisahkan langkahnya agar portabel dan jelas. Berikut cara yang aman untuk melakukan operasi yang sama:
+
 \begin{lstlisting}[language=C]
 int i = 1;
 int a = i;
@@ -332,14 +342,6 @@ int b = i + 1;
 i += 2;
 int sum = a + b; // aman dan jelas
 \end{lstlisting}
-
-\section{Troubleshooting Umum}
-\begin{itemize}
-  \item \textbf{Hasil tak konsisten}: cek efek samping ganda dan urutan evaluasi.
-  \item \textbf{Pembagian bulat vs real}: pastikan tipe operand sesuai (cast eksplisit bila perlu).
-  \item \textbf{Kesetaraan}: Pascal \texttt{=} vs C/C++ \texttt{==}.
-  \item \textbf{Bitwise vs logika}: bedakan \texttt{\&} dengan \texttt{\&\&}, \texttt{|} dengan \texttt{||}.
-\end{itemize}
 
 \section{Rangkuman Materi}
 \begin{itemize}

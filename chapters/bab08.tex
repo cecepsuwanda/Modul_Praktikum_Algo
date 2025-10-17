@@ -45,6 +45,8 @@ Gunakan record/struct ketika:
 
 Pascal menggunakan kata kunci \texttt{record} dengan sintaks yang jelas untuk mendefinisikan tipe data terstruktur.
 
+Contoh berikut menunjukkan berbagai cara mendeklarasikan record di Pascal untuk merepresentasikan data mahasiswa, buku, koordinat, dan nilai:
+
 \begin{lstlisting}[language=Pascal, caption={Deklarasi record di Pascal}]
 type
   // Record sederhana untuk data mahasiswa
@@ -80,6 +82,8 @@ type
 \subsection{Deklarasi di C}
 
 C menggunakan kata kunci \texttt{struct} dengan sintaks yang memungkinkan definisi inline atau terpisah.
+
+Program berikut mendemonstrasikan berbagai cara mendeklarasikan struct di C, dengan dan tanpa typedef:
 
 \begin{lstlisting}[language=C, caption={Deklarasi struct di C}]
 // Definisi struct dengan typedef
@@ -130,6 +134,8 @@ typedef struct {
 \subsection{Deklarasi di C++}
 
 C++ memperlakukan \texttt{struct} dan \texttt{class} hampir sama, dengan default access yang berbeda.
+
+Contoh berikut menunjukkan deklarasi struct di C++ dengan fitur tambahan seperti constructor, metode, dan operator overloading:
 
 \begin{lstlisting}[language=C++, caption={Deklarasi struct di C++}]
 #include <string>
@@ -190,6 +196,8 @@ struct Kompleks {
 
 \subsection{Inisialisasi di Pascal}
 
+Program berikut mendemonstrasikan cara mengisi field record di Pascal, termasuk penggunaan \texttt{with} statement:
+
 \begin{lstlisting}[language=Pascal, caption={Inisialisasi record di Pascal}]
 var
   mhs1, mhs2: TMahasiswa;
@@ -226,6 +234,8 @@ end.
 \end{itemize}
 
 \subsection{Inisialisasi di C}
+
+Contoh berikut menunjukkan berbagai cara inisialisasi struct di C, dari designated initializers hingga assignment antar struct:
 
 \begin{lstlisting}[language=C, caption={Inisialisasi struct di C}]
 #include <string.h>
@@ -276,6 +286,8 @@ int main() {
 
 \subsection{Inisialisasi di C++}
 
+Program C++ berikut mendemonstrasikan berbagai cara inisialisasi struct termasuk uniform initialization, designated initializers (C++20), dan move semantics:
+
 \begin{lstlisting}[language=C++, caption={Inisialisasi struct di C++}]
 #include <iostream>
 #include <string>
@@ -325,7 +337,8 @@ int main() {
 
 \subsection{Akses Field}
 
-\textbf{Pascal:}
+Program berikut menunjukkan cara mengakses dan memodifikasi field record di Pascal:
+
 \begin{lstlisting}[language=Pascal, caption={Akses field di Pascal}]
 var
   mhs: TMahasiswa;
@@ -351,65 +364,57 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{C:}
+Di C, akses field menggunakan operator dot untuk membaca dan mengubah nilai:
+
 \begin{lstlisting}[language=C, caption={Akses field di C}]
 #include <stdio.h>
-
-void printMahasiswa(Mahasiswa m) {
-  printf("=== Data Mahasiswa ===\n");
-  printf("Nama: %s\n", m.nama);
-  printf("NIM: %s\n", m.nim);
-  printf("Umur: %d tahun\n", m.umur);
-  printf("IPK: %.2f\n", m.ipk);
-}
-
-void updateIPK(Mahasiswa *m, float ipkBaru) {
-  if (m != NULL) {
-    m->ipk = (m->ipk + ipkBaru) / 2.0;
-  }
-}
 
 int main() {
   Mahasiswa mhs = {"John Doe", "123", 20, 3.5};
   
-  // Akses langsung
+  // Akses untuk membaca
   printf("Nama: %s\n", mhs.nama);
-  mhs.umur++;  // Increment umur
+  printf("NIM: %s\n", mhs.nim);
+  printf("Umur: %d tahun\n", mhs.umur);
+  printf("IPK: %.2f\n", mhs.ipk);
   
-  // Melalui fungsi
-  printMahasiswa(mhs);
-  updateIPK(&mhs, 3.8);
+  // Akses untuk menulis/mengubah
+  mhs.umur++;  // Increment umur
+  mhs.ipk = (mhs.ipk + 3.8) / 2.0;  // Update IPK
+  
+  // Tampilkan setelah perubahan
+  printf("\n=== Setelah Update ===\n");
+  printf("Umur: %d tahun\n", mhs.umur);
+  printf("IPK: %.2f\n", mhs.ipk);
   
   return 0;
 }
 \end{lstlisting}
 
-\textbf{C++:}
+Versi C++ yang serupa dengan stream I/O:
+
 \begin{lstlisting}[language=C++, caption={Akses field di C++}]
 #include <iostream>
-
-void printMahasiswa(const Mahasiswa& m) {
-  std::cout << "=== Data Mahasiswa ===\n";
-  std::cout << "Nama: " << m.nama << "\n";
-  std::cout << "NIM: " << m.nim << "\n";
-  std::cout << "Umur: " << m.umur << " tahun\n";
-  std::cout << "IPK: " << m.ipk << "\n";
-}
-
-void updateIPK(Mahasiswa& m, double ipkBaru) {
-  m.ipk = (m.ipk + ipkBaru) / 2.0;
-}
+using namespace std;
 
 int main() {
   Mahasiswa mhs{"John Doe", "123", 20, 3.5};
   
-  // Akses langsung
-  std::cout << "Nama: " << mhs.nama << "\n";
-  mhs.umur++;
+  // Akses untuk membaca
+  cout << "=== Data Mahasiswa ===\n";
+  cout << "Nama: " << mhs.nama << "\n";
+  cout << "NIM: " << mhs.nim << "\n";
+  cout << "Umur: " << mhs.umur << " tahun\n";
+  cout << "IPK: " << mhs.ipk << "\n";
   
-  // Melalui fungsi
-  printMahasiswa(mhs);
-  updateIPK(mhs, 3.8);
+  // Akses untuk menulis/mengubah
+  mhs.umur++;
+  mhs.ipk = (mhs.ipk + 3.8) / 2.0;
+  
+  // Tampilkan setelah perubahan
+  cout << "\n=== Setelah Update ===\n";
+  cout << "Umur: " << mhs.umur << " tahun\n";
+  cout << "IPK: " << mhs.ipk << "\n";
   
   return 0;
 }
@@ -420,6 +425,8 @@ int main() {
 Array of struct sangat berguna untuk menyimpan koleksi entitas dengan struktur yang sama.
 
 \subsection{Array of Struct di Pascal}
+
+Program berikut mendemonstrasikan penggunaan array of struct untuk menyimpan data beberapa mahasiswa dan menghitung statistik rata-rata IPK:
 
 \begin{lstlisting}[language=Pascal, caption={Array of struct di Pascal}]
 const
@@ -475,6 +482,8 @@ end.
 
 \subsection{Array of Struct di C}
 
+Contoh C berikut mengelola array mahasiswa, mengisi data, dan menghitung rata-rata IPK:
+
 \begin{lstlisting}[language=C, caption={Array of struct di C}]
 #include <stdio.h>
 #include <string.h>
@@ -523,6 +532,8 @@ int main() {
 \end{lstlisting}
 
 \subsection{Array of Struct di C++}
+
+Program C++ berikut menggunakan \texttt{std::vector} untuk koleksi struct yang dinamis, dengan filtering dan sorting data:
 
 \begin{lstlisting}[language=C++, caption={Array of struct dengan vector di C++}]
 #include <iostream>
@@ -586,6 +597,8 @@ int main() {
 Struct dapat berisi struct lain sebagai field, memungkinkan representasi data hierarkis.
 
 \subsection{Nested Struct di Pascal}
+
+Program berikut mendemonstrasikan struct bersarang (nested struct) untuk merepresentasikan data mahasiswa dengan tanggal lahir dan alamat lengkap:
 
 \begin{lstlisting}[language=Pascal, caption={Nested struct di Pascal}]
 type
@@ -778,409 +791,143 @@ int main() {
 }
 \end{lstlisting}
 
-\section{Passing Struct ke Fungsi}
+\paragraph{Catatan tentang Fungsi.} Pada Bab 10 nanti, Anda akan mempelajari cara membuat dan menggunakan fungsi untuk memproses struct. Fungsi memungkinkan kode yang lebih modular dan dapat digunakan kembali. Untuk saat ini, fokus pada pemahaman deklarasi, inisialisasi, dan akses field struct secara langsung.
 
-\subsection{By Value vs By Reference}
+\section{Contoh Program Lengkap dengan Array of Struct}
 
-\textbf{Pascal:}
-\begin{lstlisting}[language=Pascal, caption={Passing record di Pascal}]
-// By value (copy) - tidak mengubah original
-procedure PrintMahasiswa(mhs: TMahasiswa);
-begin
-  Writeln('Nama: ', mhs.nama);
-  Writeln('IPK: ', mhs.ipk:0:2);
-end;
+\subsection{Program Perpustakaan Sederhana (C)}
 
-// By reference (var parameter) - bisa mengubah original
-procedure UpdateIPK(var mhs: TMahasiswa; ipkBaru: real);
-begin
-  mhs.ipk := (mhs.ipk + ipkBaru) / 2;
-end;
+Program lengkap berikut mengimplementasikan sistem perpustakaan sederhana dengan array of struct untuk menyimpan data buku dan mengelola status peminjaman:
 
-var
-  mahasiswa: TMahasiswa;
-begin
-  mahasiswa.nama := 'John';
-  mahasiswa.ipk := 3.5;
-  
-  PrintMahasiswa(mahasiswa);  // Pass by value
-  UpdateIPK(mahasiswa, 3.8);  // Pass by reference
-end.
-\end{lstlisting}
-
-\textbf{C:}
-\begin{lstlisting}[language=C, caption={Passing struct di C}]
-#include <stdio.h>
-
-// By value - membuat copy
-void printMahasiswa(Mahasiswa m) {
-  printf("Nama: %s, IPK: %.2f\n", m.nama, m.ipk);
-}
-
-// By pointer - tidak copy, bisa mengubah
-void updateIPK(Mahasiswa *m, float ipkBaru) {
-  if (m != NULL) {
-    m->ipk = (m->ipk + ipkBaru) / 2.0;
-  }
-}
-
-// By pointer const - tidak copy, tidak bisa mengubah
-void printMahasiswaPtr(const Mahasiswa *m) {
-  if (m != NULL) {
-    printf("Nama: %s, IPK: %.2f\n", m->nama, m->ipk);
-  }
-}
-
-int main() {
-  Mahasiswa mhs = {"John", "123", 20, 3.5};
-  
-  printMahasiswa(mhs);        // Copy struct
-  printMahasiswaPtr(&mhs);    // Pass pointer
-  updateIPK(&mhs, 3.8);       // Modify through pointer
-  
-  return 0;
-}
-\end{lstlisting}
-
-\textbf{C++:}
-\begin{lstlisting}[language=C++, caption={Passing struct di C++}]
-#include <iostream>
-
-// By value - copy
-void printMahasiswa(Mahasiswa m) {
-  std::cout << "Nama: " << m.nama << ", IPK: " << m.ipk << "\n";
-}
-
-// By const reference - no copy, read-only (RECOMMENDED)
-void printMahasiswaRef(const Mahasiswa& m) {
-  std::cout << "Nama: " << m.nama << ", IPK: " << m.ipk << "\n";
-}
-
-// By reference - no copy, dapat mengubah
-void updateIPK(Mahasiswa& m, double ipkBaru) {
-  m.ipk = (m.ipk + ipkBaru) / 2.0;
-}
-
-// Return struct by value (dengan RVO/NRVO optimization)
-Mahasiswa createMahasiswa(const std::string& nama, 
-                          const std::string& nim) {
-  return {nama, nim, 20, 3.0};
-}
-
-int main() {
-  Mahasiswa mhs{"John", "123", 20, 3.5};
-  
-  printMahasiswa(mhs);      // Copy (inefficient untuk struct besar)
-  printMahasiswaRef(mhs);   // No copy (efficient)
-  updateIPK(mhs, 3.8);      // Modify by reference
-  
-  // Move semantics (C++11)
-  Mahasiswa mhs2 = createMahasiswa("Jane", "456");
-  
-  return 0;
-}
-\end{lstlisting}
-
-\textbf{Best Practices:}
-\begin{itemize}
-  \item \textbf{C:} Gunakan pointer const untuk read-only, pointer biasa untuk modifikasi
-  \item \textbf{C++:} Gunakan const reference untuk read-only, reference untuk modifikasi
-  \item Avoid passing large structs by value (inefficient)
-  \item Dokumentasikan apakah fungsi mengubah struct atau tidak
-\end{itemize}
-
-\section{Contoh Program Lengkap}
-
-\subsection{Sistem Manajemen Buku (C)}
-
-\begin{lstlisting}[language=C, caption={Sistem perpustakaan sederhana di C}]
+\begin{lstlisting}[language=C, caption={Program perpustakaan sederhana di C}]
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_BUKU 100
+#define MAX_BUKU 10
 
 typedef struct {
   char judul[100];
   char pengarang[50];
   int tahunTerbit;
-  char isbn[20];
   int tersedia;  // 1 = tersedia, 0 = dipinjam
 } Buku;
 
-typedef struct {
-  Buku daftar[MAX_BUKU];
-  int jumlah;
-} Perpustakaan;
-
-void initPerpustakaan(Perpustakaan *p) {
-  p->jumlah = 0;
-}
-
-int tambahBuku(Perpustakaan *p, const char *judul, 
-               const char *pengarang, int tahun, 
-               const char *isbn) {
-  if (p->jumlah >= MAX_BUKU) {
-    return 0;  // Perpustakaan penuh
-  }
-  
-  Buku *b = &p->daftar[p->jumlah];
-  strncpy(b->judul, judul, sizeof(b->judul) - 1);
-  strncpy(b->pengarang, pengarang, sizeof(b->pengarang) - 1);
-  b->tahunTerbit = tahun;
-  strncpy(b->isbn, isbn, sizeof(b->isbn) - 1);
-  b->tersedia = 1;
-  
-  p->jumlah++;
-  return 1;
-}
-
-void printBuku(const Buku *b, int nomor) {
-  printf("\n[%d] %s\n", nomor, b->judul);
-  printf("    Pengarang: %s\n", b->pengarang);
-  printf("    Tahun: %d\n", b->tahunTerbit);
-  printf("    ISBN: %s\n", b->isbn);
-  printf("    Status: %s\n", b->tersedia ? "Tersedia" : "Dipinjam");
-}
-
-void tampilkanSemuaBuku(const Perpustakaan *p) {
-  printf("\n=== Daftar Buku ===\n");
-  printf("Total buku: %d\n", p->jumlah);
-  
-  for (int i = 0; i < p->jumlah; i++) {
-    printBuku(&p->daftar[i], i + 1);
-  }
-}
-
-int cariBuku(const Perpustakaan *p, const char *judul) {
-  for (int i = 0; i < p->jumlah; i++) {
-    if (strstr(p->daftar[i].judul, judul) != NULL) {
-      return i;
-    }
-  }
-  return -1;  // Tidak ditemukan
-}
-
-void pinjamBuku(Perpustakaan *p, int index) {
-  if (index >= 0 && index < p->jumlah) {
-    if (p->daftar[index].tersedia) {
-      p->daftar[index].tersedia = 0;
-      printf("Buku '%s' berhasil dipinjam.\n", 
-             p->daftar[index].judul);
-    } else {
-      printf("Buku sudah dipinjam.\n");
-    }
-  }
-}
-
-void kembalikanBuku(Perpustakaan *p, int index) {
-  if (index >= 0 && index < p->jumlah) {
-    p->daftar[index].tersedia = 1;
-    printf("Buku '%s' berhasil dikembalikan.\n", 
-           p->daftar[index].judul);
-  }
-}
-
 int main() {
-  Perpustakaan perpus;
-  initPerpustakaan(&perpus);
+  Buku perpustakaan[MAX_BUKU];
+  int jumlahBuku = 0;
+  int i;
   
-  // Tambah beberapa buku
-  tambahBuku(&perpus, "Algoritma dan Pemrograman", 
-             "Prof. Ahmad", 2023, "978-1234567890");
-  tambahBuku(&perpus, "Struktur Data", 
-             "Dr. Budi", 2022, "978-0987654321");
-  tambahBuku(&perpus, "Basis Data", 
-             "Prof. Citra", 2021, "978-1122334455");
+  // Tambah buku pertama
+  strcpy(perpustakaan[jumlahBuku].judul, "Algoritma dan Pemrograman");
+  strcpy(perpustakaan[jumlahBuku].pengarang, "Prof. Ahmad");
+  perpustakaan[jumlahBuku].tahunTerbit = 2023;
+  perpustakaan[jumlahBuku].tersedia = 1;
+  jumlahBuku++;
+  
+  // Tambah buku kedua
+  strcpy(perpustakaan[jumlahBuku].judul, "Struktur Data");
+  strcpy(perpustakaan[jumlahBuku].pengarang, "Dr. Budi");
+  perpustakaan[jumlahBuku].tahunTerbit = 2022;
+  perpustakaan[jumlahBuku].tersedia = 1;
+  jumlahBuku++;
+  
+  // Tambah buku ketiga
+  strcpy(perpustakaan[jumlahBuku].judul, "Basis Data");
+  strcpy(perpustakaan[jumlahBuku].pengarang, "Prof. Citra");
+  perpustakaan[jumlahBuku].tahunTerbit = 2021;
+  perpustakaan[jumlahBuku].tersedia = 1;
+  jumlahBuku++;
   
   // Tampilkan semua buku
-  tampilkanSemuaBuku(&perpus);
-  
-  // Cari dan pinjam buku
-  int index = cariBuku(&perpus, "Algoritma");
-  if (index != -1) {
-    printf("\nBuku ditemukan!\n");
-    printBuku(&perpus.daftar[index], index + 1);
-    pinjamBuku(&perpus, index);
+  printf("\n=== Daftar Buku Perpustakaan ===\n");
+  printf("Total buku: %d\n", jumlahBuku);
+  for (i = 0; i < jumlahBuku; i++) {
+    printf("\n[%d] %s\n", i + 1, perpustakaan[i].judul);
+    printf("    Pengarang: %s\n", perpustakaan[i].pengarang);
+    printf("    Tahun: %d\n", perpustakaan[i].tahunTerbit);
+    printf("    Status: %s\n", 
+           perpustakaan[i].tersedia ? "Tersedia" : "Dipinjam");
   }
   
-  // Tampilkan lagi
-  tampilkanSemuaBuku(&perpus);
+  // Pinjam buku pertama
+  perpustakaan[0].tersedia = 0;
+  printf("\nBuku '%s' berhasil dipinjam.\n", perpustakaan[0].judul);
   
-  // Kembalikan buku
-  kembalikanBuku(&perpus, index);
+  // Tampilkan status setelah peminjaman
+  printf("\nStatus buku setelah peminjaman:\n");
+  for (i = 0; i < jumlahBuku; i++) {
+    printf("[%d] %s - %s\n", i + 1, perpustakaan[i].judul,
+           perpustakaan[i].tersedia ? "Tersedia" : "Dipinjam");
+  }
   
   return 0;
 }
 \end{lstlisting}
 
-\subsection{Sistem Manajemen Mahasiswa (C++)}
+\subsection{Program Manajemen Mahasiswa (C++)}
 
-\begin{lstlisting}[language=C++, caption={Sistem manajemen mahasiswa di C++}]
+Program C++ berikut mengelola data mahasiswa dengan array statis, menampilkan dalam format tabel, dan mencari mahasiswa dengan IPK tertinggi:
+
+\begin{lstlisting}[language=C++, caption={Program manajemen mahasiswa sederhana di C++}]
 #include <iostream>
-#include <vector>
 #include <string>
-#include <algorithm>
 #include <iomanip>
-
-struct Matakuliah {
-  std::string nama;
-  int sks;
-  char nilai;  // A, B, C, D, E
-  
-  double getNilaiAngka() const {
-    switch(nilai) {
-      case 'A': return 4.0;
-      case 'B': return 3.0;
-      case 'C': return 2.0;
-      case 'D': return 1.0;
-      default: return 0.0;
-    }
-  }
-};
+using namespace std;
 
 struct Mahasiswa {
-  std::string nama;
-  std::string nim;
-  std::vector<Matakuliah> matakuliah;
-  
-  void tambahMatakuliah(const std::string& nama, 
-                        int sks, char nilai) {
-    matakuliah.push_back({nama, sks, nilai});
-  }
-  
-  double hitungIPK() const {
-    if (matakuliah.empty()) return 0.0;
-    
-    double totalNilai = 0.0;
-    int totalSKS = 0;
-    
-    for (const auto& mk : matakuliah) {
-      totalNilai += mk.getNilaiAngka() * mk.sks;
-      totalSKS += mk.sks;
-    }
-    
-    return totalSKS > 0 ? totalNilai / totalSKS : 0.0;
-  }
-  
-  void printTranskrip() const {
-    std::cout << "\n=== Transkrip Nilai ===\n";
-    std::cout << "Nama: " << nama << "\n";
-    std::cout << "NIM: " << nim << "\n\n";
-    std::cout << std::left << std::setw(30) << "Matakuliah"
-              << std::setw(5) << "SKS"
-              << std::setw(7) << "Nilai" << "\n";
-    std::cout << std::string(42, '-') << "\n";
-    
-    int totalSKS = 0;
-    for (const auto& mk : matakuliah) {
-      std::cout << std::left << std::setw(30) << mk.nama
-                << std::setw(5) << mk.sks
-                << std::setw(7) << mk.nilai << "\n";
-      totalSKS += mk.sks;
-    }
-    
-    std::cout << std::string(42, '-') << "\n";
-    std::cout << "Total SKS: " << totalSKS << "\n";
-    std::cout << "IPK: " << std::fixed << std::setprecision(2)
-              << hitungIPK() << "\n";
-  }
-};
-
-class SistemAkademik {
-private:
-  std::vector<Mahasiswa> daftarMahasiswa;
-  
-public:
-  void tambahMahasiswa(const std::string& nama, 
-                       const std::string& nim) {
-    daftarMahasiswa.push_back({nama, nim, {}});
-    std::cout << "Mahasiswa " << nama << " berhasil ditambahkan.\n";
-  }
-  
-  Mahasiswa* cariMahasiswa(const std::string& nim) {
-    auto it = std::find_if(daftarMahasiswa.begin(), 
-                          daftarMahasiswa.end(),
-                          [&nim](const Mahasiswa& m) {
-                            return m.nim == nim;
-                          });
-    return it != daftarMahasiswa.end() ? &(*it) : nullptr;
-  }
-  
-  void tampilkanSemuaMahasiswa() const {
-    std::cout << "\n=== Daftar Mahasiswa ===\n";
-    std::cout << std::left << std::setw(30) << "Nama"
-              << std::setw(15) << "NIM"
-              << std::setw(10) << "IPK" << "\n";
-    std::cout << std::string(55, '-') << "\n";
-    
-    for (const auto& mhs : daftarMahasiswa) {
-      std::cout << std::left << std::setw(30) << mhs.nama
-                << std::setw(15) << mhs.nim
-                << std::fixed << std::setprecision(2)
-                << std::setw(10) << mhs.hitungIPK() << "\n";
-    }
-  }
-  
-  void tampilkanMahasiswaTerbaik() const {
-    if (daftarMahasiswa.empty()) return;
-    
-    auto best = std::max_element(daftarMahasiswa.begin(),
-                                 daftarMahasiswa.end(),
-                                 [](const Mahasiswa& a, 
-                                    const Mahasiswa& b) {
-                                   return a.hitungIPK() < b.hitungIPK();
-                                 });
-    
-    std::cout << "\n=== Mahasiswa Terbaik ===\n";
-    std::cout << "Nama: " << best->nama << "\n";
-    std::cout << "NIM: " << best->nim << "\n";
-    std::cout << "IPK: " << std::fixed << std::setprecision(2)
-              << best->hitungIPK() << "\n";
-  }
+  string nama;
+  string nim;
+  double ipk;
 };
 
 int main() {
-  SistemAkademik sistem;
+  const int MAX_MHS = 10;
+  Mahasiswa daftar[MAX_MHS];
+  int jumlah = 0;
   
   // Tambah mahasiswa
-  sistem.tambahMahasiswa("John Doe", "001");
-  sistem.tambahMahasiswa("Jane Smith", "002");
-  sistem.tambahMahasiswa("Bob Lee", "003");
+  daftar[jumlah].nama = "John Doe";
+  daftar[jumlah].nim = "001";
+  daftar[jumlah].ipk = 3.75;
+  jumlah++;
   
-  // Tambah nilai untuk mahasiswa
-  Mahasiswa* john = sistem.cariMahasiswa("001");
-  if (john) {
-    john->tambahMatakuliah("Algoritma Pemrograman", 3, 'A');
-    john->tambahMatakuliah("Struktur Data", 3, 'A');
-    john->tambahMatakuliah("Basis Data", 3, 'B');
-    john->tambahMatakuliah("Jaringan Komputer", 3, 'A');
-  }
+  daftar[jumlah].nama = "Jane Smith";
+  daftar[jumlah].nim = "002";
+  daftar[jumlah].ipk = 3.92;
+  jumlah++;
   
-  Mahasiswa* jane = sistem.cariMahasiswa("002");
-  if (jane) {
-    jane->tambahMatakuliah("Algoritma Pemrograman", 3, 'A');
-    jane->tambahMatakuliah("Struktur Data", 3, 'A');
-    jane->tambahMatakuliah("Basis Data", 3, 'A');
-    jane->tambahMatakuliah("Jaringan Komputer", 3, 'A');
-  }
-  
-  Mahasiswa* bob = sistem.cariMahasiswa("003");
-  if (bob) {
-    bob->tambahMatakuliah("Algoritma Pemrograman", 3, 'B');
-    bob->tambahMatakuliah("Struktur Data", 3, 'B');
-    bob->tambahMatakuliah("Basis Data", 3, 'C');
-  }
+  daftar[jumlah].nama = "Bob Lee";
+  daftar[jumlah].nim = "003";
+  daftar[jumlah].ipk = 3.65;
+  jumlah++;
   
   // Tampilkan semua mahasiswa
-  sistem.tampilkanSemuaMahasiswa();
+  cout << "\n=== Daftar Mahasiswa ===\n";
+  cout << left << setw(20) << "Nama" 
+       << setw(10) << "NIM" 
+       << setw(10) << "IPK" << "\n";
+  cout << string(40, '-') << "\n";
   
-  // Tampilkan transkrip John
-  if (john) {
-    john->printTranskrip();
+  for (int i = 0; i < jumlah; i++) {
+    cout << left << setw(20) << daftar[i].nama
+         << setw(10) << daftar[i].nim
+         << fixed << setprecision(2)
+         << setw(10) << daftar[i].ipk << "\n";
   }
   
-  // Tampilkan mahasiswa terbaik
-  sistem.tampilkanMahasiswaTerbaik();
+  // Cari mahasiswa dengan IPK tertinggi
+  int indexTerbaik = 0;
+  for (int i = 1; i < jumlah; i++) {
+    if (daftar[i].ipk > daftar[indexTerbaik].ipk) {
+      indexTerbaik = i;
+    }
+  }
+  
+  cout << "\n=== Mahasiswa Terbaik ===\n";
+  cout << "Nama: " << daftar[indexTerbaik].nama << "\n";
+  cout << "NIM: " << daftar[indexTerbaik].nim << "\n";
+  cout << "IPK: " << fixed << setprecision(2) 
+       << daftar[indexTerbaik].ipk << "\n";
   
   return 0;
 }
@@ -1191,6 +938,8 @@ int main() {
 Enumerasi adalah tipe data yang terdiri dari sekumpulan konstanta bernama, berguna untuk merepresentasikan pilihan terbatas.
 
 \subsection{Enum di Pascal}
+
+Contoh berikut menunjukkan cara mendefinisikan dan menggunakan tipe enumerasi di Pascal untuk merepresentasikan pilihan terbatas:
 
 \begin{lstlisting}[language=Pascal, caption={Enum di Pascal}]
 type
@@ -1224,6 +973,8 @@ end.
 \end{lstlisting}
 
 \subsection{Enum di C}
+
+Program C berikut mendemonstrasikan enum dengan fungsi helper untuk konversi nilai enum ke string yang dapat dibaca:
 
 \begin{lstlisting}[language=C, caption={Enum di C}]
 #include <stdio.h>
@@ -1275,6 +1026,8 @@ int main() {
 \end{lstlisting}
 
 \subsection{Enum di C++}
+
+C++ menyediakan scoped enum (enum class) yang lebih type-safe dan tidak mengotori namespace global:
 
 \begin{lstlisting}[language=C++, caption={Enum class di C++}]
 #include <iostream>
@@ -1496,8 +1249,6 @@ Inheritance & Tidak & Tidak & Ya \\
 
 Struct/record adalah building blocks untuk struktur data yang lebih kompleks seperti linked list, tree, dan graph. Penguasaan yang baik akan memudahkan pembelajaran konsep pemrograman lanjutan!
 
-\end{document}
-
 \section{Rangkuman Materi}
 \begin{itemize}
   \item Deklarasi dan penggunaan record/struct lintas Pascal/C/C++; enum (unscoped vs scoped).
@@ -1506,3 +1257,5 @@ Struct/record adalah building blocks untuk struktur data yang lebih kompleks sep
   \item Serialisasi biner: perhatian pada padding, endianness, dan mode biner.
   \item Layout memori dan padding; urutan field yang lebih optimal dan contoh pengukuran ukuran/offset.
 \end{itemize}
+
+\end{document}

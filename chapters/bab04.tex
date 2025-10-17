@@ -58,6 +58,8 @@ Pemilihan jenis percabangan bergantung pada kompleksitas logika. Percabangan sat
 \subsection{Percabangan Satu Arah (Single Selection)}
 Percabangan satu arah hanya mengeksekusi blok kode jika kondisi bernilai benar (\texttt{true}). Jika kondisi salah (\texttt{false}), program melewati blok tersebut dan melanjutkan eksekusi normal. Digunakan ketika aksi hanya diperlukan pada satu kondisi spesifik.
 
+Contoh berikut memeriksa apakah nilai lebih besar atau sama dengan 75, dan hanya menampilkan pesan "lulus" jika kondisi terpenuhi:
+
 \begin{lstlisting}[language=Pascal, caption={Percabangan satu arah di Pascal}]
 program SatuArah;
 var
@@ -71,6 +73,8 @@ begin
 end.
 \end{lstlisting}
 
+Implementasi yang sama di C dengan sintaks kondisional yang familiar:
+
 \begin{lstlisting}[language=C, caption={Percabangan satu arah di C}]
 #include <stdio.h>
 int main(void) {
@@ -83,6 +87,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+Versi C++ menggunakan stream I/O namun logika kondisional yang identik:
 
 \begin{lstlisting}[language=C++, caption={Percabangan satu arah di C++}]
 #include <iostream>
@@ -100,6 +106,8 @@ int main() {
 
 \subsection{Percabangan Dua Arah (Double Selection)}
 Percabangan dua arah menyediakan dua pilihan: blok kode untuk kondisi benar dan blok kode untuk kondisi salah. Dengan \texttt{if-else}, program selalu mengeksekusi salah satu dari dua cabang yang tersedia.
+
+Program berikut mengklasifikasikan umur pengguna menjadi "dewasa" atau "di bawah umur" berdasarkan threshold 17 tahun:
 
 \begin{lstlisting}[language=Pascal, caption={Percabangan dua arah di Pascal}]
 program DuaArah;
@@ -146,6 +154,8 @@ int main() {
 
 \subsection{Percabangan Banyak Arah (Multiple Selection)}
 Percabangan banyak arah menyediakan lebih dari dua pilihan dengan menggunakan \texttt{if-else if-else} atau percabangan bersarang (\texttt{nested if}). Cocok untuk kasus dengan banyak kondisi yang harus diperiksa secara berurutan.
+
+Program grading berikut mengklasifikasikan nilai mahasiswa ke dalam 5 kategori (A-E) menggunakan serangkaian kondisi bertingkat:
 
 \begin{lstlisting}[language=Pascal, caption={Percabangan banyak arah di Pascal}]
 program BanyakArah;
@@ -210,6 +220,8 @@ int main() {
 
 \subsection{Percabangan Bersarang (Nested If)}
 Percabangan bersarang adalah kondisi \texttt{if} di dalam kondisi \texttt{if} lainnya. Digunakan ketika keputusan bergantung pada beberapa kondisi yang harus diperiksa secara bertingkat. Hati-hati terhadap nesting yang terlalu dalam karena dapat menurunkan keterbacaan kode.
+
+Program berikut memeriksa dua kondisi secara bertingkat: pertama memeriksa nilai, kemudian memeriksa kehadiran untuk menentukan status kelulusan:
 
 \begin{lstlisting}[language=Pascal, caption={Nested if di Pascal}]
 program NestedIf;
@@ -282,44 +294,53 @@ Di C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan evaluasi singk
 \begin{lstlisting}[language=C, caption={Short-circuit di C untuk keamanan}]
 #include <stdio.h>
 
-int expensive() {
-  printf("expensive() dipanggil\n");
-  return 1;
-}
-
 int main(void) {
-  int *ptr = NULL;
+  int nilai = 0;
+  int pembagi = 0;
   
-  // Aman: expensive() TIDAK dipanggil karena ptr == NULL
-  if (ptr != NULL && expensive()) {
-    printf("Masuk blok if\n");
+  // Aman: pembagian TIDAK dilakukan karena pembagi == 0
+  if (pembagi != 0 && nilai / pembagi > 10) {
+    printf("Hasil pembagian lebih dari 10\n");
+  } else {
+    printf("Pembagi nol atau hasil <= 10\n");
   }
   
-  // Operator OR: expensive() dipanggil hanya jika kondisi pertama false
-  if (ptr == NULL || expensive()) {
-    printf("ptr adalah NULL atau expensive() true\n");
+  // Operator OR: kondisi kedua dicek hanya jika pertama false
+  int x = 5;
+  if (x > 10 || x < 0) {
+    printf("x di luar rentang [0, 10]\n");
+  } else {
+    printf("x dalam rentang [0, 10]\n");
   }
+  
   return 0;
 }
 \end{lstlisting}
 
 \begin{lstlisting}[language=C++, caption={Short-circuit di C++ untuk efisiensi}]
 #include <iostream>
-#include <string>
 using namespace std;
 
 int main() {
-  string text = "";
+  int panjang = 0;
+  int nilai = 75;
   
-  // Aman: size() tidak dipanggil jika text kosong
-  if (!text.empty() && text.size() > 10) {
-    cout << "Teks panjang\n";
+  // Short-circuit: kondisi kedua tidak dievaluasi jika pertama false
+  if (panjang > 0 && nilai / panjang > 50) {
+    cout << "Rata-rata tinggi\n";
+  } else {
+    cout << "Panjang nol atau rata-rata rendah\n";
   }
   
   // Efisien: cek sederhana dulu sebelum cek kompleks
-  if (text.empty() || text.find("error") != string::npos) {
-    cout << "Teks kosong atau mengandung error\n";
+  int angka = 5;
+  if (angka < 0 || angka > 100) {
+    cout << "Angka di luar rentang [0, 100]\n";
+  } else {
+    cout << "Angka valid\n";
   }
+  
+  return 0;
 }
 \end{lstlisting}
 
@@ -367,6 +388,9 @@ Konstruksi multi-cabang \texttt{case}/\texttt{switch} merangkum pilihan diskret 
 \end{itemize}
 
 \subsection{Contoh Menu dengan \texttt{switch/case}}
+
+Program menu berikut mendemonstrasikan penggunaan \texttt{case} untuk memilih aksi berdasarkan pilihan pengguna:
+
 \begin{lstlisting}[language=Pascal, caption={Menu dengan case di Pascal}]
 program MenuSwitch;
 var
@@ -390,6 +414,8 @@ begin
   end;
 end.
 \end{lstlisting}
+
+Di C, \texttt{switch} memerlukan pernyataan \texttt{break} untuk mencegah fall-through ke case berikutnya:
 
 \begin{lstlisting}[language=C, caption={Menu dengan switch di C}]
 #include <stdio.h>
@@ -422,6 +448,8 @@ int main(void) {
   return 0;
 }
 \end{lstlisting}
+
+C++ memungkinkan penggunaan enum class untuk membuat pilihan menu yang lebih type-safe dan mudah dipelihara:
 
 \begin{lstlisting}[language=C++, caption={Menu dengan switch dan enum di C++}]
 #include <iostream>
@@ -462,6 +490,9 @@ Perhatikan bahwa di C/C++ setiap \texttt{case} memerlukan \texttt{break} untuk m
 
 \subsection{Rentang \texttt{case} di Pascal}
 Pascal mendukung rentang nilai langsung pada \texttt{case}, yang memudahkan klasifikasi interval.
+
+Program berikut menggunakan fitur rentang Pascal untuk mengklasifikasikan skor menjadi grade dengan sintaks yang lebih ringkas:
+
 \begin{lstlisting}[language=Pascal, caption={Rentang case di Pascal}]
 program CaseRange;
 var
@@ -505,6 +536,9 @@ Operator bitwise mengoperasikan representasi biner: \texttt{\&}, \texttt{|}, \te
 Dalam konteks percabangan, operator bitwise memungkinkan pengecekan multiple kondisi sekaligus melalui bit flags, serta manipulasi status yang efisien untuk aplikasi sistem, protokol jaringan, dan embedded programming.
 
 \subsection{Contoh Flags dalam Percabangan}
+
+Program berikut mendemonstrasikan penggunaan bit flags untuk merepresentasikan permission (READ, WRITE, EXEC) dan bagaimana memeriksa, mengeset, dan menghapus flags menggunakan operator bitwise dalam percabangan:
+
 \begin{lstlisting}[language=C, caption={Bit flags dengan kondisi di C}]
 #include <stdio.h>
 
@@ -542,6 +576,8 @@ int main(void) {
 }
 \end{lstlisting}
 
+Implementasi yang sama di Pascal menggunakan operator bitwise Pascal (\texttt{shl}, \texttt{and}, \texttt{or}, \texttt{not}):
+
 \begin{lstlisting}[language=Pascal, caption={Pergeseran dan bitwise dengan kondisi di Pascal}]
 program BitwiseFlags;
 const
@@ -575,6 +611,8 @@ begin
     Writeln('WRITE cleared');
 end.
 \end{lstlisting}
+
+C++ menggunakan enum untuk mendefinisikan konstanta flags dan fungsi helper untuk mencetak permission dengan format yang mudah dibaca:
 
 \begin{lstlisting}[language=C++, caption={Bitwise flags dengan switch di C++}]
 #include <iostream>
@@ -647,9 +685,9 @@ Hati-hati saat pergeseran pada tipe bertanda: pergeseran kanan dapat memperluas 
 \begin{itemize}
   \item Klasifikasi percabangan: satu arah, dua arah, banyak arah, bersarang, dan multi-cabang.
   \item Praktik aman: hindari \emph{dangling else}, gunakan blok eksplisit, dan manfaatkan enum class pada C++.
-  \item \texttt{switch/case} vs \texttt{if-else if}: kapan memilih salah satunya; atribut \texttt{[[fallthrough]]} untuk kejelasan.
+  \item \texttt{switch/case} vs \texttt{if-else if}: kapan memilih yang mana;\\atribut \texttt{[[fall\-through]]}.
   \item Bit flags di kondisi, pola set/clear/toggle/cek bit, dan tabel operasi lintas bahasa.
-  \item Diagram alur keputusan dan contoh menu terstruktur lintas Pascal/C/C++.
+  \item Diagram alur keputusan dan contoh menu terstruktur lintas Pascal/ C/ C++.
 \end{itemize}
 
 \end{document}
