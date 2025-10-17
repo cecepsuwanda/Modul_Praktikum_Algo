@@ -300,6 +300,27 @@ int main() {
 
 Validasi batas sebelum akses merupakan kebiasaan penting, terutama ketika indeks berasal dari input pengguna. Uji unit untuk indeks pertama dan terakhir membantu mencegah kesalahan off-by-one.
 
+\subsection{Penyalinan dan Perbandingan Array (C/C++)}
+Array di C tidak dapat ditugaskan langsung antar-variabel (akan terdegradasi menjadi pointer pada parameter fungsi). Gunakan loop atau fungsi perpustakaan untuk menyalin/banding.
+
+\begin{lstlisting}[language=C, caption={Salin dan bandingkan isi array (C)}]
+#include <string.h> // memcpy, memcmp
+
+int a[5] = {1,2,3,4,5};
+int b[5];
+memcpy(b, a, sizeof a);     // salin bitwise
+int sama = memcmp(a, b, sizeof a) == 0; // bandingkan
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Salin/cek kesetaraan (C++)}]
+#include <array>
+#include <algorithm>
+
+std::array<int,5> a{1,2,3,4,5}, b{};
+std::copy(a.begin(), a.end(), b.begin());
+bool sama = (a == b); // std::array mendukung perbandingan leksikografis
+\end{lstlisting}
+
 \subsection{Contoh Program Lengkap: Pengolahan Data Nilai}
 
 Berikut adalah contoh program lengkap yang mendemonstrasikan deklarasi, pengisian, dan operasi pada array satu dimensi untuk mengelola data nilai mahasiswa.
@@ -501,6 +522,61 @@ Formula akses linear untuk array 2D berukuran \texttt{M×N}:
 \[
 \mathrm{indeks\_linear} = \mathrm{baris} \times N + \mathrm{kolom}
 \]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[x=0.8cm,y=0.8cm]
+    % Grid 3x3 dengan koordinat (baris, kolom)
+    \foreach \i in {0,1,2} {
+      \foreach \j in {0,1,2} {
+        \draw (\j,-\i) rectangle +(1,-1);
+        \node at (\j+0.5,-\i-0.5) {\scriptsize (\i,\j)};
+      }
+    }
+    % Deretan indeks linear di bawah
+    \foreach \k in {0,1,2,3,4,5,6,7,8} {
+      \draw (\k*0.6,-4) rectangle +(0.6,-0.6);
+      \node at (\k*0.6+0.3,-4.3) {\scriptsize \k};
+    }
+    % Panah dari baris pertama ke indeks linear 0..2
+    \draw[->] (0.5,-0.5) -- (0.3,-3.7);
+    \draw[->] (1.5,-0.5) -- (0.9,-3.7);
+    \draw[->] (2.5,-0.5) -- (1.5,-3.7);
+    \node at (4.8,-1.6) {\scriptsize row-major: baris demi baris};
+  \end{tikzpicture}
+  \caption{Pemetaan indeks 2D ke indeks linear (row-major)}
+  \label{fig:row-major-mapping}
+\end{figure}
+
+\subsection{Representasi Datar (Flattened Buffer) dan Akses}
+Pada representasi datar, elemen 2D disimpan dalam satu array 1D. Indeks liniernya \texttt{idx = baris * lebar + kolom}. Pendekatan ini mengurangi alokasi berulang dan meningkatkan locality memori.
+
+\begin{lstlisting}[language=C, caption={Helper untuk indeks linier 2D pada buffer datar (C)}]
+#include <stddef.h>
+
+static inline size_t idx2d(size_t row, size_t col, size_t ncols) {
+  return row * ncols + col;
+}
+
+// contoh akses
+// int *buf = malloc(nrows * ncols * sizeof *buf);
+// buf[idx2d(i, j, ncols)] = 42;
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Representasi datar dengan std::vector (C++)}]
+#include <vector>
+#include <stdexcept>
+
+struct Matrix {
+  size_t rows{}, cols{};
+  std::vector<int> data; // ukuran = rows*cols
+  Matrix(size_t r, size_t c): rows(r), cols(c), data(r*c) {}
+  int& at(size_t r, size_t c) {
+    if (r >= rows || c >= cols) throw std::out_of_range("idx");
+    return data[r*cols + c];
+  }
+};
+\end{lstlisting}
 
 C++ dapat menggunakan array multidimensi built-in atau buffer datar dengan perhitungan indeks manual untuk kontrol performa yang lebih baik.
 
@@ -1162,6 +1238,15 @@ Array merupakan struktur data fundamental yang sangat penting dalam pemrograman.
   \item Gunakan nama variabel yang deskriptif untuk indeks (bukan hanya \texttt{i, j})
 \end{itemize}
 
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Array 1D/2D: deklarasi, inisialisasi, iterasi, dan operasi umum.
+  \item Row-major memory layout dan pemetaan 2D\(\to\)1D (dengan diagram); helper indeks untuk buffer datar.
+  \item Penyalinan/perbandingan array di C/C++; penggunaan algoritme STL pada C++.
+  \item Kompleksitas waktu umum pada operasi array dan praktik validasi batas.
+  \item Aplikasi praktis pada matriks, grid, citra, serta alokasi dinamis lintas bahasa.
+\end{itemize}
+
 \subsection{Perbandingan Array di Berbagai Bahasa}
 
 \begin{table}[h]
@@ -1204,6 +1289,22 @@ Inisialisasi & Manual/loop & List initializer & Uniform initialization \\
   \item Perlu fleksibilitas ukuran dinamis
   \item Ukuran sangat besar dan tidak semua elemen digunakan
 \end{itemize}
+
+\subsection{Kompleksitas Umum Operasi pada Array}
+\begin{table}[H]
+  \centering
+  \caption{Kompleksitas waktu (asumsi array berukuran $n$)}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Operasi & 1D & 2D (ukuran $n\\times n$) \\
+    \midrule
+    Akses indeks & $O(1)$ & $O(1)$ \\
+    Pencarian linear & $O(n)$ & $O(n^2)$ \\
+    Penyalinan penuh & $O(n)$ & $O(n^2)$ \\
+    Penjumlahan elemen & $O(n)$ & $O(n^2)$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Latihan Lanjutan}
 

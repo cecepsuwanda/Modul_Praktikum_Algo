@@ -35,6 +35,40 @@ Gunakan tanda kurung untuk menegaskan maksud pada ekspresi panjang. Pecah ekspre
   \end{tabular}
 \end{table}
 
+\subsection{Operator Bitwise (C/C++)}
+Operator bitwise bekerja pada representasi biner: AND (\texttt{\&}), OR (\texttt{|}), XOR (\texttt{\^{}}), NOT (\texttt{\textasciitilde}), serta pergeseran kiri/kanan (\texttt{<<}, \texttt{>>}). Ini berguna untuk masking, flags, dan operasi low-level \parencite{c-bitwise-ops,cpp-bitwise-ops}.
+
+\begin{lstlisting}[language=C, caption={Contoh operator bitwise di C}]
+#include <stdio.h>
+int main(void) {
+  unsigned x = 0b0101;   // 5
+  unsigned y = 0b0011;   // 3
+  printf("x & y = %u\n", x & y);  // 1
+  printf("x | y = %u\n", x | y);  // 7
+  printf("x ^ y = %u\n", x ^ y);  // 6
+  printf("~x    = %u\n", (unsigned)~x);
+  printf("x << 1 = %u\n", x << 1); // 10
+  printf("x >> 1 = %u\n", x >> 1); // 2
+}
+\end{lstlisting}
+
+\subsection{Short-Circuit dan Operator Kondisional}
+Pada C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan short-circuit — operand kanan tidak dievaluasi bila hasil sudah pasti. Operator kondisional (ternary) \texttt{?:} memilih salah satu dari dua ekspresi berdasarkan kondisi \parencite{c-conditional-operator,cpp-conditional-operator}.
+
+\begin{lstlisting}[language=C++, caption={Short-circuit dan operator kondisional}]
+#include <iostream>
+using namespace std;
+
+bool sideEffect() { cout << "called\n"; return true; }
+
+int main() {
+  bool a = false;
+  if (a && sideEffect()) { /* tidak mencetak "called" */ }
+  int x = a ? 1 : 2; // 2
+  cout << x << "\n";
+}
+\end{lstlisting}
+
 \subsection{Contoh Operator Aritmetika}
 \begin{lstlisting}[language=Pascal, caption={Operator aritmetika di Pascal}]
 program OperatorAritmatika;
@@ -154,8 +188,8 @@ int main() {
 }
 \end{lstlisting}
 
-\section{Precedence dan Asosiasi}
-Precedence dan asosiasi menentukan urutan evaluasi tanpa tanda kurung. Variasi kecil antarbahasa dapat memicu salah tafsir; tambahkan tanda kurung untuk memperjelas maksud \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
+\section{Precedence vs Order of Evaluation}
+Precedence dan asosiasi menentukan bagaimana ekspresi dikelompokkan tanpa tanda kurung. Order of evaluation (urutan evaluasi operand) adalah konsep terpisah; di C/C++ beberapa operator tidak menentukan urutan evaluasi sehingga efek samping ganda dapat memicu perilaku tak terdefinisi. Gunakan tanda kurung dan variabel perantara untuk kejelasan \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence,c-order-of-eval,cpp-order-of-eval}.
 
 \subsection{Penjelasan Precedence dan Associativity}
 Precedence (prioritas) menentukan operator mana yang dievaluasi terlebih dahulu dalam ekspresi tanpa tanda kurung. Operator dengan precedence lebih tinggi dievaluasi sebelum operator dengan precedence lebih rendah. Associativity (asosiativitas) menentukan arah evaluasi ketika operator memiliki precedence yang sama: kiri-ke-kanan atau kanan-ke-kiri.
@@ -277,5 +311,43 @@ int main() {
 \end{lstlisting}
 
 Contoh di atas menunjukkan bagaimana precedence memengaruhi hasil evaluasi. Tanpa tanda kurung, \texttt{a + b * c} dievaluasi sebagai \texttt{a + (b * c)} karena perkalian memiliki prioritas lebih tinggi. Dengan tanda kurung eksplisit \texttt{(a + b) * c}, urutan evaluasi berubah dan menghasilkan nilai berbeda.
+
+\section{Perilaku Tak Terdefinisi: Contoh Klasik}
+Hindari ekspresi dengan efek samping berulang pada objek yang sama tanpa pemisahan yang jelas.
+
+\begin{lstlisting}[language=C, caption={Contoh UB: increment dan penggunaan berulang}]
+#include <stdio.h>
+int main(void) {
+  int i = 1;
+  int a = i++ + i++; // tak terdefinisi di C: jangan lakukan ini
+  printf("%d\n", a);
+}
+\end{lstlisting}
+
+Pisahkan langkahnya agar portabel dan jelas:
+\begin{lstlisting}[language=C]
+int i = 1;
+int a = i;
+int b = i + 1;
+i += 2;
+int sum = a + b; // aman dan jelas
+\end{lstlisting}
+
+\section{Troubleshooting Umum}
+\begin{itemize}
+  \item \textbf{Hasil tak konsisten}: cek efek samping ganda dan urutan evaluasi.
+  \item \textbf{Pembagian bulat vs real}: pastikan tipe operand sesuai (cast eksplisit bila perlu).
+  \item \textbf{Kesetaraan}: Pascal \texttt{=} vs C/C++ \texttt{==}.
+  \item \textbf{Bitwise vs logika}: bedakan \texttt{\&} dengan \texttt{\&\&}, \texttt{|} dengan \texttt{||}.
+\end{itemize}
+
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Operator aritmetika, relasional, logika, dan bitwise lintas bahasa.
+  \item Short-circuit (\texttt{\&\&}, \texttt{||}) dan operator kondisional (ternary).
+  \item Perbedaan \emph{precedence/associativity} vs \emph{order of evaluation} serta konsekuensi efek samping.
+  \item Contoh perilaku tak terdefinisi (UB) dan pola aman dengan variabel perantara.
+  \item Tabel precedence ringkas dan pohon ekspresi untuk memvisualisasi pengelompokan.
+\end{itemize}
 
 \end{document}

@@ -11,6 +11,9 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
   \item Melakukan operasi input dan output data menggunakan fungsi/prosedur yang sesuai
   \item Memformat output data dengan presisi dan lebar field yang diinginkan
   \item Membuat program interaktif sederhana dengan input dari pengguna
+  \item Menjelaskan model data umum (LP64 vs LLP64) dan dampaknya terhadap ukuran tipe
+  \item Menggunakan tipe bilangan tetap-lebar (\texttt{int32\_t}, \texttt{uint64\_t}) saat diperlukan \parencite{c-std-integer-types}
+  \item Memilih format string yang benar pada C (\texttt{printf}/\texttt{scanf}) \parencite{c-printf,c-scanf}
 \end{itemize}
 
 \section{Tipe Data Dasar}
@@ -19,6 +22,60 @@ Tipe data menentukan nilai apa yang bisa disimpan dan operasi apa yang sah. Pasc
 Pemilihan tipe yang tepat memperjelas maksud program dan membantu optimasi. Pada C/C++, kualifikator \texttt{signed/unsigned} serta \texttt{short/long} mengubah rentang; pada Pascal, rentang indeks eksplisit memperjelas invarian. Dokumentasi resmi memberi ringkasan ukuran dan standar yang relevan \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
 Representasi memori dan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral di C dapat mengubah hasil ekspresi ketika tipe berbeda dicampur. Prinsip konservatif: lakukan \emph{cast} eksplisit hanya bila perlu \parencite{gnu-c-manual,cpp-reference}.
+
+\subsection{Model Data Umum (LP64 vs LLP64)}
+Ukuran tipe di sistem 64-bit bergantung model data yang dipakai: \textbf{LP64} (Linux/macOS) menjadikan \texttt{long} berukuran 64-bit, sedangkan \textbf{LLP64} (Windows) menjadikan \texttt{long} tetap 32-bit dan \texttt{long long} 64-bit. Gunakan \texttt{sizeof} untuk memastikan, dan pertimbangkan tipe tetap-lebar saat antarmuka biner atau format berkas \parencite{wikipedia-data-models,cpp-fundamental-types}.
+
+\begin{table}[H]
+  \centering
+  \caption{Perbandingan ukuran tipe integer (umum, ringkas)}
+  \small
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Tipe & ILP32 (32-bit) & LP64 (Unix 64-bit) & LLP64 (Windows 64-bit) \\
+    \midrule
+    \texttt{int}       & 32 & 32 & 32 \\
+    \texttt{long}      & 32 & 64 & 32 \\
+    \texttt{long long} & 64 & 64 & 64 \\
+    \bottomrule
+  \end{tabular}
+  \\\parencite{wikipedia-data-models}
+\end{table}
+
+\subsection{Tipe Bilangan Tetap-Lebar di C/C++}
+Header \texttt{<stdint.h>} (C) / \texttt{<cstdint>} (C++) menyediakan tipe dengan lebar pasti (mis. \texttt{int32\_t}, \texttt{uint64\_t}) serta batas \texttt{INT32\_MAX}, dst. Gunakan ini untuk portabilitas format data dan protokol \parencite{c-std-integer-types,cpp-numeric-limits}.
+
+\begin{lstlisting}[language=C, caption={Contoh penggunaan <stdint.h> di C}]
+#include <stdint.h>
+#include <stdio.h>
+
+int main(void) {
+  int32_t a = 12345;    // selalu 32-bit signed
+  uint64_t b = 1000000; // selalu 64-bit unsigned
+  printf("%" PRId32 " %" PRIu64 "\n", a, b); // butuh <inttypes.h>
+  return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Contoh penggunaan <cstdint> di C++}]
+#include <cstdint>
+#include <limits>
+#include <iostream>
+using namespace std;
+
+int main() {
+  std::uint32_t flags{0};
+  cout << numeric_limits<uint32_t>::max() << "\n";
+}
+\end{lstlisting}
+
+\subsection{Konversi dan Casting Aman}
+\begin{itemize}
+  \item Hindari \textit{narrowing} diam-diam: pilih tipe tujuan yang cukup besar.
+  \item \textbf{Overflow signed} di C/C++ tidak terdefinisi; hindari mengandalkan perilakunya \parencite{iso-c-draft-n1570,cpp-reference}.
+  \item Saat membaca dari I/O teks, validasi rentang sebelum menyimpan ke tipe yang lebih kecil.
+  \item Gunakan fungsi parsing numerik seperti \texttt{strtol}/\texttt{strtod} untuk deteksi kesalahan \parencite{c-strtol}.
+\end{itemize}
 
 \subsection{Ringkasan Kategori Tipe (Gambaran Singkat)}
 \begin{table}[H]
@@ -250,4 +307,96 @@ int main() {
   \end{tabular}
   \\\parencite{w3pascal-io,gnu-c-manual,cpp-iomanip}
 \end{table}
+
+\subsection{Cheat Sheet Format String (C)}
+\begin{table}[H]
+  \centering
+  \caption{Specifier umum untuk \texttt{printf}/\texttt{scanf} (ringkas)}
+  \small
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Nilai & \texttt{printf} & \texttt{scanf} & Catatan \\
+    \midrule
+    \texttt{int} & \texttt{"%d"} & \texttt{"%d"} & basis desimal \\
+    \texttt{long} & \texttt{"%ld"} & \texttt{"%ld"} & \texttt{l} untuk long \\
+    \texttt{long long} & \texttt{"%lld"} & \texttt{"%lld"} & \texttt{ll} untuk long long \\
+    \texttt{unsigned} & \texttt{"%u"} & \texttt{"%u"} & tanpa tanda \\
+    \texttt{double} & \texttt{"%f"} & \texttt{"%lf"} & beda antara printf dan scanf \\
+    \texttt{char} & \texttt{"%c"} & \texttt{"%c"} & satu karakter \\
+    string C & \texttt{"%s"} & \texttt{"%s"} & hati-hati overflow (batasi lebar) \\
+    pointer & \texttt{"%p"} & - & tampilkan alamat \\
+    \bottomrule
+  \end{tabular}
+  \\\parencite{c-printf,c-scanf}
+\end{table}
+
+\paragraph{Tips.} Pada \texttt{scanf}, tambahkan lebar maksimum: \texttt{"%63s"} untuk buffer 64 byte. Periksa nilai kembalian untuk memastikan jumlah item yang berhasil diparse benar.
+
+\subsection{Contoh Input Tangguh (Parsing Angka)}
+\begin{lstlisting}[language=C, caption={Membaca integer secara tangguh (C)}]
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
+
+int main(void) {
+  char buf[128];
+  if (!fgets(buf, sizeof buf, stdin)) return 1;
+  char *end = NULL;
+  errno = 0;
+  long v = strtol(buf, &end, 10);
+  if (errno || end == buf || *end != '\n' || v < INT_MIN || v > INT_MAX) {
+    fprintf(stderr, "Input tidak valid\n");
+    return 1;
+  }
+  printf("OK: %ld\n", v);
+}
+\end{lstlisting}
+
+\subsection{Sinkronisasi I/O C++ dan Kinerja}
+Secara bawaan, \texttt{iostream} disinkronkan dengan stdio untuk kompatibilitas. Untuk kinerja lebih baik pada input besar, nonaktifkan sinkronisasi (dan hindari mencampur pemanggilan stdio dan iostream):
+\begin{lstlisting}[language=C++, caption={Percepat I/O C++ pada input besar}]
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  // ... I/O intensif di sini ...
+}
+\end{lstlisting}
+\noindent Lihat \parencite{cpp-sync-with-stdio} untuk detail.
+
+\section{Representasi Variabel di Memori}
+Variabel disimpan dalam memori sebagai deret byte. Penyelarasan (alignment) dapat menambah padding pada struktur. Pahami hal ini saat melakukan serialisasi/interop antar-bahasa.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=0.5cm]
+    \tikzstyle{cell}=[draw, minimum width=0.7cm, minimum height=0.7cm]
+    \node at (0,0) [cell] {b0};
+    \node at (0.8,0) [cell] {b1};
+    \node at (1.6,0) [cell] {b2};
+    \node at (2.4,0) [cell] {b3};
+    \node at (1.2,1) {int 32-bit};
+  \end{tikzpicture}
+  \caption{Contoh representasi integer 32-bit sebagai 4 byte}
+\end{figure}
+
+\section{Troubleshooting Umum}
+\begin{itemize}
+  \item \textbf{Format specifier salah}: tipe dan spesifier harus cocok (mis. \texttt{double} dengan \texttt{"%lf"} di \texttt{scanf}).
+  \item \textbf{Overflow/underflow}: validasi rentang sebelum konversi tipe yang lebih kecil.
+  \item \textbf{Karakter newline tersisa}: gunakan \texttt{getline}/\texttt{fgets} atau buang whitespace eksplisit.
+  \item \textbf{Ukuran tipe berbeda di platform lain}: gunakan tipe tetap-lebar dari \texttt{<stdint.h>}.
+\end{itemize}
+
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Tipe data dasar lintas bahasa dan model data 64-bit (LP64 vs LLP64).
+  \item Tipe tetap-lebar \texttt{<stdint.h>/<cstdint>} dan batas nilai melalui \texttt{numeric\_limits}.
+  \item Deklarasi dan inisialisasi variabel; perbedaan format I/O di Pascal, C, C++.
+  \item Tabel ringkas specifier C, contoh parsing numerik yang tangguh, dan sinkronisasi I/O C++.
+  \item Diagram memori 32-bit, tips casting aman, dan kiat pemecahan masalah umum.
+\end{itemize}
 \end{document}

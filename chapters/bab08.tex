@@ -1373,6 +1373,75 @@ int main() {
   \item Hati-hati dengan unaligned access (performance hit)
 \end{itemize}
 
+\subsection{Bit-field dan Representasi Kompak (C/C++)}
+Bit-field dapat mengemas beberapa nilai kecil dalam satu kata memori, namun portabilitasnya terbatas (endianness, alignment, urutan bit implementasi) \parencite{c-bitfield,cpp-bitfield}.
+
+\begin{lstlisting}[language=C, caption={Bit-field untuk flags (C)}]
+struct Flags {
+  unsigned ready:1;
+  unsigned error:1;
+  unsigned mode:2; // 0..3
+  unsigned reserved:4;
+};
+\end{lstlisting}
+
+Untuk portabilitas dan operasi bit yang eksplisit, pertimbangkan \texttt{std::bitset} di C++ \parencite{cpp-bitset}.
+
+\subsection{Shallow vs Deep Copy; Resource Ownership}
+Struct yang berisi pointer memerlukan perhatian khusus saat disalin. Di C++, gunakan aturan lima (atau tiga) untuk mengelola resource \parencite{cpp-special-member-functions}.
+
+\begin{lstlisting}[language=C++, caption={Aturan lima untuk kepemilikan resource}]
+struct BufferOwner {
+  size_t n{};
+  int* data{};
+
+  BufferOwner(size_t size): n(size), data(new int[size]{}) {}
+  ~BufferOwner() { delete[] data; }
+  BufferOwner(const BufferOwner& other): n(other.n), data(new int[n]) {
+    std::copy(other.data, other.data + n, data);
+  }
+  BufferOwner& operator=(const BufferOwner& other) {
+    if (this != &other) {
+      BufferOwner tmp(other);
+      std::swap(n, tmp.n);
+      std::swap(data, tmp.data);
+    }
+    return *this;
+  }
+  BufferOwner(BufferOwner&& other) noexcept: n(other.n), data(other.data) {
+    other.n = 0; other.data = nullptr;
+  }
+  BufferOwner& operator=(BufferOwner&& other) noexcept {
+    if (this != &other) {
+      delete[] data;
+      n = other.n; data = other.data;
+      other.n = 0; other.data = nullptr;
+    }
+    return *this;
+  }
+};
+\end{lstlisting}
+
+Sebaliknya, gunakan \texttt{std::vector<int>} untuk menghindari pengelolaan manual.
+
+\subsection{Serialisasi Biner dan Endianness}
+Mempersingkat penyimpanan dengan menulis struct secara biner rentan terhadap perbedaan padding dan endianness \parencite{endianness-wiki}. Gunakan format yang terdefinisi (misal, tulis field per field) dan mode biner \parencite{c-fwrite,cpp-openmode-binary}.
+
+\begin{lstlisting}[language=C, caption={Tulis baca biner per-field (C)}]
+FILE* f = fopen("data.bin", "wb");
+fwrite(&mhs.umur, sizeof mhs.umur, 1, f);
+fwrite(&mhs.ipk,  sizeof mhs.ipk,  1, f);
+// ... tulis panjang string lalu byte-nya ...
+fclose(f);
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++, caption={Mode biner di C++}]
+#include <fstream>
+std::ofstream out("data.bin", std::ios::binary);
+out.write(reinterpret_cast<const char*>(&mhs.umur), sizeof mhs.umur);
+// ...
+\end{lstlisting}
+
 \subsection{Kesalahan Umum}
 
 \begin{enumerate}
@@ -1428,3 +1497,12 @@ Inheritance & Tidak & Tidak & Ya \\
 Struct/record adalah building blocks untuk struktur data yang lebih kompleks seperti linked list, tree, dan graph. Penguasaan yang baik akan memudahkan pembelajaran konsep pemrograman lanjutan!
 
 \end{document}
+
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Deklarasi dan penggunaan record/struct lintas Pascal/C/C++; enum (unscoped vs scoped).
+  \item Bit-field: penggunaan dan keterbatasan portabilitas; alternatif \texttt{std::bitset}.
+  \item Shallow vs deep copy; aturan lima (constructor/assignment/move/destructor) untuk kepemilikan resource.
+  \item Serialisasi biner: perhatian pada padding, endianness, dan mode biner.
+  \item Layout memori dan padding; urutan field yang lebih optimal dan contoh pengukuran ukuran/offset.
+\end{itemize}

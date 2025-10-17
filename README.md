@@ -19,89 +19,91 @@ Modul_Praktikum_Algo/
 ├── Makefile              # Skrip build untuk kompilasi LaTeX
 ├── LICENSE               # Lisensi GNU GPL v3
 ├── README.md             # Dokumentasi proyek (file ini)
-└── chapters/             # Direktori berisi 12 bab modul
+├── build/                # Output PDF hasil kompilasi
+└── chapters/             # Direktori berisi 13 bab modul
     ├── bab01.tex         # Pengantar & Persiapan Lingkungan
-    ├── bab02.tex         # Tipe Data, Variabel, Input/Output
+    ├── bab02.tex         # Tipe Data, Variabel, dan I/O
     ├── bab03.tex         # Operator & Ekspresi
-    ├── bab04.tex         # Struktur Kontrol Kondisional
-    ├── bab05.tex         # Struktur Kontrol Perulangan & Lainnya
-    ├── bab06.tex         # Array & Multidimensi
-    ├── bab07.tex         # String/Karakter & Operasi String
-    ├── bab08.tex         # Struktur Data Dasar & Pointer Dasar
-    ├── bab09.tex         # Fungsi & Prosedur/Metode
-    ├── bab10.tex         # Alokasi Dinamis & Pointer Lanjutan
-    ├── bab11.tex         # File & Operasi I/O Lanjutan
-    └── bab12.tex         # Modul/Unit/Header & Manajemen Proyek
+    ├── bab04.tex         # Percabangan
+    ├── bab05.tex         # Perulangan
+    ├── bab06.tex         # Array dan Matriks
+    ├── bab07.tex         # String dan Karakter
+    ├── bab08.tex         # Record dan Struct
+    ├── bab09.tex         # Pointer dan Alamat Memori
+    ├── bab10.tex         # Fungsi dan Prosedur
+    ├── bab11.tex         # Alokasi Memori Dinamis
+    ├── bab12.tex         # File dan I/O
+    └── bab13.tex         # Modularisasi Program
 ```
 
 ## Daftar Isi Modul
 
 ### Bab 1: Pengantar & Persiapan Lingkungan
 - Sejarah dan posisi Pascal, C, C++
-- Menyiapkan lingkungan pengembangan (compiler/IDE)
-- Program pertama: "Hello, World!"
+- Menyiapkan lingkungan (OnlineGDB, Lazarus, Code::Blocks)
+- Program pertama dan alur compile–link–run (dengan diagram)
+- Perbandingan I/O dasar dan troubleshooting
 
-### Bab 2: Tipe Data, Variabel, Input/Output
-- Tipe data dasar (integer, real, char, boolean, dll.)
-- Deklarasi & inisialisasi variabel
-- Input/output dasar
-- Konversi tipe
+### Bab 2: Tipe Data, Variabel, dan I/O
+- Tipe data dasar dan model data (LP64 vs LLP64)
+- Tipe tetap-lebar `<stdint.h>` dan `std::numeric_limits`
+- Deklarasi & inisialisasi; pemformatan I/O
+- Cheat sheet `printf/scanf`; parsing input yang tangguh
 
 ### Bab 3: Operator & Ekspresi
-- Operator aritmetika, relasional, logika
-- Operator bitwise
-- Precedence dan asosiasi
-- Operator overloading (pendahuluan)
+- Aritmetika, relasional, logika; operator bitwise
+- Short-circuit dan operator kondisional (ternary)
+- Precedence vs order of evaluation; contoh UB
 
-### Bab 4: Struktur Kontrol Kondisional
-- Pernyataan `if`/`else`
-- Pernyataan `case`/`switch`
+### Bab 4: Percabangan
+- `if/else`, `case/switch`, enum class, [[fallthrough]]
+- Dangling else dan pola aman; bit flags dalam kondisi
 
-### Bab 5: Struktur Kontrol Perulangan & Lainnya
-- Perulangan: `for`, `while`, `repeat`/`do-while`
-- Penggunaan `break`, `continue`
-- Operator ternary/conditional (C/C++)
+### Bab 5: Perulangan
+- `for`, `while`, `repeat`/`do-while`, `break/continue`
+- Range-based for (C++11+), pola sentinel, baca hingga EOF
 
-### Bab 6: Array & Multidimensi
-- Array satu dimensi
-- Array multidimensi
-- Operasi dasar (iterasi, traversal)
-- Alokasi dinamis pada array
+### Bab 6: Array dan Matriks
+- Array 1D/2D, operasi umum dan kompleksitas
+- Row-major mapping (diagram), flattened buffer, helper indeks
+- Salin/banding array (C/C++)
 
-### Bab 7: String/Karakter & Operasi String
-- String sebagai array karakter
-- Operasi dasar string (concat, substring, length)
-- Pengolahan karakter, escape sequences
-- Fungsi/prosedur string library
+### Bab 7: String dan Karakter
+- Representasi string Pascal, C (null-terminated), C++ `std::string`
+- Unicode dan UTF-8, `char8_t`, literal `u8"..."`
+- Operasi dasar string, escape sequences, library string
 
-### Bab 8: Struktur Data Dasar & Pointer Dasar
-- Record/`struct`, enumerasi, set
-- Pointer & referensi dasar
-- Pointer ke record/struct
-- Akses anggota via pointer/referensi
+### Bab 8: Record dan Struct
+- Deklarasi/akses struct/record, enum
+- Bit-field dan keterbatasannya; `std::bitset`
+- Shallow vs deep copy; aturan lima (C++)
+- Catatan serialisasi biner dan endianness
 
-### Bab 9: Fungsi & Prosedur/Metode
-- Deklarasi & definisi fungsi/prosedur
-- Parameter: by value/by reference
-- Fungsi rekursif
-- Metode & fungsi dalam C++
+### Bab 9: Pointer dan Alamat Memori
+- Pointer vs reference (C++), const-correctness
+- Pointer arithmetic, hubungan array–pointer
+- Aturan aliasing; diagram stack/heap; alat debugging
 
-### Bab 10: Alokasi Dinamis & Pointer Lanjutan
-- Alokasi memori dinamis
-- Pointer & dereferensi
-- Pointer ke array/pointer ke pointer
-- Pointer ke fungsi/smart pointers
+### Bab 10: Fungsi dan Prosedur
+- Deklarasi/definisi, pass-by-value/reference, rekursi (diagram)
+- Pointer ke fungsi dan `qsort` (C)
+- Lambda dan `std::function` (C++)
 
-### Bab 11: File & Operasi I/O Lanjutan
-- File teks & biner
-- Mode file, seek, ftell
-- Penanganan kesalahan file
+### Bab 11: Alokasi Memori Dinamis
+- Pola cleanup C; RAII & smart pointer (C++)
+- Alokasi 2D: double pointer vs buffer datar
+- Alignment/padding; move semantics; placement new
+- Strict aliasing & type punning yang aman
 
-### Bab 12: Modul/Unit/Header & Manajemen Proyek
-- Unit dan "uses" (Pascal)
-- Header/implementasi (C/C++)
-- Include guards/`#pragma once`
-- Organisasi proyek modular
+### Bab 12: File dan I/O
+- Teks vs biner; mode akses Pascal/C/C++
+- Random access (seek/tell); portabilitas biner
+- Penanganan kesalahan; atomic write
+
+### Bab 13: Modularisasi Program
+- Unit Pascal; header/implementasi C/C++
+- Include guards vs `#pragma once`
+- Struktur direktori, Makefile, CMake, dan praktik modularisasi
 
 ## Teknologi & Tools
 
@@ -160,6 +162,7 @@ Hasil: `build/bab01.pdf`
 #### 3. Membersihkan file build:
 ```bash
 make clean
+```
 ### Menjalankan Contoh Kode
 
 #### OnlineGDB (Pascal, C, C++)
@@ -193,6 +196,12 @@ pdflatex -output-directory=build main.tex
 biber --output-directory build main
 pdflatex -output-directory=build main.tex
 pdflatex -output-directory=build main.tex
+```
+
+### Instalasi Cepat Toolchain (Linux/Ubuntu)
+```bash
+sudo apt-get update && sudo apt-get install -y \
+  latexmk biber texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
 ```
 
 ## Referensi

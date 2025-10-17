@@ -197,6 +197,21 @@ int main() {
   \item Syntax reference lebih bersih (tidak perlu \texttt{*} dan \texttt{\&})
 \end{itemize}
 
+\subsection{Const-Correctness pada Pointer}
+Gunakan const untuk menyatakan niat: data tidak diubah atau alamat tidak berubah.
+\begin{lstlisting}[language=C++]
+int x = 0; int y = 1;
+const int *pData = &x;  // pointer ke const data (data tak boleh diubah lewat pData)
+// *pData = 2; // ERROR
+pData = &y;    // OK - alamat bisa berubah
+
+int * const pFixed = &x; // const pointer ke data (alamat tetap)
+*pFixed = 3;    // OK - data bisa diubah
+// pFixed = &y; // ERROR
+
+const int * const pImm = &x; // keduanya tetap
+\end{lstlisting}
+
 \section{Pointer Arithmetic}
 
 Pointer arithmetic memungkinkan navigasi melalui memori menggunakan operasi aritmatika.
@@ -258,6 +273,8 @@ int main() {
   \item \texttt{double} 8 bytes: \texttt{ptr + 1} skip 8 bytes
   \item Jangan lakukan arithmetic pada pointer yang tidak menunjuk array!
 \end{itemize}
+
+\paragraph{Aliasing Rules (lanjutan).} Optimizer dapat mengasumsikan pointer berbeda tidak alias kecuali jenisnya kompatibel; melanggar strict-aliasing dapat memicu perilaku tak terdefinisi. Gunakan tipe sesuai atau nonaktifkan optimisasi terkait bila perlu; di C tersedia kata kunci \texttt{restrict} untuk menyatakan tidak alias \parencite{gcc-strict-aliasing,c-restrict}.
 
 \section{Pointer dan Array}
 
@@ -560,6 +577,21 @@ int main() {
   \item Jangan \texttt{free} dua kali (double free)
   \item Jangan \texttt{free} pointer yang tidak dari \texttt{malloc/calloc}
 \end{itemize}
+
+\paragraph{Pemetaan Stack vs Heap.} Variabel lokal berada di stack (otomatis), sedangkan alokasi dinamis berada di heap (manual atau via smart pointer). Diagram konseptual:
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=0.8cm]
+    \tikzstyle{box}=[rectangle, draw, minimum width=5.2cm, minimum height=0.8cm]
+    \node[box] (text) {TEXT (kode)};
+    \node[box, below=of text] (data) {DATA/BSS (global/static)};
+    \node[box, below=of data] (heap) {HEAP (naik ke atas)};
+    \node[box, below=2.8cm of heap] (stack) {STACK (turun ke bawah)};
+    \draw[->] (heap.south) -- ++(0,-1.2) node[midway,right]{alokasi dinamis};
+    \draw[->] (stack.north) -- ++(0,1.2) node[midway,right]{variabel lokal};
+  \end{tikzpicture}
+  \caption{Tata letak memori proses (konseptual)}
+\end{figure}
 
 \subsection{Smart Pointers di C++}
 
@@ -1063,8 +1095,8 @@ int main() {
 \subsection{Debugging Tools}
 
 \begin{itemize}
-  \item \textbf{Valgrind:} Detect memory leaks dan invalid access (Linux)
-  \item \textbf{AddressSanitizer:} Compiler-based memory error detection
+  \item \textbf{Valgrind:} Detect memory leaks dan invalid access (Linux) \parencite{valgrind}
+  \item \textbf{AddressSanitizer:} Compiler-based memory error detection \parencite{addresssanitizer}
   \item \textbf{Visual Studio Debugger:} Memory windows dan breakpoints
   \item \textbf{GDB:} Command-line debugger dengan pointer inspection
   \item \textbf{Static analyzers:} Cppcheck, Clang-Tidy untuk deteksi dini
@@ -1135,6 +1167,15 @@ Smart pointers & Tidak & Tidak & Ya \\
 \end{itemize}
 
 Pointer adalah tool yang powerful namun memerlukan kehati-hatian. Dengan pemahaman yang baik tentang konsep dan best practices, Anda dapat menggunakan pointer dengan aman dan efektif untuk membangun program yang efisien dan fleksibel!
+
+\section{Rangkuman Materi}
+\begin{itemize}
+  \item Deklarasi, inisialisasi, dereferensi pointer; perbandingan dengan reference di C++ (kontrak non-null).
+  \item Aritmetika pointer, relasi array–pointer, dan passing array via pointer.
+  \item Pointer ke struct, array of pointers, pointer to pointer dan alokasi 2D.
+  \item Smart pointers (\texttt{unique\_ptr}, \texttt{shared\_ptr}, \texttt{weak\_ptr}) dan strategi ownership.
+  \item Praktik aman: const-correctness, strict-aliasing/\texttt{restrict}, debugging (Valgrind, AddressSanitizer).
+\end{itemize}
 
 \end{document}
 
