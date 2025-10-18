@@ -17,35 +17,35 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \section{Pengantar Record/Struct}
 
 \subsection{Konsep Dasar}
-Record (Pascal) atau Struct (C/C++) adalah tipe data terstruktur yang memungkinkan pengelompokan beberapa variabel dengan tipe data berbeda di bawah satu nama. Berbeda dengan array yang menyimpan elemen bertipe sama, record/struct dapat menyimpan data heterogen yang saling terkait \parencite{pascal-structs,c-struct,cpp-struct-class,duniailkom-struct-c,tutorialspoint-c-structures}.
+Record (dalam Pascal) atau Struct (dalam C/C++) merupakan structured data type yang enable grouping dari multiple variables dengan different data types under satu identifier. Tidak seperti arrays yang limited to homogeneous elements, records/structs capable of storing heterogeneous data yang related satu sama lain \parencite{pascal-structs,c-struct,cpp-struct-class,duniailkom-struct-c,tutorialspoint-c-structures}.
 
-\textbf{Keuntungan menggunakan record/struct:}
+\textbf{Advantages dari penggunaan record/struct:}
 \begin{itemize}
-  \item \textbf{Organisasi data:} Mengelompokkan data terkait dalam satu entitas
-  \item \textbf{Keterbacaan kode:} Nama struct yang deskriptif membuat kode lebih mudah dipahami
-  \item \textbf{Modularitas:} Mengurangi jumlah parameter fungsi dengan mengirim satu struct
-  \item \textbf{Pemeliharaan:} Perubahan struktur data terpusat di satu tempat
-  \item \textbf{Reusabilitas:} Definisi struct dapat digunakan di berbagai bagian program
+  \item \textbf{Data organization:} Group related data into single cohesive entity
+  \item \textbf{Code readability:} Descriptive struct names make code self-documenting dan easier to understand
+  \item \textbf{Modularity:} Reduce function parameter count dengan passing single struct
+  \item \textbf{Maintainability:} Structural changes centralized di satu location
+  \item \textbf{Reusability:} Struct definitions dapat di-reuse across berbagai parts of program
 \end{itemize}
 
 \subsection{Kapan Menggunakan Record/Struct}
 
-Gunakan record/struct ketika:
+Consider using record/struct dalam scenarios berikut:
 \begin{itemize}
-  \item Merepresentasikan entitas dunia nyata (mahasiswa, buku, produk, dll)
-  \item Mengelompokkan data terkait yang sering dioperasikan bersama
-  \item Membangun struktur data kompleks (linked list, tree, graph)
-  \item Menyederhanakan passing data antar fungsi
-  \item Membuat tipe data custom untuk domain spesifik
+  \item Representing real-world entities (students, books, products, etc.)
+  \item Grouping related data yang frequently operated together
+  \item Building complex data structures (linked lists, trees, graphs)
+  \item Simplifying inter-function data passing
+  \item Creating custom types untuk domain-specific needs
 \end{itemize}
 
 \section{Deklarasi Record/Struct}
 
 \subsection{Deklarasi di Pascal}
 
-Pascal menggunakan kata kunci \texttt{record} dengan sintaks yang jelas untuk mendefinisikan tipe data terstruktur.
+Pascal employs keyword \texttt{record} dengan clear syntax untuk define structured data types.
 
-Contoh berikut menunjukkan berbagai cara mendeklarasikan record di Pascal untuk merepresentasikan data mahasiswa, buku, koordinat, dan nilai:
+Contoh-contoh berikut illustrate various ways untuk declare records di Pascal, representing student data, books, coordinates, dan grades:
 
 \begin{lstlisting}[language=Pascal, caption={Deklarasi record di Pascal}]
 type
@@ -81,9 +81,9 @@ type
 
 \subsection{Deklarasi di C}
 
-C menggunakan kata kunci \texttt{struct} dengan sintaks yang memungkinkan definisi inline atau terpisah.
+C utilizes keyword \texttt{struct} dengan syntax yang allows both inline dan separate definitions.
 
-Program berikut mendemonstrasikan berbagai cara mendeklarasikan struct di C, dengan dan tanpa typedef:
+Program berikut demonstrates multiple approaches untuk declare structs di C, baik with maupun without typedef:
 
 \begin{lstlisting}[language=C, caption={Deklarasi struct di C}]
 // Definisi struct dengan typedef
@@ -124,18 +124,18 @@ typedef struct {
 } Nilai;
 \end{lstlisting}
 
-\textbf{Perbedaan typedef dan non-typedef:}
+\textbf{Perbedaan typedef vs non-typedef:}
 \begin{itemize}
-  \item Dengan \texttt{typedef}: langsung gunakan \texttt{Mahasiswa mhs;}
-  \item Tanpa \texttt{typedef}: perlu \texttt{struct Buku buku1;}
-  \item \texttt{typedef} membuat kode lebih ringkas dan konsisten
+  \item With \texttt{typedef}: directly use \texttt{Mahasiswa mhs;}
+  \item Without \texttt{typedef}: must use \texttt{struct Buku buku1;}
+  \item \texttt{typedef} makes code more concise dan consistent
 \end{itemize}
 
 \subsection{Deklarasi di C++}
 
-C++ memperlakukan \texttt{struct} dan \texttt{class} hampir sama, dengan default access yang berbeda.
+C++ treats \texttt{struct} dan \texttt{class} almost identically, dengan primary difference being default access specifier.
 
-Contoh berikut menunjukkan deklarasi struct di C++ dengan fitur tambahan seperti constructor, metode, dan operator overloading:
+Examples berikut show struct declarations di C++ featuring additional capabilities seperti constructors, methods, dan operator overloading:
 
 \begin{lstlisting}[language=C++, caption={Deklarasi struct di C++}]
 #include <string>
@@ -196,7 +196,7 @@ struct Kompleks {
 
 \subsection{Inisialisasi di Pascal}
 
-Program berikut mendemonstrasikan cara mengisi field record di Pascal, termasuk penggunaan \texttt{with} statement:
+Program berikut demonstrates various techniques untuk populate record fields di Pascal, including usage of \texttt{with} statement:
 
 \begin{lstlisting}[language=Pascal, caption={Inisialisasi record di Pascal}]
 var
@@ -226,16 +226,16 @@ begin
 end.
 \end{lstlisting}
 
-\textbf{Catatan \texttt{with} statement:}
+\textbf{Catatan regarding \texttt{with} statement:}
 \begin{itemize}
-  \item Mengurangi repetisi nama record
-  \item Hati-hati dengan nested \texttt{with} -- bisa membingungkan
-  \item Pastikan nama field tidak ambigu dengan variabel lokal
+  \item Reduces record name repetition
+  \item Be cautious with nested \texttt{with} statements—can create confusion
+  \item Ensure field names tidak conflict dengan local variables
 \end{itemize}
 
 \subsection{Inisialisasi di C}
 
-Contoh berikut menunjukkan berbagai cara inisialisasi struct di C, dari designated initializers hingga assignment antar struct:
+Examples berikut show multiple initialization approaches di C, from designated initializers to inter-struct assignments:
 
 \begin{lstlisting}[language=C, caption={Inisialisasi struct di C}]
 #include <string.h>
@@ -276,17 +276,17 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{Poin penting:}
+\textbf{Important points:}
 \begin{itemize}
-  \item Designated initializers (C99+) lebih jelas dan aman
-  \item Gunakan \texttt{strcpy()} untuk field string, bukan assignment langsung
-  \item Assignment antar struct melakukan shallow copy
-  \item Hati-hati dengan uninitialized fields (nilai garbage)
+  \item Designated initializers (C99+) more explicit dan safer
+  \item Use \texttt{strcpy()} untuk string fields, not direct assignment
+  \item Inter-struct assignments perform shallow copies
+  \item Watch out untuk uninitialized fields (garbage values)
 \end{itemize}
 
 \subsection{Inisialisasi di C++}
 
-Program C++ berikut mendemonstrasikan berbagai cara inisialisasi struct termasuk uniform initialization, designated initializers (C++20), dan move semantics:
+C++ program berikut demonstrates diverse initialization methods including uniform initialization, designated initializers (C++20), dan move semantics:
 
 \begin{lstlisting}[language=C++, caption={Inisialisasi struct di C++}]
 #include <iostream>
@@ -337,7 +337,7 @@ int main() {
 
 \subsection{Akses Field}
 
-Program berikut menunjukkan cara mengakses dan memodifikasi field record di Pascal:
+Programs berikut illustrate methods untuk access dan modify record fields di Pascal:
 
 \begin{lstlisting}[language=Pascal, caption={Akses field di Pascal}]
 var
@@ -364,7 +364,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, akses field menggunakan operator dot untuk membaca dan mengubah nilai:
+Dalam C, field access employs dot operator untuk read dan modify values:
 
 \begin{lstlisting}[language=C, caption={Akses field di C}]
 #include <stdio.h>
@@ -391,7 +391,7 @@ int main() {
 }
 \end{lstlisting}
 
-Versi C++ yang serupa dengan stream I/O:
+C++ version yang equivalent utilizing stream-based I/O:
 
 \begin{lstlisting}[language=C++, caption={Akses field di C++}]
 #include <iostream>
@@ -422,7 +422,7 @@ int main() {
 
 \section{Array of Struct}
 
-Array of struct sangat berguna untuk menyimpan koleksi entitas dengan struktur yang sama.
+Arrays of structs extremely useful untuk storing collections of entities yang share identical structure.
 
 \subsection{Array of Struct di Pascal}
 
@@ -679,22 +679,6 @@ typedef struct {
   float ipk;
 } MahasiswaLengkap;
 
-void printTanggal(Tanggal t) {
-  printf("%02d/%02d/%04d", t.hari, t.bulan, t.tahun);
-}
-
-void printMahasiswaLengkap(MahasiswaLengkap m) {
-  printf("=== Data Mahasiswa Lengkap ===\n");
-  printf("Nama: %s\n", m.nama);
-  printf("NIM: %s\n", m.nim);
-  printf("Tanggal Lahir: ");
-  printTanggal(m.tanggalLahir);
-  printf("\nAlamat: %s\n", m.alamat.jalan);
-  printf("        %s, %s %s\n", m.alamat.kota, 
-         m.alamat.provinsi, m.alamat.kodePos);
-  printf("IPK: %.2f\n", m.ipk);
-}
-
 int main() {
   MahasiswaLengkap mhs;
   
@@ -713,8 +697,18 @@ int main() {
   
   mhs.ipk = 3.75;
   
-  // Tampilkan
-  printMahasiswaLengkap(mhs);
+  // Tampilkan data mahasiswa (inline, tanpa function terpisah)
+  printf("=== Data Mahasiswa Lengkap ===\n");
+  printf("Nama: %s\n", mhs.nama);
+  printf("NIM: %s\n", mhs.nim);
+  printf("Tanggal Lahir: %02d/%02d/%04d\n", 
+         mhs.tanggalLahir.hari, 
+         mhs.tanggalLahir.bulan, 
+         mhs.tanggalLahir.tahun);
+  printf("Alamat: %s\n", mhs.alamat.jalan);
+  printf("        %s, %s %s\n", mhs.alamat.kota, 
+         mhs.alamat.provinsi, mhs.alamat.kodePos);
+  printf("IPK: %.2f\n", mhs.ipk);
   
   return 0;
 }
@@ -1082,12 +1076,12 @@ int main() {
 \subsection{Desain Struct yang Baik}
 
 \begin{enumerate}
-  \item \textbf{Nama yang deskriptif:} Gunakan nama yang jelas menggambarkan entitas
-  \item \textbf{Kohesi tinggi:} Field dalam struct harus saling terkait
-  \item \textbf{Ukuran wajar:} Struct terlalu besar pertimbangkan dipecah
-  \item \textbf{Inisialisasi:} Selalu inisialisasi field untuk menghindari garbage value
-  \item \textbf{Const-correctness:} Gunakan const untuk data yang tidak berubah
-  \item \textbf{Dokumentasi:} Jelaskan purpose dan constraint setiap field
+  \item \textbf{Descriptive naming:} Use names yang clearly describe the entity
+  \item \textbf{High cohesion:} Fields within struct should be logically related
+  \item \textbf{Reasonable size:} Consider splitting oversized structs into smaller units
+  \item \textbf{Proper initialization:} Always initialize fields untuk avoid garbage values
+  \item \textbf{Const-correctness:} Apply const untuk immutable data
+  \item \textbf{Documentation:} Explain purpose dan constraints of each field
 \end{enumerate}
 
 \subsection{Memory Layout dan Padding}
@@ -1118,16 +1112,16 @@ int main() {
 }
 \end{lstlisting}
 
-\textbf{Tips mengoptimalkan struct:}
+\textbf{Optimization tips untuk structs:}
 \begin{itemize}
-  \item Kelompokkan field dengan tipe sama
-  \item Urutkan dari terbesar ke terkecil
-  \item Gunakan \texttt{\_\_attribute\_\_((packed))} atau \texttt{\#pragma pack} jika perlu
-  \item Hati-hati dengan unaligned access (performance hit)
+  \item Group fields dengan same types together
+  \item Order dari largest to smallest
+  \item Use \texttt{\_\_attribute\_\_((packed))} atau \texttt{\#pragma pack} if necessary
+  \item Be aware of unaligned access penalties (performance degradation)
 \end{itemize}
 
 \subsection{Bit-field dan Representasi Kompak (C/C++)}
-Bit-field dapat mengemas beberapa nilai kecil dalam satu kata memori, namun portabilitasnya terbatas (endianness, alignment, urutan bit implementasi) \parencite{c-bitfield,cpp-bitfield}.
+Bit-fields can pack multiple small values dalam single memory word, however portability limited due to endianness, alignment, dan implementation-defined bit ordering \parencite{c-bitfield,cpp-bitfield}.
 
 \begin{lstlisting}[language=C, caption={Bit-field untuk flags (C)}]
 struct Flags {
@@ -1138,10 +1132,10 @@ struct Flags {
 };
 \end{lstlisting}
 
-Untuk portabilitas dan operasi bit yang eksplisit, pertimbangkan \texttt{std::bitset} di C++ \parencite{cpp-bitset}.
+Untuk better portability dan explicit bit operations, consider \texttt{std::bitset} di C++ \parencite{cpp-bitset}.
 
 \subsection{Shallow vs Deep Copy; Resource Ownership}
-Struct yang berisi pointer memerlukan perhatian khusus saat disalin. Di C++, gunakan aturan lima (atau tiga) untuk mengelola resource \parencite{cpp-special-member-functions}.
+Structs containing pointers require special attention during copying. Di C++, implement rule of five (atau three) untuk properly manage resources \parencite{cpp-special-member-functions}.
 
 \begin{lstlisting}[language=C++, caption={Aturan lima untuk kepemilikan resource}]
 struct BufferOwner {
@@ -1175,10 +1169,10 @@ struct BufferOwner {
 };
 \end{lstlisting}
 
-Sebaliknya, gunakan \texttt{std::vector<int>} untuk menghindari pengelolaan manual.
+Alternatively, use \texttt{std::vector<int>} untuk avoid manual memory management.
 
 \subsection{Serialisasi Biner dan Endianness}
-Mempersingkat penyimpanan dengan menulis struct secara biner rentan terhadap perbedaan padding dan endianness \parencite{endianness-wiki}. Gunakan format yang terdefinisi (misal, tulis field per field) dan mode biner \parencite{c-fwrite,cpp-openmode-binary}.
+Binary struct serialization vulnerable to padding differences dan endianness issues \parencite{endianness-wiki}. Employ well-defined formats (e.g., write field-by-field) dan binary mode \parencite{c-fwrite,cpp-openmode-binary}.
 
 \begin{lstlisting}[language=C, caption={Tulis baca biner per-field (C)}]
 FILE* f = fopen("data.bin", "wb");
@@ -1198,29 +1192,29 @@ out.write(reinterpret_cast<const char*>(&mhs.umur), sizeof mhs.umur);
 \subsection{Kesalahan Umum}
 
 \begin{enumerate}
-  \item \textbf{Uninitialized fields:} Lupa menginisialisasi field
-  \item \textbf{String handling di C:} Lupa null terminator atau buffer overflow
-  \item \textbf{Shallow vs deep copy:} Pointer/reference di dalam struct
-  \item \textbf{Struct comparison:} Tidak bisa menggunakan \texttt{==} di C (perlu memcmp)
-  \item \textbf{Return large struct:} Inefficient return by value
-  \item \textbf{Memory alignment:} Asumsi salah tentang layout memori
+  \item \textbf{Uninitialized fields:} Forgetting untuk initialize struct members
+  \item \textbf{String handling di C:} Missing null terminators atau buffer overflow vulnerabilities
+  \item \textbf{Shallow vs deep copy:} Issues dengan pointers/references inside structs
+  \item \textbf{Struct comparison:} Cannot use \texttt{==} di C (must use memcmp)
+  \item \textbf{Returning large structs:} Inefficient return-by-value approach
+  \item \textbf{Memory alignment assumptions:} Incorrect assumptions about memory layout
 \end{enumerate}
 
 \section{Rangkuman}
 
-Record/Struct adalah tipe data terstruktur fundamental yang memungkinkan pengelompokan data heterogen menjadi satu entitas logis. Pemahaman yang baik tentang deklarasi, inisialisasi, dan manipulasi struct sangat penting untuk pemrograman yang efektif.
+Records/Structs constitute fundamental structured data types yang enable grouping of heterogeneous data into single logical entities. Solid understanding tentang declaration, initialization, dan manipulation of structs critically important untuk effective programming.
 
 \subsection{Poin-Poin Penting}
 
 \begin{itemize}
-  \item Struct mengelompokkan data terkait dengan tipe berbeda
-  \item Pascal menggunakan \texttt{record}, C/C++ menggunakan \texttt{struct}
-  \item Akses field menggunakan operator dot (\texttt{.})
-  \item Array of struct berguna untuk koleksi entitas
-  \item Nested struct memungkinkan hierarki data
-  \item Passing struct by reference/pointer lebih efisien
-  \item Enum memperkaya struct dengan nilai terbatas yang jelas
-  \item Memory padding memengaruhi ukuran struct
+  \item Structs group related data dengan different types
+  \item Pascal uses \texttt{record}, C/C++ employs \texttt{struct}
+  \item Field access via dot operator (\texttt{.})
+  \item Arrays of structs useful untuk entity collections
+  \item Nested structs enable hierarchical data structures
+  \item Passing structs by reference/pointer more efficient
+  \item Enums enrich structs dengan clearly-defined limited values
+  \item Memory padding affects actual struct size
 \end{itemize}
 
 \subsection{Perbandingan Antar Bahasa}
@@ -1247,15 +1241,15 @@ Inheritance & Tidak & Tidak & Ya \\
 \caption{Perbandingan struct/record di Pascal, C, dan C++}
 \end{table}
 
-Struct/record adalah building blocks untuk struktur data yang lebih kompleks seperti linked list, tree, dan graph. Penguasaan yang baik akan memudahkan pembelajaran konsep pemrograman lanjutan!
+Structs/records serve as foundational building blocks untuk more complex data structures seperti linked lists, trees, dan graphs. Mastery of these concepts will significantly facilitate learning advanced programming topics!
 
 \section{Rangkuman Materi}
 \begin{itemize}
-  \item Deklarasi dan penggunaan record/struct lintas Pascal/C/C++; enum (unscoped vs scoped).
-  \item Bit-field: penggunaan dan keterbatasan portabilitas; alternatif \texttt{std::bitset}.
-  \item Shallow vs deep copy; aturan lima (constructor/assignment/move/destructor) untuk kepemilikan resource.
-  \item Serialisasi biner: perhatian pada padding, endianness, dan mode biner.
-  \item Layout memori dan padding; urutan field yang lebih optimal dan contoh pengukuran ukuran/offset.
+  \item Declaration dan usage of records/structs across Pascal/C/C++ telah covered; enum types (unscoped versus scoped) dijelaskan.
+  \item Bit-fields: practical applications dan portability limitations; \texttt{std::bitset} sebagai modern alternative.
+  \item Shallow versus deep copying concepts; rule of five (constructor/assignment/move/destructor) untuk proper resource ownership.
+  \item Binary serialization: critical considerations regarding padding, endianness, dan binary mode operations.
+  \item Memory layout dan padding effects; optimal field ordering strategies dan examples of size/offset measurements.
 \end{itemize}
 
 \end{document}

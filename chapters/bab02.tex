@@ -17,14 +17,14 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \end{itemize}
 
 \section{Tipe Data Dasar}
-Tipe data menentukan nilai apa yang bisa disimpan dan operasi apa yang sah. Pascal menyediakan \texttt{integer}, \texttt{real}, \texttt{char}, \texttt{boolean}; C/C++ menyediakan \texttt{int}, \texttt{double}, \texttt{char}, dan \texttt{bool}. Ukuran aktual tipe dapat berbeda antar platform, sehingga penting memahami model data yang digunakan \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-arithmetic-types,cpp-fundamental-types}.
+Tipe data adalah blueprint yang menentukan jenis nilai apa saja yang dapat disimpan dalam variabel dan operasi apa yang valid untuk dilakukan. Bahasa Pascal menyediakan tipe-tipe seperti \texttt{integer}, \texttt{real}, \texttt{char}, dan \texttt{boolean}. Di sisi lain, C dan C++ menawarkan \texttt{int}, \texttt{double}, \texttt{char}, serta \texttt{bool}. Perlu diingat bahwa ukuran sebenarnya dari tipe-tipe ini bisa berbeda tergantung platform yang digunakan, sehingga pemahaman tentang model data yang diadopsi menjadi sangat krusial \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-arithmetic-types,cpp-fundamental-types}.
 
-Pemilihan tipe yang tepat memperjelas maksud program dan membantu optimasi. Pada C/C++, kualifikator \texttt{signed/unsigned} serta \texttt{short/long} mengubah rentang; pada Pascal, rentang indeks eksplisit memperjelas invarian. Dokumentasi resmi memberi ringkasan ukuran dan standar yang relevan \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
+Memilih tipe data yang sesuai bukan hanya membuat kode lebih mudah dipahami, tetapi juga membantu compiler dalam melakukan optimasi. Dalam C/C++, kita bisa menggunakan modifier seperti \texttt{signed/unsigned} atau \texttt{short/long} untuk menyesuaikan rentang nilai. Sementara di Pascal, pendefinisian rentang indeks secara eksplisit membantu memperjelas batasan yang diharapkan dari sebuah variabel. Untuk informasi lengkap mengenai ukuran dan standar, dokumentasi resmi dari masing-masing bahasa menjadi rujukan terbaik \parencite{free-pascal-docs,iso-c-draft-n1570,cpp-reference}.
 
-Representasi memori dan konversi implisit perlu dipahami agar tidak terjadi kehilangan presisi. Misalnya, promosi integral di C dapat mengubah hasil ekspresi ketika tipe berbeda dicampur. Prinsip konservatif: lakukan \emph{cast} eksplisit hanya bila perlu \parencite{gnu-c-manual,cpp-reference}.
+Memahami bagaimana data direpresentasikan di memori dan bagaimana konversi tipe terjadi secara implisit sangat penting untuk menghindari loss of precision. Sebagai contoh, dalam bahasa C, integral promotion dapat mengubah hasil dari sebuah ekspresi ketika tipe data yang berbeda dikombinasikan. Aturan praktis yang konservatif: lakukan type casting secara eksplisit hanya ketika memang diperlukan \parencite{gnu-c-manual,cpp-reference}.
 
 \subsection{Model Data Umum (LP64 vs LLP64)}
-Ukuran tipe di sistem 64-bit bergantung model data yang dipakai: \textbf{LP64} (Linux/macOS) menjadikan \texttt{long} berukuran 64-bit, sedangkan \textbf{LLP64} (Windows) menjadikan \texttt{long} tetap 32-bit dan \texttt{long long} 64-bit. Gunakan \texttt{sizeof} untuk memastikan, dan pertimbangkan tipe tetap-lebar saat antarmuka biner atau format berkas \parencite{wikipedia-data-models,cpp-fundamental-types}.
+Pada sistem 64-bit, ukuran dari tipe data integer bergantung pada model data yang diterapkan oleh sistem operasi. Model \textbf{LP64} yang digunakan di Linux dan macOS membuat tipe \texttt{long} berukuran 64-bit. Sedangkan model \textbf{LLP64} yang diadopsi Windows mempertahankan \texttt{long} pada ukuran 32-bit, namun menyediakan \texttt{long long} dengan ukuran 64-bit. Untuk memastikan ukuran tipe data di platform Anda, gunakan operator \texttt{sizeof}. Saat bekerja dengan binary interface atau file format, pertimbangkan untuk menggunakan tipe fixed-width agar lebih portable \parencite{wikipedia-data-models,cpp-fundamental-types}.
 
 \begin{table}[H]
   \centering
@@ -43,9 +43,9 @@ Ukuran tipe di sistem 64-bit bergantung model data yang dipakai: \textbf{LP64} (
 \end{table}
 
 \subsection{Tipe Bilangan Tetap-Lebar di C/C++}
-Header \texttt{<stdint.h>} (C) / \texttt{<cstdint>} (C++) menyediakan tipe dengan lebar pasti (mis. \texttt{int32\_t}, \texttt{uint64\_t}) serta batas \texttt{INT32\_MAX}, dst. Gunakan ini untuk portabilitas format data dan protokol \parencite{c-std-integer-types,cpp-numeric-limits}.
+Untuk mengatasi variasi ukuran tipe data antar platform, header \texttt{<stdint.h>} di C (atau \texttt{<cstdint>} di C++) menyediakan tipe data dengan ukuran yang terjamin, seperti \texttt{int32\_t} dan \texttt{uint64\_t}. Header ini juga mendefinisikan konstanta batas seperti \texttt{INT32\_MAX} dan sejenisnya. Penggunaan tipe-tipe ini sangat direkomendasikan ketika Anda perlu memastikan portabilitas, terutama dalam konteks format data atau protokol komunikasi \parencite{c-std-integer-types,cpp-numeric-limits}.
 
-Contoh berikut mendemonstrasikan penggunaan tipe bilangan dengan lebar tetap untuk memastikan ukuran variabel konsisten di berbagai platform:
+Contoh di bawah ini memperlihatkan bagaimana tipe fixed-width digunakan untuk menjamin konsistensi ukuran variabel di berbagai platform:
 
 \begin{lstlisting}[language=C, caption={Contoh penggunaan <stdint.h> di C}]
 #include <stdint.h>
@@ -59,7 +59,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Di C++, penggunaan tipe fixed-width terintegrasi dengan library \texttt{<limits>} untuk query batasan nilai:
+Dalam C++, tipe fixed-width dapat dikombinasikan dengan library \texttt{<limits>} untuk mengetahui batasan nilai secara runtime:
 
 \begin{lstlisting}[language=C++, caption={Contoh penggunaan <cstdint> di C++}]
 #include <cstdint>
@@ -75,10 +75,10 @@ int main() {
 
 \subsection{Konversi dan Casting Aman}
 \begin{itemize}
-  \item Hindari \textit{narrowing} diam-diam: pilih tipe tujuan yang cukup besar.
-  \item \textbf{Overflow signed} di C/C++ tidak terdefinisi; hindari mengandalkan perilakunya \parencite{iso-c-draft-n1570,cpp-reference}.
-  \item Saat membaca dari I/O teks, validasi rentang sebelum menyimpan ke tipe yang lebih kecil.
-  \item Gunakan fungsi parsing numerik seperti \texttt{strtol}/\texttt{strtod} untuk deteksi kesalahan \parencite{c-strtol}.
+  \item Jangan biarkan \textit{narrowing conversion} terjadi tanpa kesadaran penuh—selalu pilih tipe tujuan yang mampu menampung nilai sumber.
+  \item \textbf{Overflow pada tipe signed} di C/C++ merupakan undefined behavior; jangan pernah bergantung pada perilaku yang tidak terdefinisi \parencite{iso-c-draft-n1570,cpp-reference}.
+  \item Ketika membaca data dari input teks, lakukan validasi range terlebih dahulu sebelum assign ke tipe yang lebih kecil.
+  \item Untuk parsing angka yang robust, manfaatkan fungsi seperti \texttt{strtol} atau \texttt{strtod} yang menyediakan deteksi error \parencite{c-strtol}.
 \end{itemize}
 
 \subsection{Ringkasan Kategori Tipe (Gambaran Singkat)}
@@ -127,7 +127,7 @@ int main() {
 \end{table}
 
 \subsection{Representasi Variabel di Memori}
-Variabel disimpan dalam memori sebagai deret byte. Penyelarasan (alignment) dapat menambah padding pada struktur. Pahami hal ini saat melakukan serialisasi/interop antar-bahasa.
+Setiap variabel yang kita deklarasikan akan disimpan dalam memori komputer sebagai serangkaian byte. Compiler kadang menambahkan padding untuk alignment—ini penting dipahami terutama ketika Anda melakukan serialisasi data atau interoperabilitas antar bahasa pemrograman.
 
 \begin{figure}[H]
   \centering
@@ -143,11 +143,11 @@ Variabel disimpan dalam memori sebagai deret byte. Penyelarasan (alignment) dapa
 \end{figure}
 
 \section{Deklarasi \& Inisialisasi Variabel}
-Deklarasi menetapkan nama, tipe, cakupan; inisialisasi awal mencegah nilai sampah (khususnya di C). C++ mendukung inisialisasi terbraket yang lebih aman, sedangkan Pascal memiliki bagian \texttt{var} yang eksplisit \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Deklarasi variabel berfungsi untuk menentukan nama, tipe data, dan scope dari variabel tersebut. Inisialisasi—yaitu pemberian nilai awal—sangat penting terutama di C untuk menghindari garbage value. C++ menawarkan uniform initialization dengan bracket yang lebih aman, sedangkan Pascal memiliki section \texttt{var} yang terpisah dan eksplisit \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
 \subsection{Contoh Deklarasi dan Inisialisasi}
 
-Program berikut menunjukkan cara mendeklarasikan variabel dengan berbagai tipe data dan menginisialisasinya dengan nilai awal:
+Program-program berikut mendemonstrasikan bagaimana cara mendeklarasikan variabel dengan tipe data yang bervariasi dan memberikan nilai awal kepadanya:
 
 \begin{lstlisting}[language=Pascal, caption={Deklarasi dan inisialisasi di Pascal}]
 program Vars;
@@ -186,12 +186,12 @@ int main() {
 }
 \end{lstlisting}
 
-Disiplin penamaan yang konsisten meningkatkan keterbacaan. Bila lingkup variabel terlalu panjang, pecahlah fungsi menjadi unit lebih kecil. Gunakan \texttt{const} (atau setara) untuk nilai yang tidak boleh berubah.
+Konsistensi dalam penamaan variabel akan meningkatkan readability kode secara signifikan. Jika scope sebuah variabel terlalu panjang, pertimbangkan untuk memecah fungsi menjadi unit-unit yang lebih kecil. Manfaatkan keyword \texttt{const} (atau padanannya) untuk mendefinisikan nilai-nilai yang sifatnya immutable.
 
-Pada C/C++, pahami durasi penyimpanan (otomatis, statik, dinamis) untuk mengelola siklus hidup. Deklarasi dekat titik penggunaan menurunkan kompleksitas. Pada Pascal, bagian \texttt{var} menjaga struktur yang mudah diaudit \parencite{free-pascal-docs,gnu-c-manual}.
+Di C/C++, pemahaman tentang storage duration (automatic, static, dynamic) menjadi kunci dalam mengelola lifecycle variabel. Praktik terbaik adalah mendeklarasikan variabel sedekat mungkin dengan tempat penggunaannya untuk mengurangi cognitive load. Sementara di Pascal, pemisahan explicit melalui section \texttt{var} memberikan struktur yang lebih mudah untuk di-audit \parencite{free-pascal-docs,gnu-c-manual}.
 
 \section{Input / Output Dasar}
-Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan berkas. Pascal memakai \texttt{Read/Readln} dan \texttt{Write/Writeln}; C memakai \texttt{scanf/printf}; C++ memakai stream \texttt{std::cin/std::cout} dan manipulator \texttt{<iomanip>} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
+Input dan output (I/O) adalah mekanisme yang memungkinkan program kita untuk berkomunikasi dengan user maupun file. Setiap bahasa memiliki pendekatan yang berbeda: Pascal menggunakan \texttt{Read/Readln} untuk input dan \texttt{Write/Writeln} untuk output; C mengandalkan \texttt{scanf} dan \texttt{printf}; sedangkan C++ menggunakan stream-based I/O dengan \texttt{std::cin} dan \texttt{std::cout}, dilengkapi dengan manipulator dari header \texttt{<iomanip>} \parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}.
 
 \subsection{Perbandingan Sintaks I/O Dasar}
 \begin{table}[H]
@@ -210,9 +210,9 @@ Masukan/keluaran (I/O) memungkinkan program berinteraksi dengan pengguna dan ber
 \end{table}
 
 \subsection{Contoh Input/Output Dasar}
-Berikut contoh membaca dua bilangan bulat dan menampilkan hasil penjumlahannya. Perhatikan perbedaan I/O \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+Berikut ini adalah contoh sederhana yang membaca dua angka integer dari user, menjumlahkannya, kemudian menampilkan hasilnya. Perhatikan bagaimana cara kerja I/O berbeda di masing-masing bahasa \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
 
-Contoh pertama mendemonstrasikan cara membaca dua bilangan dari pengguna, menjumlahkannya, dan menampilkan hasilnya di Pascal:
+Contoh pertama menunjukkan implementasi di Pascal—bagaimana kita membaca dua angka, melakukan penjumlahan, dan menampilkan output:
 
 \begin{lstlisting}[language=Pascal, caption={Menjumlah dua bilangan pada Pascal}]
 program SumTwo;
@@ -226,7 +226,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, operasi yang sama menggunakan \texttt{scanf} untuk input dan \texttt{printf} untuk output:
+Implementasi yang ekuivalen di C memanfaatkan fungsi \texttt{scanf} untuk membaca input dan \texttt{printf} untuk menampilkan output:
 
 \begin{lstlisting}[language=C, caption={Menjumlah dua bilangan pada C}]
 #include <stdio.h>
@@ -239,7 +239,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-C++ menggunakan stream operator (\texttt{cin} dan \texttt{cout}) untuk I/O yang lebih type-safe:
+Di C++, pendekatan berbasis stream dengan operator \texttt{cin} dan \texttt{cout} menawarkan keamanan tipe yang lebih baik:
 
 \begin{lstlisting}[language=C++, caption={Menjumlah dua bilangan pada C++}]
 #include <iostream>
@@ -271,7 +271,7 @@ int main() {
   \\\parencite{w3pascal-io,gnu-c-manual,cplusplus-io,cpp-iomanip}
 \end{table}
 
-Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudahkan otomasi. Pada C, gunakan \texttt{snprintf} untuk mencegah luapan buffer. Pada C++, gunakan \texttt{std::setw}, \texttt{std::setprecision} untuk keluaran yang rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
+Sebaiknya pisahkan error output (\texttt{stderr}) dari standard output untuk memfasilitasi automation dan debugging. Di C, manfaatkan \texttt{snprintf} sebagai alternatif yang lebih aman untuk menghindari buffer overflow. Sedangkan di C++, gunakan manipulator seperti \texttt{std::setw} dan \texttt{std::setprecision} untuk menghasilkan output yang terformat dengan rapi \parencite{gnu-c-manual,cpp-reference,cpp-iomanip}.
 
 \subsection{Diagram Arus I/O}
 \begin{figure}[H]
@@ -290,7 +290,7 @@ Pisahkan keluaran kesalahan (\texttt{stderr}) dari keluaran normal untuk memudah
 
 \subsection{Contoh I/O Angka dan Pemformatan}
 
-Program berikut menunjukkan cara memformat output angka dengan jumlah desimal tertentu dan membaca input dari pengguna:
+Program-program di bawah ini mengilustrasikan teknik memformat output angka—khususnya mengatur jumlah digit desimal—serta cara membaca input dari user:
 
 \begin{lstlisting}[language=Pascal, caption={Baca integer dan format keluaran (Pascal)}]
 program IOFmt;
@@ -305,7 +305,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, pemformatan output menggunakan format specifier dalam \texttt{printf}:
+Dalam bahasa C, formatting output dilakukan dengan menentukan format specifier di dalam \texttt{printf}:
 
 \begin{lstlisting}[language=C, caption={Baca integer dan format keluaran (C)}]
 #include <stdio.h>
@@ -319,7 +319,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-C++ menggunakan manipulator dari \texttt{<iomanip>} untuk mengontrol format output:
+Untuk C++, kontrol terhadap format output dilakukan melalui manipulator yang tersedia di header \texttt{<iomanip>}:
 
 \begin{lstlisting}[language=C++, caption={Baca integer dan format keluaran (C++)}]
 #include <iostream>
@@ -338,7 +338,7 @@ int main() {
 
 \subsection{Contoh I/O String (Program Interaktif)}
 
-Program interaktif berikut membaca nama pengguna dan menampilkan salam. Ini mendemonstrasikan cara kerja I/O string dasar:
+Program-program interaktif berikut akan membaca nama dari user dan menampilkan pesan sambutan. Contoh ini menunjukkan bagaimana operasi I/O string bekerja di level dasar:
 
 \begin{lstlisting}[language=Pascal, caption={Input nama pada Pascal}]
 program Greet;
@@ -352,7 +352,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, input string memerlukan array karakter dan fungsi \texttt{fgets} yang lebih aman daripada \texttt{gets}:
+Pada bahasa C, input string ditangani dengan character array dan sebaiknya menggunakan fungsi \texttt{fgets} yang jauh lebih aman dibanding \texttt{gets}:
 
 \begin{lstlisting}[language=C, caption={Input nama pada C}]
 #include <stdio.h>
@@ -365,7 +365,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-C++ menggunakan \texttt{getline} untuk membaca string dengan spasi, berbeda dengan operator \texttt{>>} yang berhenti di whitespace:
+C++ menyediakan \texttt{getline} yang bisa membaca string termasuk spasi di dalamnya, tidak seperti operator \texttt{>>} yang akan berhenti begitu menemui whitespace:
 
 \begin{lstlisting}[language=C++, caption={Input nama pada C++}]
 #include <iostream>
@@ -418,17 +418,17 @@ int main() {
   \\\parencite{c-printf,c-scanf}
 \end{table}
 
-\paragraph{Tips.} Pada \texttt{scanf}, tambahkan lebar maksimum: \texttt{"\%63s"} untuk buffer 64 byte. Periksa nilai kembalian untuk memastikan jumlah item yang berhasil diparse benar.
+\paragraph{Tips.} Saat menggunakan \texttt{scanf}, selalu spesifikasikan maximum width seperti \texttt{"\%63s"} untuk buffer 64 byte guna mencegah overflow. Jangan lupa untuk memeriksa return value dari \texttt{scanf} untuk memverifikasi bahwa jumlah item yang berhasil di-parse sudah sesuai.
 
 \subsection{Sinkronisasi I/O C++ dan Kinerja}
-Secara bawaan, \texttt{iostream} disinkronkan dengan stdio untuk kompatibilitas. Untuk kinerja lebih baik pada input besar, dapat dinonaktifkan sinkronisasi dengan \texttt{ios::sync\_\allowbreak{}with\_\allowbreak{}stdio(false)} dan \texttt{cin.tie(nullptr)}. Namun, hindari mencampur pemanggilan stdio dan iostream. Lihat \parencite{cpp-sync-with-stdio} untuk detail teknis.
+Secara default, stream I/O C++ (\texttt{iostream}) melakukan sinkronisasi dengan C's stdio library demi menjaga kompatibilitas. Jika Anda perlu performa yang lebih tinggi—terutama ketika handling input dalam jumlah besar—sinkronisasi ini bisa dimatikan dengan memanggil \texttt{ios::sync\_\allowbreak{}with\_\allowbreak{}stdio(false)} dan \texttt{cin.tie(nullptr)}. Namun perlu diingat: setelah dimatikan, jangan mencampur penggunaan stdio (seperti \texttt{printf/scanf}) dengan iostream dalam program yang sama. Untuk penjelasan teknis lebih detail, silakan lihat \parencite{cpp-sync-with-stdio}.
 
 \section{Rangkuman Materi}
 \begin{itemize}
-  \item Tipe data dasar lintas bahasa dan model data 64-bit (LP64 vs LLP64).
-  \item Tipe tetap-lebar \texttt{<stdint.h>/<cstdint>} dan batas nilai melalui \texttt{numeric\_limits}.
-  \item Deklarasi dan inisialisasi variabel; perbedaan format I/O di Pascal, C, C++.
-  \item Tabel ringkas specifier C, contoh parsing numerik yang tangguh, dan sinkronisasi I/O C++.
-  \item Diagram memori 32-bit, tips casting aman, dan kiat pemecahan masalah umum.
+  \item Kita telah membahas tipe data fundamental yang tersedia di Pascal, C, dan C++, serta perbedaan model data pada sistem 64-bit (LP64 versus LLP64).
+  \item Tipe data fixed-width dari \texttt{<stdint.h>} atau \texttt{<cstdint>} diperkenalkan untuk portabilitas, bersama dengan cara query batasan nilai menggunakan \texttt{numeric\_limits}.
+  \item Praktik deklarasi dan inisialisasi variabel telah dipelajari, termasuk perbedaan pendekatan I/O di ketiga bahasa pemrograman.
+  \item Cheat sheet format specifier untuk C disertakan, lengkap dengan contoh parsing numerik yang reliable dan penjelasan tentang sinkronisasi I/O di C++.
+  \item Visualisasi representasi memori untuk tipe 32-bit, pedoman type casting yang aman, serta troubleshooting tips untuk masalah-masalah umum.
 \end{itemize}
 \end{document}

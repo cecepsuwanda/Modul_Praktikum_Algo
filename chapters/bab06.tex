@@ -17,23 +17,23 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \section{Pengantar Array}
 
 \subsection{Konsep Dasar Array}
-Array adalah struktur data fundamental yang menyimpan sekumpulan elemen bertipe sama secara kontigu (berurutan) di memori, memungkinkan akses cepat dengan kompleksitas \(O(1)\) menggunakan indeks. Array merupakan salah satu struktur data paling dasar dan penting dalam pemrograman untuk menyimpan koleksi data seperti daftar nilai, matriks, tabel, dan buffer \parencite{cpp-reference,free-pascal-docs,iso-c-draft-n1570,tutorialspoint-c-arrays}.
+Array merupakan struktur data fundamental yang menyimpan collection of elements dengan tipe data sama, disusun secara contiguous (berurutan) di memory. Karakteristik utama array adalah kemampuannya memberikan random access dengan time complexity \(O(1)\) constant-time melalui penggunaan index. Dalam dunia pemrograman, array adalah salah satu building block paling basic namun critically important untuk storing berbagai jenis koleksi data—mulai dari daftar nilai, matriks, tabel, hingga buffer \parencite{cpp-reference,free-pascal-docs,iso-c-draft-n1570,tutorialspoint-c-arrays}.
 
-Keuntungan utama array adalah:
+Keunggulan utama penggunaan array:
 \begin{itemize}
-  \item \textbf{Akses cepat:} Elemen dapat diakses langsung menggunakan indeks dengan waktu konstan \(O(1)\)
-  \item \textbf{Efisiensi memori:} Penyimpanan kontigu mengoptimalkan cache locality dan performa
-  \item \textbf{Sederhana:} Struktur yang mudah dipahami dan digunakan
-  \item \textbf{Prediktabel:} Ukuran dan layout memori diketahui sejak kompilasi (untuk array statis)
+  \item \textbf{Fast access:} Element dapat diakses secara direct melalui index dengan constant time \(O(1)\)
+  \item \textbf{Memory efficient:} Layout contiguous di memory mengoptimalkan cache locality dan overall performance
+  \item \textbf{Simplicity:} Struktur yang straightforward—mudah untuk dipahami dan diimplementasikan
+  \item \textbf{Predictability:} Size dan memory layout sudah known at compile-time (untuk static arrays)
 \end{itemize}
 
 \subsection{Karakteristik Array}
-Representasi kontigu di memori memaksimalkan locality cache dan performa operasi berulang. Setiap bahasa pemrograman memiliki cara berbeda dalam mendeklarasikan dan mengelola array \parencite{pascal-tutorial-wikibooks,cpp-std-array,cplusplus-arrays,tambahpinter-array}:
+Contiguous memory representation memaksimalkan cache locality dan performance untuk operasi yang repetitive. Setiap bahasa programming punya pendekatan yang berbeda dalam declaring dan managing arrays \parencite{pascal-tutorial-wikibooks,cpp-std-array,cplusplus-arrays,tambahpinter-array}:
 
 \begin{itemize}
-  \item \textbf{Pascal:} Menggunakan batas indeks eksplisit (misalnya \texttt{array[1..10]}), memberikan fleksibilitas dalam menentukan rentang indeks
-  \item \textbf{C:} Menggunakan ukuran sebagai bagian dari tipe (misalnya \texttt{int arr[10]}), indeks selalu dimulai dari 0
-  \item \textbf{C++:} Menyediakan array gaya C dan \texttt{std::array} untuk array ukuran tetap dengan keamanan tipe yang lebih baik dan metode tambahan
+  \item \textbf{Pascal:} Memanfaatkan explicit index bounds (contoh: \texttt{array[1..10]}), offering flexibility dalam defining index range
+  \item \textbf{C:} Size menjadi part of type declaration (contoh: \texttt{int arr[10]}), dengan indices yang always start from 0
+  \item \textbf{C++:} Menyediakan dua pilihan—C-style arrays dan \texttt{std::array} yang provide better type safety plus additional methods
 \end{itemize}
 
 \subsection{Terminologi Penting}
@@ -47,10 +47,10 @@ Representasi kontigu di memori memaksimalkan locality cache dan performa operasi
 
 \section{Array Satu Dimensi}
 
-Array satu dimensi adalah bentuk array paling sederhana, di mana elemen-elemen tersusun dalam satu baris linear. Dapat dibayangkan seperti daftar atau barisan data yang berurutan \parencite{tutorialspoint-c-arrays,galuhratna-array-c}.
+Array satu dimensi adalah bentuk paling elementary dari array, dimana elements disusun dalam single linear sequence. Bisa divisualisasikan sebagai list atau barisan data yang consecutive \parencite{tutorialspoint-c-arrays,galuhratna-array-c}.
 
 \subsection{Deklarasi Array Satu Dimensi}
-Deklarasi array mendefinisikan nama, tipe elemen, dan ukuran. Setiap bahasa memiliki sintaks berbeda namun konsep sama \parencite{tutorialspoint-c-arrays,learncpp-arrays,free-pascal-docs,tutorialpemrograman-array-c}.
+Declaration array defines nama variable, element type, dan size. Meski setiap bahasa punya syntax yang berbeda, underlying concept-nya tetap sama \parencite{tutorialspoint-c-arrays,learncpp-arrays,free-pascal-docs,tutorialpemrograman-array-c}.
 
 \textbf{Poin penting dalam deklarasi:}
 \begin{itemize}
@@ -87,15 +87,15 @@ std::array<double, 7> suhu;       // 7 double
 \end{lstlisting}
 
 \subsection{Inisialisasi dan Pengisian Array Satu Dimensi}
-Array dapat diinisialisasi saat deklarasi atau diisi kemudian melalui loop atau akses langsung. Inisialisasi yang tepat penting untuk menghindari penggunaan nilai sampah (garbage value) yang tidak terduga \parencite{geeksforgeeks-array-init,learncpp-arrays,tambahpinter-array}.
+Arrays bisa diinisialisasi at declaration time atau di-populate later melalui loops atau direct access. Proper initialization sangat crucial untuk avoid menggunakan garbage values yang unpredictable \parencite{geeksforgeeks-array-init,learncpp-arrays,tambahpinter-array}.
 
-\textbf{Metode pengisian array:}
+\textbf{Methods untuk populate array:}
 \begin{itemize}
-  \item \textbf{Inisialisasi langsung:} Memberikan nilai pada saat deklarasi
-  \item \textbf{Pengisian individual:} Mengisi elemen satu per satu menggunakan indeks
-  \item \textbf{Pengisian dengan loop:} Menggunakan struktur perulangan untuk mengisi seluruh atau sebagian array
-  \item \textbf{Input dari pengguna:} Membaca nilai dari input keyboard
-  \item \textbf{Nilai default:} Beberapa bahasa mengisi dengan nilai default (misalnya 0 untuk numerik)
+  \item \textbf{Direct initialization:} Assign values immediately saat deklarasi
+  \item \textbf{Individual assignment:} Fill elements one by one menggunakan index access
+  \item \textbf{Loop-based filling:} Utilize iteration structures untuk populate seluruh atau partial array
+  \item \textbf{User input:} Read values dari keyboard input
+  \item \textbf{Default values:} Beberapa bahasa auto-initialize dengan default values (contoh: 0 untuk numeric types)
 \end{itemize}
 
 \textbf{Pascal:} Inisialisasi manual atau dengan loop
@@ -149,14 +149,14 @@ std::fill(hasil.begin(), hasil.end(), 42);
 \end{lstlisting}
 
 \subsection{Menampilkan Output Array Satu Dimensi}
-Untuk menampilkan isi array, gunakan loop untuk iterasi setiap elemen. Menampilkan array dengan format yang baik membantu dalam debugging dan presentasi hasil \parencite{tutorialspoint-c-arrays,cplusplus-arrays,galuhratna-array-c}.
+Untuk display array contents, gunakan loop untuk iterate over setiap element. Well-formatted array output sangat helpful untuk debugging process dan result presentation \parencite{tutorialspoint-c-arrays,cplusplus-arrays,galuhratna-array-c}.
 
-\textbf{Teknik penampilan array:}
+\textbf{Display techniques untuk array:}
 \begin{itemize}
-  \item \textbf{Satu baris:} Menampilkan semua elemen dalam satu baris, dipisahkan spasi atau koma
-  \item \textbf{Dengan indeks:} Menampilkan indeks dan nilai setiap elemen
-  \item \textbf{Terformat:} Menggunakan lebar field tetap untuk alignment yang rapi
-  \item \textbf{Range-based:} Di C++ modern, menggunakan range-based for loop yang lebih ringkas
+  \item \textbf{Single-line output:} Display semua elements dalam satu line, separated by spaces atau commas
+  \item \textbf{With indices:} Show both index dan value untuk setiap element
+  \item \textbf{Formatted output:} Use fixed field width untuk neat alignment
+  \item \textbf{Range-based iteration:} Di C++ modern, leverage range-based for loops yang more concise
 \end{itemize}
 
 \textbf{Pascal:}
@@ -222,9 +222,9 @@ int main() {
 \end{lstlisting}
 
 \subsection{Operasi Dasar pada Array Satu Dimensi}
-Operasi umum meliputi iterasi, pencarian, transformasi, dan validasi. Pada C++ gunakan algoritme standar untuk menggantikan loop manual \parencite{cppreference-algorithm,gnu-c-manual}.
+Common operations meliputi iteration, searching, transformation, dan validation. Di C++, consider using standard algorithms sebagai replacement untuk manual loops \parencite{cppreference-algorithm,gnu-c-manual}.
 
-Program berikut mendemonstrasikan operasi dasar pada array: mengisi dengan nilai kuadrat, menghitung jumlah total, dan mencari nilai maksimum:
+Program-program berikut demonstrate basic array operations: populating dengan squared values, calculating total sum, dan finding maximum value:
 
 \begin{lstlisting}[language=Pascal, caption={Operasi dasar array di Pascal}]
 var
@@ -302,10 +302,10 @@ int main() {
 }
 \end{lstlisting}
 
-Validasi batas sebelum akses merupakan kebiasaan penting, terutama ketika indeks berasal dari input pengguna. Uji unit untuk indeks pertama dan terakhir membantu mencegah kesalahan off-by-one.
+Bounds validation sebelum accessing elements merupakan critical habit, especially ketika indices berasal dari user input. Unit testing untuk first dan last indices helps prevent off-by-one errors.
 
 \subsection{Penyalinan dan Perbandingan Array (C/C++)}
-Array di C tidak dapat ditugaskan langsung antar-variabel (akan terdegradasi menjadi pointer pada parameter fungsi). Gunakan loop atau fungsi perpustakaan untuk menyalin/banding.
+Arrays di C cannot be directly assigned antar-variables (mereka decay menjadi pointers dalam function parameters). Use loops atau library functions untuk copy/compare operations.
 
 \begin{lstlisting}[language=C, caption={Salin dan bandingkan isi array (C)}]
 #include <string.h> // memcpy, memcmp
@@ -481,12 +481,12 @@ int main() {
 
 \subsection{Best Practices dan Peringatan}
 
-\textbf{Keamanan Akses Array:}
+\textbf{Array Access Security:}
 \begin{itemize}
-  \item Selalu validasi indeks sebelum mengakses array untuk mencegah buffer overflow
-  \item Di C/C++, akses di luar batas dapat menyebabkan \textit{undefined behavior} yang berbahaya
-  \item Pascal Free Pascal biasanya melakukan bounds checking secara default
-  \item Gunakan \texttt{std::array::at()} di C++ untuk akses dengan bounds checking otomatis
+  \item Always validate indices sebelum accessing arrays untuk prevent buffer overflow attacks
+  \item Di C/C++, out-of-bounds access dapat trigger \textit{undefined behavior} yang extremely dangerous
+  \item Pascal (Free Pascal) typically performs bounds checking by default
+  \item Use \texttt{std::array::at()} di C++ untuk access dengan automatic bounds checking
 \end{itemize}
 
 \textbf{Inisialisasi Array:}
@@ -508,17 +508,17 @@ int main() {
 
 \section{Array Multidimensi (Dua Dimensi)}
 
-Array multidimensi memperluas konsep array ke dua dimensi atau lebih untuk memodelkan struktur seperti matriks, tabel, grid, atau data tabular lainnya. Array dua dimensi dapat divisualisasikan sebagai tabel dengan baris dan kolom, di mana setiap elemen diakses menggunakan dua indeks \parencite{iso-c-draft-n1570,cpp-reference,tutorialspoint-2d-arrays,duniailkom-cpp-2d-array}.
+Multidimensional arrays extend array concept ke two atau more dimensions untuk model structures seperti matrices, tables, grids, dan tabular data lainnya. Two-dimensional arrays bisa divisualisasikan as tables dengan rows dan columns, dimana each element accessed using two indices \parencite{iso-c-draft-n1570,cpp-reference,tutorialspoint-2d-arrays,duniailkom-cpp-2d-array}.
 
 \subsection{Konsep Array Dua Dimensi}
 
-Array 2D pada dasarnya adalah "array dari array" --- sebuah array yang setiap elemennya adalah array lain. Ini sangat berguna untuk:
+Array 2D essentially merupakan "array of arrays"—sebuah array dimana each element adalah array lain. Structure ini extremely useful untuk:
 \begin{itemize}
-  \item \textbf{Matriks matematika:} Operasi aljabar linear
-  \item \textbf{Tabel data:} Menyimpan data tabular seperti spreadsheet
-  \item \textbf{Grid dan peta:} Representasi ruang 2D dalam game dan simulasi
-  \item \textbf{Gambar digital:} Pixel sebagai matriks nilai warna
-  \item \textbf{Graf dan graf adjacency matrix:} Representasi hubungan antar node
+  \item \textbf{Mathematical matrices:} Linear algebra operations
+  \item \textbf{Tabular data:} Storing spreadsheet-like data
+  \item \textbf{Grids dan maps:} 2D space representation dalam games dan simulations
+  \item \textbf{Digital images:} Pixels as color value matrices
+  \item \textbf{Graphs dan adjacency matrices:} Inter-node relationship representation
 \end{itemize}
 
 \subsection{Layout Memori Array 2D}
@@ -1150,38 +1150,38 @@ for (int i = 0; i < TINGGI; i++)
 
 \section{Rangkuman Materi}
 
-Array merupakan struktur data fundamental yang sangat penting dalam pemrograman. Bab ini telah membahas konsep array dari dasar hingga aplikasi praktisnya.
+Arrays constitute fundamental data structures yang critically important dalam programming. Bab ini telah cover array concepts dari foundational basics hingga practical applications-nya.
 
 \subsection{Poin-Poin Penting}
 
-\textbf{Array Satu Dimensi:}
+\textbf{One-Dimensional Arrays:}
 \begin{itemize}
-  \item Array menyimpan sekumpulan elemen bertipe sama secara kontigu di memori
-  \item Akses elemen menggunakan indeks dengan kompleksitas \(O(1)\)
-  \item Di C/C++, indeks dimulai dari 0; di Pascal dapat disesuaikan
-  \item Ukuran array statis harus diketahui saat kompilasi
-  \item Selalu lakukan validasi bounds untuk menghindari buffer overflow
-  \item Inisialisasi array sebelum digunakan untuk menghindari nilai sampah
+  \item Arrays store collections of same-type elements dalam contiguous memory
+  \item Element access via indices dengan \(O(1)\) time complexity
+  \item Di C/C++, indices start from 0; di Pascal bisa customized
+  \item Static array sizes must be known at compile-time
+  \item Always perform bounds validation untuk avoid buffer overflows
+  \item Initialize arrays sebelum usage untuk prevent garbage values
 \end{itemize}
 
-\textbf{Array Dua Dimensi:}
+\textbf{Two-Dimensional Arrays:}
 \begin{itemize}
-  \item Array 2D adalah "array dari array" yang merepresentasikan struktur tabel/matriks
-  \item Akses elemen menggunakan dua indeks: baris dan kolom
-  \item Layout memori menggunakan row-major order (baris berurutan)
-  \item Cocok untuk matriks matematika, tabel data, grid, dan gambar digital
-  \item Operasi umum: penjumlahan, perkalian, transpose matriks
-  \item Gunakan nested loop untuk iterasi seluruh elemen
+  \item 2D arrays are "arrays of arrays" yang represent table/matrix structures
+  \item Elements accessed using dual indices: row dan column
+  \item Memory layout follows row-major ordering (rows stored consecutively)
+  \item Ideal untuk mathematical matrices, tabular data, grids, dan digital images
+  \item Common operations include: addition, multiplication, matrix transposition
+  \item Use nested loops untuk iterate over all elements
 \end{itemize}
 
 \textbf{Best Practices:}
 \begin{itemize}
-  \item Gunakan konstanta atau variabel untuk ukuran array, bukan magic numbers
-  \item Validasi input dan batas indeks sebelum akses
-  \item Pisahkan logika dengan fungsi untuk modularitas dan reusability
-  \item Di C++, pertimbangkan \texttt{std::array} untuk type safety dan metode tambahan
-  \item Dokumentasikan asumsi tentang ukuran dan batas array
-  \item Gunakan nama variabel yang deskriptif untuk indeks (bukan hanya \texttt{i, j})
+  \item Use constants atau variables untuk array sizes, avoid magic numbers
+  \item Validate input dan index bounds sebelum performing access
+  \item Separate logic into functions untuk modularity dan reusability
+  \item Di C++, consider \texttt{std::array} untuk enhanced type safety dan additional methods
+  \item Document assumptions tentang size constraints dan valid bounds
+  \item Employ descriptive variable names untuk indices (not just \texttt{i, j})
 \end{itemize}
 
 \textbf{Ringkasan Teknis:}

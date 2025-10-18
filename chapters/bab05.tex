@@ -15,7 +15,7 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \end{itemize}
 
 \section{Perulangan: \texttt{for}, \texttt{while}, \texttt{repeat} / \texttt{do\textendash while}}
-Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan kondisi dievaluasi (awal/akhir). Pascal: \texttt{for}, \texttt{while}, \texttt{repeat\ldots until}; C/C++: \texttt{for}, \texttt{while}, \texttt{do\ldots while} \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+Pemilihan bentuk loop yang tepat bergantung pada dua faktor utama: apakah kita sudah tahu berapa kali iterasi akan berjalan, dan pada titik mana kondisi perlu dicek (di awal atau di akhir loop body). Pascal menyediakan tiga konstruksi: \texttt{for}, \texttt{while}, dan \texttt{repeat\ldots until}. Sementara C/C++ menawarkan \texttt{for}, \texttt{while}, dan \texttt{do\ldots while} \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
 \subsection{Ringkasan Pemilihan Bentuk Loop}
 \begin{table}[H]
@@ -71,7 +71,7 @@ Bentuk perulangan dipilih berdasarkan apakah jumlah iterasi diketahui dan kapan 
 
 \subsection{Contoh Loop \texttt{for}}
 
-Program berikut menggunakan loop \texttt{for} untuk mencetak tabel perkalian dari sebuah angka yang diinput oleh pengguna:
+Program-program berikut mendemonstrasikan penggunaan \texttt{for} loop untuk menghasilkan tabel perkalian berdasarkan input dari user:
 
 \begin{lstlisting}[language=Pascal, caption={Cetak tabel perkalian dengan for (Pascal)}]
 program TabelPerkalian;
@@ -87,7 +87,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, loop \texttt{for} digunakan untuk menghitung faktorial dengan iterasi dari 1 hingga n:
+Dalam bahasa C, \texttt{for} loop sangat cocok untuk menghitung faktorial melalui iterasi sequential dari 1 sampai n:
 
 \begin{lstlisting}[language=C, caption={Hitung faktorial dengan for (C)}]
 #include <stdio.h>
@@ -105,7 +105,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Program C++ berikut menggunakan loop untuk membaca beberapa nilai dan menghitung total serta rata-ratanya:
+Contoh C++ berikut memanfaatkan loop untuk membaca multiple values dari input, kemudian menghitung sum dan average-nya:
 
 \begin{lstlisting}[language=C++, caption={Loop for dengan hitung total (C++)}]
 #include <iostream>
@@ -128,7 +128,7 @@ int main() {
 }
 \end{lstlisting}
 
-C++11 memperkenalkan range-based for loop yang lebih ringkas untuk iterasi koleksi tanpa perlu indeks eksplisit:
+Sejak C++11, tersedia range-based for loop yang sintaksnya jauh lebih compact untuk iterate collections tanpa harus menggunakan index secara eksplisit:
 
 \begin{lstlisting}[language=C++, caption={Range-based for pada koleksi (C++11+)}]
 #include <iostream>
@@ -147,7 +147,7 @@ int main() {
 
 \subsection{Contoh Loop \texttt{while}}
 
-Program berikut menggunakan loop \texttt{while} untuk validasi input, meminta pengguna memasukkan angka positif hingga input valid diberikan:
+Program-program berikut menggunakan \texttt{while} loop untuk input validation—memaksa user memasukkan angka positif dan terus meminta input hingga syarat terpenuhi:
 
 \begin{lstlisting}[language=Pascal, caption={Input validasi dengan while (Pascal)}]
 program ValidasiInput;
@@ -165,7 +165,7 @@ begin
 end.
 \end{lstlisting}
 
-Program C berikut menggunakan \texttt{while} untuk menghitung jumlah digit dalam sebuah bilangan dengan membagi berulang kali dengan 10:
+Contoh C berikut memanfaatkan \texttt{while} untuk count digit dalam sebuah integer dengan cara repeatedly membagi angka tersebut dengan 10:
 
 \begin{lstlisting}[language=C, caption={Hitung digit dengan while (C)}]
 #include <stdio.h>
@@ -184,7 +184,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Contoh membaca data dari input hingga mencapai end-of-file (EOF), berguna untuk pemrosesan batch data:
+Contoh berikut menunjukkan bagaimana membaca data secara continuous hingga EOF (end-of-file) tercapai—pattern ini sangat useful untuk batch data processing:
 
 \begin{lstlisting}[language=Pascal, caption={Baca hingga EOF (Pascal)}]
 program ReadUntilEOF;
@@ -198,7 +198,7 @@ begin
 end.
 \end{lstlisting}
 
-Program C++ berikut menggunakan \texttt{while} untuk mengecek apakah suatu bilangan prima dengan mencoba membaginya dengan semua pembagi potensial:
+Program C++ berikut mengimplementasikan primality test menggunakan \texttt{while} loop, dengan mencoba membagi angka target dengan semua potential divisors:
 
 \begin{lstlisting}[language=C++, caption={Hitung bilangan prima dengan while (C++)}]
 #include <iostream>
@@ -227,7 +227,7 @@ int main() {
 
 \subsection{Contoh Loop \texttt{repeat-until} / \texttt{do-while}}
 
-Program menu berikut menggunakan \texttt{repeat-until} untuk memastikan menu ditampilkan minimal satu kali dan terus berjalan hingga pengguna memilih keluar:
+Program menu berikut memanfaatkan \texttt{repeat-until} untuk guarantee bahwa menu akan ditampilkan at least sekali, dan loop continues hingga user memutuskan untuk exit:
 
 \begin{lstlisting}[language=Pascal, caption={Menu dengan repeat-until (Pascal)}]
 program MenuLoop;
@@ -253,7 +253,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, \texttt{do-while} memastikan blok kode dieksekusi minimal sekali sebelum kondisi diperiksa. Program berikut memproses angka dan menanyakan apakah pengguna ingin mengulang:
+Dalam C, konstruksi \texttt{do-while} menjamin bahwa code block akan executed minimal satu kali sebelum condition checking dilakukan. Program berikut memproses input angka dan menanyakan apakah user ingin repeat:
 
 \begin{lstlisting}[language=C, caption={Input ulang dengan do-while (C)}]
 #include <stdio.h>
@@ -275,7 +275,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Program kalkulator sederhana berikut mendemonstrasikan \texttt{do-while} untuk menu yang berulang, mengkombinasikan loop dengan percabangan \texttt{switch}:
+Program simple calculator berikut mengilustrasikan penggunaan \texttt{do-while} untuk repetitive menu, dengan combining loop structure dan \texttt{switch} branching:
 
 \begin{lstlisting}[language=C++, caption={Validasi input dengan do-while (C++)}]
 #include <iostream>
@@ -315,18 +315,18 @@ int main() {
 }
 \end{lstlisting}
 
-Ketelitian terhadap \emph{off-by-one} penting pada indeks. Pilih batas eksplisit dan nama variabel penghitung yang jelas.
+Perhatian khusus harus diberikan pada \emph{off-by-one errors}—bug yang sangat umum dalam loop. Selalu gunakan boundary conditions yang eksplisit dan berikan nama variable yang deskriptif untuk loop counters.
 
 \subsection{Pola Umum dan Anti-Pattern}
 \begin{itemize}
-  \item \textbf{Sentinel loop}: baca dulu, cek kondisi, lalu proses; hindari duplikasi kode.
-  \item \textbf{Loop kosong berbahaya}: hindari \texttt{while(...);}; pastikan ada badan loop atau komentar jelas.
-  \item \textbf{Mutasi koleksi saat iterasi}: pada C++, hati-hati menghapus elemen dari \texttt{vector} saat \texttt{for-range}; gunakan indeks atau iterator aman.
-  \item \textbf{Overflow penghitung}: gunakan tipe cukup besar untuk jumlah iterasi.
+  \item \textbf{Sentinel loop pattern}: Read data terlebih dahulu, evaluate condition, baru process—hindari code duplication dengan struktur yang well-designed.
+  \item \textbf{Empty loop body is dangerous}: Jangan pernah menulis \texttt{while(...);}—pastikan ada loop body yang jelas atau minimal comment yang menjelaskan intentionality.
+  \item \textbf{Mutating collection during iteration}: Di C++, be extremely careful ketika removing elements dari \texttt{vector} saat menggunakan \texttt{for-range} loop; lebih aman gunakan index-based atau iterator yang appropriate.
+  \item \textbf{Counter overflow risk}: Pilih data type yang cukup besar untuk menampung jumlah iterasi yang diharapkan—jangan sampai counter overflow.
 \end{itemize}
 
 \section{Perulangan Bersarang (Nested Loop)}
-Perulangan bersarang adalah loop di dalam loop lainnya. Loop luar dieksekusi sekali, sementara loop dalam dieksekusi sepenuhnya untuk setiap iterasi loop luar. Nested loop umum digunakan untuk memproses struktur data multidimensi seperti matriks atau untuk menghasilkan kombinasi.
+Nested loop terjadi ketika kita menempatkan satu loop di dalam loop yang lain. Karakteristik utamanya: outer loop executes once, sementara inner loop runs completely untuk setiap single iteration dari outer loop. Pattern ini sangat common digunakan untuk processing multidimensional data structures seperti matrices, atau untuk generating combinations dan permutations.
 
 \subsection{Diagram Nested Loop}
 \begin{figure}[H]
@@ -343,14 +343,14 @@ Perulangan bersarang adalah loop di dalam loop lainnya. Loop luar dieksekusi sek
     \draw[->] (inner) -- (body);
     \draw[->] (body.east) -- +(1.5,0) |- (inner);
     \draw[->] (inner.west) -- +(-1.5,0) |- (outer);
-    \draw[->] (outer) -- +(0,3.5) -| (end);
+    \draw[->] (outer.east) -- +(2.5,0) |- (end);
   \end{tikzpicture}
   \caption{Skema nested loop: loop dalam dieksekusi penuh untuk setiap iterasi loop luar}
 \end{figure}
 
 \subsection{Contoh Nested Loop}
 
-Program berikut menggunakan dua loop bersarang untuk mencetak pola segitiga bintang. Loop luar mengontrol jumlah baris, loop dalam mengontrol jumlah bintang per baris:
+Program-program berikut menggunakan double nested loops untuk generate star triangle pattern. Outer loop controls berapa banyak rows, sedangkan inner loop determines jumlah stars per row:
 
 \begin{lstlisting}[language=Pascal, caption={Pola segitiga dengan nested loop (Pascal)}]
 program PolaBintang;
@@ -368,7 +368,7 @@ begin
 end.
 \end{lstlisting}
 
-Program C berikut menghasilkan tabel perkalian menggunakan nested loop untuk iterasi baris dan kolom:
+Contoh C berikut generates multiplication table dengan memanfaatkan nested loops untuk iterate across rows dan columns:
 
 \begin{lstlisting}[language=C, caption={Tabel perkalian dengan nested loop (C)}]
 #include <stdio.h>
@@ -386,7 +386,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Versi C++ yang serupa untuk membuat pola segitiga dengan nested loop:
+Implementasi C++ yang equivalent untuk creating triangle pattern menggunakan nested loop structure:
 
 \begin{lstlisting}[language=C++, caption={Pola bintang dengan nested loop (C++)}]
 #include <iostream>
@@ -407,14 +407,14 @@ int main() {
 }
 \end{lstlisting}
 
-Pada nested loop, kompleksitas waktu menjadi perkalian iterasi loop luar dan dalam. Loop 3 tingkat atau lebih harus dievaluasi untuk efisiensi, terutama pada dataset besar. Pertimbangkan algoritme alternatif atau optimisasi bila diperlukan.
+Dalam nested loop, time complexity adalah product dari iterations di outer dan inner loop. Ketika nesting level mencapai 3 atau lebih, efficiency harus dipertimbangkan dengan serius—especially untuk large datasets. Evaluasi apakah ada alternative algorithms atau optimization strategies yang bisa diterapkan untuk improve performance.
 
 \section{Penggunaan \texttt{break}, \texttt{continue}}
-\texttt{break} menghentikan loop sepenuhnya dan keluar ke pernyataan setelah loop. \texttt{continue} melompati sisa iterasi saat ini dan langsung ke iterasi berikutnya. Gunakan seperlunya agar alur tetap jelas; terlalu banyak \texttt{break}/\texttt{continue} dapat membingungkan \parencite{gnu-c-manual,cpp-reference}.
+Statement \texttt{break} terminates loop secara complete dan mengalihkan control ke statement setelah loop. Sementara \texttt{continue} skips sisa current iteration dan immediately jumps ke iteration berikutnya. Gunakan kedua control statements ini dengan bijak—excessive use of \texttt{break} atau \texttt{continue} dapat membuat control flow sulit dipahami dan di-maintain \parencite{gnu-c-manual,cpp-reference}.
 
 \subsection{Contoh \texttt{break} dan \texttt{continue}}
 
-Program berikut mendemonstrasikan penggunaan \texttt{continue} untuk melewati iterasi tertentu dan \texttt{break} untuk keluar dari loop lebih awal:
+Program-program berikut mengilustrasikan bagaimana \texttt{continue} digunakan untuk skip specific iterations dan \texttt{break} untuk early termination dari loop:
 
 \begin{lstlisting}[language=Pascal, caption={break dan continue di Pascal}]
 program BreakContinue;
@@ -439,7 +439,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, contoh berikut menunjukkan bagaimana \texttt{continue} melewati bilangan ganjil dan \texttt{break} membatasi proses, serta aplikasinya pada nested loop:
+Dalam C, contoh berikut demonstrates how \texttt{continue} skips odd numbers dan \texttt{break} limits processing, termasuk aplikasinya dalam nested loop scenarios:
 
 \begin{lstlisting}[language=C, caption={break dan continue di C}]
 #include <stdio.h>
@@ -466,7 +466,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Program berikut mendemonstrasikan penggunaan \texttt{break} untuk menghentikan pencarian saat elemen yang dicari ditemukan:
+Program C++ berikut shows praktik penggunaan \texttt{break} untuk stop searching immediately ketika target element sudah ditemukan:
 
 \begin{lstlisting}[language=C++, caption={break saat menemukan kondisi (C++)}]
 #include <iostream>
@@ -490,13 +490,13 @@ int main() {
 }
 \end{lstlisting}
 
-Ekstrak predikat kompleks ke fungsi terpisah untuk menghindari banyak \texttt{break} atau \texttt{continue}. Pada nested loop, \texttt{break} hanya keluar dari loop terdalamnya; untuk keluar dari semua loop, gunakan flag boolean atau label (di bahasa yang mendukung). Pada C++, pastikan iterator tetap valid saat keluar dini.
+Untuk menghindari excessive \texttt{break} atau \texttt{continue} statements, consider extracting complex predicates ke separate functions. Perlu diingat: dalam nested loops, \texttt{break} hanya exit dari innermost loop saja. Jika Anda perlu keluar dari multiple nested loops sekaligus, gunakan boolean flag atau labeled breaks (di bahasa yang support feature tersebut). Di C++, ensure iterators remain valid saat early exit dilakukan.
 \section{Rangkuman Materi}
 \begin{itemize}
-  \item Pemilihan bentuk loop: \texttt{while}, \texttt{do-while}/\texttt{repeat-until}, \texttt{for}, dan range-based for.
-  \item Diagram alur, pola umum (sentinel), dan anti-pattern (loop kosong, mutasi saat iterasi, overflow penghitung).
-  \item I/O dalam loop, validasi input, dan penggunaan \texttt{break}/\texttt{continue} secara bijak.
-  \item Nested loop untuk pola/matriks dan implikasi kompleksitas waktu.
-  \item Contoh lintas Pascal/C/C++ untuk setiap bentuk loop.
+  \item Kita telah mempelajari berbagai bentuk loop structures dan kapan menggunakan masing-masing: \texttt{while} untuk unknown iterations, \texttt{do-while}/\texttt{repeat-until} untuk minimal one execution, \texttt{for} untuk bounded iterations, dan range-based for (C++11+) untuk modern collections.
+  \item Flowchart diagrams telah disajikan untuk visualisasi, common patterns seperti sentinel loops dijelaskan, serta anti-patterns yang harus dihindari (empty loop bodies, collection mutation during iteration, counter overflow risks).
+  \item Praktik I/O dalam context of loops dibahas, termasuk input validation patterns dan wise usage dari \texttt{break}/\texttt{continue} control statements.
+  \item Nested loop structures untuk pattern generation dan matrix processing telah dipelajari, lengkap dengan pemahaman tentang time complexity implications.
+  \item Contoh-contoh comprehensive code tersedia untuk setiap loop form across ketiga bahasa: Pascal, C, dan C++.
 \end{itemize}
 \end{document}

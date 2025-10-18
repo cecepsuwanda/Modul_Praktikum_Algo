@@ -14,9 +14,9 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \end{itemize}
 
 \section{Operator Aritmetika, Relasional, Logika}
-Operator aritmetika (\texttt{+}, \texttt{-}, \texttt{*}, pembagian, sisa), relasional (\texttt{\textless}, \texttt{\textless=}, \texttt{==}/\texttt{=}, \texttt{\textgreater}, \texttt{\textgreater=}), dan logika (\texttt{and}/\texttt{or}/\texttt{not} atau \texttt{\&\&}/\texttt{||}/\texttt{!}) adalah dasar evaluasi ekspresi. Perhatikan perbedaan pembagian bilangan bulat vs pecahan dan konvensi operator kesetaraan antarbahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Operator-operator fundamental dalam pemrograman terbagi menjadi tiga kategori utama: aritmetika (mencakup \texttt{+}, \texttt{-}, \texttt{*}, operasi pembagian, dan sisa bagi), relasional (seperti \texttt{\textless}, \texttt{\textless=}, \texttt{==} atau \texttt{=}, \texttt{\textgreater}, \texttt{\textgreater=}), serta logika (\texttt{and}/\texttt{or}/\texttt{not} di Pascal, atau \texttt{\&\&}/\texttt{||}/\texttt{!} di C/C++). Ketiga jenis operator ini menjadi fondasi dalam evaluasi ekspresi. Penting untuk memperhatikan perbedaan antara pembagian integer dan floating-point, serta konvensi operator equality yang berbeda antar bahasa \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Gunakan tanda kurung untuk menegaskan maksud pada ekspresi panjang. Pecah ekspresi kompleks menjadi variabel perantara bernama agar mudah diuji. Rujuk tabel resmi operator untuk detail prioritas dan asosiasi \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
+Untuk ekspresi yang panjang dan kompleks, sebaiknya gunakan tanda kurung secara eksplisit untuk memperjelas maksud Anda. Jangan ragu memecah ekspresi yang rumit menjadi beberapa variabel intermediate dengan nama yang deskriptif—ini akan memudahkan testing dan debugging. Untuk detail lengkap mengenai prioritas dan asosiativitas operator, rujuklah tabel resmi yang tersedia di dokumentasi masing-masing bahasa \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence}.
 
 \subsection{Ringkasan Operator Umum}
 \begin{table}[H]
@@ -36,7 +36,7 @@ Gunakan tanda kurung untuk menegaskan maksud pada ekspresi panjang. Pecah ekspre
 \end{table}
 
 \subsection{Operator Bitwise (C/C++)}
-Operator bitwise bekerja pada representasi biner: AND (\texttt{\&}), OR (\texttt{|}), XOR (\texttt{\^{}}), NOT (\texttt{\textasciitilde}), serta pergeseran kiri/kanan (\texttt{<<}, \texttt{>>}). Ini berguna untuk masking, flags, dan operasi low-level \parencite{c-bitwise-ops,cpp-bitwise-ops}.
+Operator bitwise melakukan operasi langsung pada level bit dalam representasi biner angka. Kategori ini meliputi: AND bit (\texttt{\&}), OR bit (\texttt{|}), XOR (\texttt{\^{}}), NOT bit (\texttt{\textasciitilde}), dan shift operations baik ke kiri maupun kanan (\texttt{<<}, \texttt{>>}). Operator-operator ini sangat bermanfaat untuk bit masking, manipulasi flag, dan berbagai operasi low-level programming \parencite{c-bitwise-ops,cpp-bitwise-ops}.
 
 \begin{lstlisting}[language=C, caption={Contoh operator bitwise di C}]
 #include <stdio.h>
@@ -53,11 +53,11 @@ int main(void) {
 \end{lstlisting}
 
 \subsection{Short-Circuit dan Operator Kondisional}
-Pada C/C++, operator logika \texttt{\&\&} dan \texttt{||} melakukan short-circuit — operand kanan tidak dievaluasi bila hasil sudah pasti. Operator kondisional (ternary) \texttt{?:} memilih salah satu dari dua ekspresi berdasarkan kondisi. Konsep ini akan lebih jelas dipahami setelah mempelajari percabangan di bab selanjutnya \parencite{c-conditional-operator,cpp-conditional-operator}.
+Di C dan C++, operator logika \texttt{\&\&} serta \texttt{||} mengimplementasikan mekanisme short-circuit evaluation—artinya, operand di sisi kanan tidak akan dievaluasi apabila hasil akhir sudah dapat ditentukan dari operand kiri saja. Selain itu, terdapat operator kondisional ternary (\texttt{?:}) yang berfungsi memilih satu dari dua ekspresi berdasarkan evaluasi kondisi boolean. Pemahaman mengenai konsep ini akan menjadi lebih solid setelah Anda mempelajari struktur percabangan pada bab berikutnya \parencite{c-conditional-operator,cpp-conditional-operator}.
 
 \subsection{Contoh Operator Aritmetika}
 
-Contoh berikut mendemonstrasikan semua operator aritmetika dasar dan perbedaan antara pembagian real (/) dengan pembagian bulat (div):
+Program-program berikut mengilustrasikan penggunaan seluruh operator aritmetika dasar. Perhatikan khususnya perbedaan antara pembagian real (\texttt{/}) yang menghasilkan desimal dengan pembagian integer (\texttt{div}):
 
 \begin{lstlisting}[language=Pascal, caption={Operator aritmetika di Pascal}]
 program OperatorAritmatika;
@@ -75,7 +75,7 @@ begin
 end.
 \end{lstlisting}
 
-Program C berikut menunjukkan operator aritmetika dengan penekanan pada casting untuk pembagian real:
+Implementasi yang sama dalam bahasa C, dengan perhatian khusus pada teknik type casting yang diperlukan untuk pembagian real:
 
 \begin{lstlisting}[language=C, caption={Operator aritmetika di C}]
 #include <stdio.h>
@@ -91,7 +91,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Versi C++ dengan sintaks yang sedikit lebih modern namun logika yang sama:
+Dalam C++, sintaksnya terlihat sedikit lebih modern meski logic-nya tetap identik:
 
 \begin{lstlisting}[language=C++, caption={Operator aritmetika di C++}]
 #include <iostream>
@@ -110,7 +110,7 @@ int main() {
 
 \subsection{Contoh Operator Relasional dan Logika}
 
-Program berikut mendemonstrasikan operator perbandingan dan operator logika untuk membentuk ekspresi boolean:
+Contoh-contoh berikut memperlihatkan bagaimana operator perbandingan dan operator logika digunakan untuk menyusun ekspresi boolean yang lebih kompleks:
 
 \begin{lstlisting}[language=Pascal, caption={Operator relasional dan logika di Pascal}]
 program OperatorRelasionalLogika;
@@ -137,7 +137,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, operator relasional dan logika mengembalikan nilai integer (0 untuk false, non-zero untuk true):
+Dalam bahasa C, operator relasional dan logika menghasilkan nilai integer—dimana 0 merepresentasikan false dan nilai non-zero merepresentasikan true:
 
 \begin{lstlisting}[language=C, caption={Operator relasional dan logika di C}]
 #include <stdio.h>
@@ -162,7 +162,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-C++ memiliki tipe \texttt{bool} yang lebih eksplisit untuk nilai boolean:
+C++ menyediakan tipe data \texttt{bool} yang lebih eksplisit dan type-safe untuk merepresentasikan nilai boolean:
 
 \begin{lstlisting}[language=C++, caption={Operator relasional dan logika di C++}]
 #include <iostream>
@@ -189,12 +189,12 @@ int main() {
 \end{lstlisting}
 
 \section{Precedence vs Order of Evaluation}
-Precedence dan asosiasi menentukan bagaimana ekspresi dikelompokkan tanpa tanda kurung. Order of evaluation (urutan evaluasi operand) adalah konsep terpisah; di C/C++ beberapa operator tidak menentukan urutan evaluasi sehingga efek samping ganda dapat memicu perilaku tak terdefinisi. Gunakan tanda kurung dan variabel perantara untuk kejelasan \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence,c-order-of-eval,cpp-order-of-eval}.
+Precedence dan associativity mengatur cara suatu ekspresi di-grouping tanpa perlu tanda kurung eksplisit. Namun, order of evaluation (urutan aktual ketika operand dievaluasi) adalah konsep yang berbeda dan terpisah. Di C/C++, sejumlah operator tidak menjamin urutan evaluasi operand-nya, sehingga jika ada side effect yang berulang pada variabel yang sama, hal ini bisa memicu undefined behavior. Untuk menghindari masalah tersebut, selalu gunakan parentheses dan pecah ekspresi kompleks ke dalam variabel perantara \parencite{gnu-c-manual,cpp-op-precedence,c-op-precedence,c-order-of-eval,cpp-order-of-eval}.
 
 \subsection{Penjelasan Precedence dan Associativity}
-Precedence (prioritas) menentukan operator mana yang dievaluasi terlebih dahulu dalam ekspresi tanpa tanda kurung. Operator dengan precedence lebih tinggi dievaluasi sebelum operator dengan precedence lebih rendah. Associativity (asosiativitas) menentukan arah evaluasi ketika operator memiliki precedence yang sama: kiri-ke-kanan atau kanan-ke-kiri.
+Precedence (atau prioritas operator) menentukan operator mana yang akan dieksekusi lebih dulu dalam sebuah ekspresi yang tidak menggunakan kurung. Operator yang memiliki precedence lebih tinggi akan diproses terlebih dahulu dibanding operator dengan precedence rendah. Di sisi lain, associativity (asosiativitas) menentukan arah evaluasi ketika ada beberapa operator dengan tingkat precedence yang sama—apakah dari kiri ke kanan, atau dari kanan ke kiri.
 
-Untuk memastikan urutan evaluasi yang benar dalam ekspresi kompleks, gunakan tanda kurung eksplisit. Ini meningkatkan keterbacaan dan menghindari kesalahan logika yang sulit dilacak.
+Agar urutan evaluasi dalam ekspresi yang kompleks benar-benar sesuai dengan yang diinginkan, biasakan untuk menambahkan tanda kurung secara eksplisit. Pendekatan ini tidak hanya meningkatkan readability, tetapi juga mencegah bug logika yang seringkali sulit di-trace.
 
 \subsection{Tabel Precedence Operator}
 \begin{table}[H]
@@ -220,7 +220,7 @@ Untuk memastikan urutan evaluasi yang benar dalam ekspresi kompleks, gunakan tan
 \end{table}
 
 \subsection{Sketsa Pohon Ekspresi}
-Untuk memvisualisasikan bagaimana precedence bekerja, perhatikan pohon ekspresi berikut yang menunjukkan urutan evaluasi operator dari bawah (prioritas tinggi) ke atas (prioritas rendah):
+Untuk mempermudah pemahaman tentang bagaimana precedence bekerja, mari kita lihat representasi pohon ekspresi berikut. Pohon ini menggambarkan urutan evaluasi, dimana operator di level bawah (prioritas tinggi) dievaluasi terlebih dahulu, baru kemudian naik ke atas (prioritas rendah):
 
 \begin{figure}[H]
   \centering
@@ -242,11 +242,11 @@ Untuk memvisualisasikan bagaimana precedence bekerja, perhatikan pohon ekspresi 
   \caption{Precedence: \texttt{*} \textgreater{} \texttt{+} \textgreater{} \texttt{==} \textgreater{} \texttt{\&\&}}
 \end{figure}
 
-Pada pohon di atas, operator \texttt{*} (perkalian) berada paling bawah sehingga dievaluasi terlebih dahulu, diikuti \texttt{+}, lalu \texttt{==}, dan terakhir \texttt{\&\&}. Ini menunjukkan ekspresi: \texttt{(a + b * c) == d \&\& e}.
+Dalam visualisasi pohon tersebut, operator \texttt{*} (multiplication) menempati posisi paling bawah—ini berarti ia dievaluasi paling awal. Setelahnya, evaluasi berlanjut ke operator \texttt{+}, kemudian \texttt{==}, dan akhirnya operator \texttt{\&\&} di puncak pohon. Struktur ini merepresentasikan ekspresi: \texttt{(a + b * c) == d \&\& e}.
 
 \subsection{Contoh Demonstrasi Precedence}
 
-Program berikut mendemonstrasikan bagaimana precedence operator memengaruhi urutan evaluasi ekspresi, dan bagaimana tanda kurung dapat mengubah urutan tersebut:
+Contoh-contoh program berikut memperlihatkan secara konkret bagaimana precedence operator mempengaruhi hasil evaluasi ekspresi, serta bagaimana penggunaan tanda kurung dapat mengubah urutan evaluasi dan hasil akhir:
 
 \begin{lstlisting}[language=Pascal, caption={Precedence operator di Pascal}]
 program PrecedenceDemo;
@@ -268,7 +268,7 @@ begin
 end.
 \end{lstlisting}
 
-Versi C menunjukkan konsep yang sama dengan tambahan demonstrasi operator relasional dan logika:
+Implementasi dalam C mengilustrasikan prinsip yang sama, ditambah dengan contoh penggunaan operator relasional dan logika:
 
 \begin{lstlisting}[language=C, caption={Precedence operator di C}]
 #include <stdio.h>
@@ -292,7 +292,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Versi C++ dengan tipe boolean yang eksplisit untuk demonstrasi operator logika:
+Dalam C++, kita menggunakan tipe boolean eksplisit untuk mendemonstrasikan operator logika dengan lebih jelas:
 
 \begin{lstlisting}[language=C++, caption={Precedence operator di C++}]
 #include <iostream>
@@ -317,12 +317,12 @@ int main() {
 }
 \end{lstlisting}
 
-Contoh di atas menunjukkan bagaimana precedence memengaruhi hasil evaluasi. Tanpa tanda kurung, \texttt{a + b * c} dievaluasi sebagai \texttt{a + (b * c)} karena perkalian memiliki prioritas lebih tinggi. Dengan tanda kurung eksplisit \texttt{(a + b) * c}, urutan evaluasi berubah dan menghasilkan nilai berbeda.
+Contoh-contoh di atas menggambarkan dengan jelas bagaimana precedence berpengaruh terhadap hasil akhir evaluasi. Ketika kita menulis \texttt{a + b * c} tanpa kurung, ekspresi tersebut diperlakukan sebagai \texttt{a + (b * c)} karena multiplication memiliki precedence yang lebih tinggi dibanding addition. Namun, jika kita menambahkan tanda kurung eksplisit seperti \texttt{(a + b) * c}, maka urutan evaluasinya berubah total dan tentu saja menghasilkan nilai yang berbeda pula.
 
 \section{Perilaku Tak Terdefinisi: Contoh Klasik}
-Hindari ekspresi dengan efek samping berulang pada objek yang sama tanpa pemisahan yang jelas.
+Sangat penting untuk menghindari ekspresi yang melakukan side effect berulang kali pada objek atau variabel yang sama tanpa ada sequence point yang memisahkan operasi-operasi tersebut dengan jelas.
 
-Contoh berikut menunjukkan kode yang memiliki undefined behavior karena mengubah dan menggunakan variabel yang sama berkali-kali dalam satu ekspresi:
+Program berikut menunjukkan sebuah contoh klasik dari undefined behavior—dimana variabel yang sama dimodifikasi dan digunakan beberapa kali dalam satu ekspresi:
 
 \begin{lstlisting}[language=C, caption={Contoh UB: increment dan penggunaan berulang}]
 #include <stdio.h>
@@ -333,7 +333,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-Pisahkan langkahnya agar portabel dan jelas. Berikut cara yang aman untuk melakukan operasi yang sama:
+Untuk menghindari masalah tersebut, pisahkan setiap langkah operasi agar portable dan mudah dipahami. Berikut adalah pendekatan yang aman untuk melakukan operasi serupa:
 
 \begin{lstlisting}[language=C]
 int i = 1;
@@ -345,11 +345,11 @@ int sum = a + b; // aman dan jelas
 
 \section{Rangkuman Materi}
 \begin{itemize}
-  \item Operator aritmetika, relasional, logika, dan bitwise lintas bahasa.
-  \item Short-circuit (\texttt{\&\&}, \texttt{||}) dan operator kondisional (ternary).
-  \item Perbedaan \emph{precedence/associativity} vs \emph{order of evaluation} serta konsekuensi efek samping.
-  \item Contoh perilaku tak terdefinisi (UB) dan pola aman dengan variabel perantara.
-  \item Tabel precedence ringkas dan pohon ekspresi untuk memvisualisasi pengelompokan.
+  \item Kita telah membahas berbagai jenis operator—mulai dari aritmetika, relasional, logika, hingga bitwise—yang tersedia di ketiga bahasa pemrograman.
+  \item Mekanisme short-circuit evaluation pada operator \texttt{\&\&} dan \texttt{||}, serta penggunaan operator ternary untuk conditional expression, telah dijelaskan dengan contoh.
+  \item Perbedaan penting antara \emph{precedence/associativity} (yang menentukan grouping) dan \emph{order of evaluation} (urutan aktual eksekusi operand) telah diuraikan, termasuk konsekuensi dari side effect yang tidak aman.
+  \item Contoh-contoh kode yang menimbulkan undefined behavior (UB) telah ditunjukkan, beserta pattern yang aman menggunakan variabel perantara untuk memisahkan setiap operasi.
+  \item Tabel precedence operator dan diagram pohon ekspresi disertakan untuk membantu visualisasi bagaimana ekspresi di-grouping dan dievaluasi.
 \end{itemize}
 
 \end{document}

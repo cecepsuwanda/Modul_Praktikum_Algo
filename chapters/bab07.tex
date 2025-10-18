@@ -17,47 +17,47 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \section{Pengantar String}
 
 \subsection{Konsep Dasar String}
-String adalah urutan karakter yang disimpan secara berurutan di memori, digunakan untuk merepresentasikan teks, kata, kalimat, atau data tekstual lainnya. String merupakan salah satu tipe data paling fundamental dan sering digunakan dalam pemrograman untuk manipulasi teks, input/output, dan pemrosesan data \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-strings,tutorialspoint-c-strings}.
+String represents sequence of characters yang stored consecutively di memory, digunakan untuk represent text, words, sentences, atau textual data lainnya. Sebagai salah satu most fundamental data types, strings extremely common dipakai dalam programming untuk text manipulation, I/O operations, dan data processing \parencite{pascal-tutorial-wikibooks,iso-c-draft-n1570,cpp-strings,tutorialspoint-c-strings}.
 
 \subsection{Representasi String di Berbagai Bahasa}
 
-Setiap bahasa pemrograman memiliki cara berbeda dalam merepresentasikan dan mengelola string:
+Masing-masing bahasa programming punya approach yang berbeda dalam representing dan managing strings:
 
 \begin{itemize}
-  \item \textbf{Pascal:} Menyediakan tipe \texttt{string} built-in yang mengelola panjang secara otomatis. Pascal juga mendukung representasi berbasis array dengan panjang tetap atau dinamis \parencite{pascal-tutorial-wikibooks,free-pascal-docs}.
+  \item \textbf{Pascal:} Offers built-in \texttt{string} type yang automatically manages length. Pascal also supports array-based representation dengan fixed atau dynamic length \parencite{pascal-tutorial-wikibooks,free-pascal-docs}.
   
-  \item \textbf{C:} String adalah array karakter (\texttt{char[]}) yang diakhiri dengan karakter null (\texttt{'\textbackslash 0'}). Programmer bertanggung jawab penuh untuk manajemen memori dan memastikan null terminator ada \parencite{iso-c-draft-n1570,c-strings-h,tutorialspoint-c-strings}.
+  \item \textbf{C:} Strings are character arrays (\texttt{char[]}) yang terminated dengan null character (\texttt{'\textbackslash 0'}). Programmers fully responsible untuk memory management dan ensuring null terminator exists \parencite{iso-c-draft-n1570,c-strings-h,tutorialspoint-c-strings}.
   
-  \item \textbf{C++:} Menyediakan dua pendekatan: array karakter gaya C dan kelas \texttt{std::\allowbreak string}. Kelas string mengelola memori otomatis, ukuran dinamis, dan metode manipulasi yang kaya~\parencite{cpp-strings,cplusplus-string,yuliaagustin-string-cpp}.
+  \item \textbf{C++:} Provides dual approaches: C-style character arrays dan \texttt{std::\allowbreak string} class. String class handles automatic memory management, dynamic sizing, dan rich manipulation methods~\parencite{cpp-strings,cplusplus-string,yuliaagustin-string-cpp}.
 \end{itemize}
 
 \paragraph{Catatan Unicode dan UTF-8.} Encoding umum saat ini adalah UTF-8 yang kompatibel dengan ASCII dan efisien untuk teks multibahasa \parencite{rfc3629,utf8-everywhere}. Pada C++ modern tersedia tipe \texttt{char8\_t} (C++20) untuk byte UTF-8, serta literal \texttt{u8"..."} untuk menandai string literal UTF-8 \parencite{cpp-char8,cpp-string-literals}. Di C/Pascal, pastikan file sumber disimpan sebagai UTF-8 agar karakter non-ASCII muncul benar.
 
 \subsection{Keuntungan dan Pertimbangan}
 
-\textbf{Keuntungan menggunakan abstraksi string tingkat tinggi:}
+\textbf{Benefits dari high-level string abstractions:}
 \begin{itemize}
-  \item Manajemen memori otomatis (tidak perlu khawatir buffer overflow)
-  \item Operasi lebih intuitif dan aman
-  \item Ukuran dinamis menyesuaikan dengan kebutuhan
-  \item API yang kaya untuk manipulasi
+  \item Automatic memory management (no worries tentang buffer overflows)
+  \item Operations yang more intuitive dan safer
+  \item Dynamic sizing yang adjusts to needs
+  \item Rich API untuk various manipulations
 \end{itemize}
 
-\textbf{Pertimbangan untuk string gaya C:}
+\textbf{Considerations untuk C-style strings:}
 \begin{itemize}
-  \item Performa lebih tinggi dalam situasi tertentu
-  \item Kompatibilitas dengan API sistem dan library C
-  \item Control yang lebih detail atas memori
-  \item Memerlukan kehati-hatian ekstra untuk menghindari bug
+  \item Higher performance dalam certain scenarios
+  \item Compatibility dengan system APIs dan C libraries
+  \item Fine-grained control atas memory
+  \item Requires extra caution untuk avoid bugs
 \end{itemize}
 
 \section{Deklarasi String}
 
 \subsection{Deklarasi String di Pascal}
 
-Pascal menyediakan tipe \texttt{string} yang fleksibel dengan manajemen memori otomatis.
+Pascal provides flexible \texttt{string} type dengan automatic memory management.
 
-Contoh berikut menunjukkan berbagai cara mendeklarasikan string di Pascal dengan ukuran dinamis atau ukuran maksimum yang ditentukan:
+Contoh-contoh berikut illustrate various ways untuk declare strings di Pascal, baik dengan dynamic sizing maupun predetermined maximum length:
 
 \begin{lstlisting}[language=Pascal, caption={Deklarasi string di Pascal}]
 var
@@ -564,7 +564,7 @@ int main() {
 
 \subsection{Panjang String}
 
-Mendapatkan panjang string adalah operasi fundamental. Berikut cara melakukannya di Pascal menggunakan fungsi \texttt{Length}:
+Obtaining string length merupakan one of the most fundamental operations. Berikut bagaimana cara melakukannya di Pascal dengan memanfaatkan \texttt{Length} function:
 
 \begin{lstlisting}[language=Pascal, caption={Panjang string di Pascal}]
 var
@@ -577,7 +577,7 @@ begin
 end.
 \end{lstlisting}
 
-Di C, fungsi \texttt{strlen} dari header \texttt{<string.h>} menghitung panjang dengan mencari null terminator:
+Dalam C, function \texttt{strlen} dari header \texttt{<string.h>} calculates length dengan searching for null terminator:
 
 \begin{lstlisting}[language=C, caption={Panjang string di C}]
 #include <string.h>
@@ -591,7 +591,7 @@ int main() {
 }
 \end{lstlisting}
 
-C++ menyediakan metode \texttt{length()} atau \texttt{size()} yang ekuivalen pada objek \texttt{std::string}:
+C++ offers equivalent methods \texttt{length()} atau \texttt{size()} pada \texttt{std::string} objects:
 
 \begin{lstlisting}[language=C++, caption={Panjang string di C++}]
 #include <string>
@@ -1598,35 +1598,35 @@ int main() {
 
 \section{Rangkuman Materi}
 
-String adalah tipe data fundamental untuk merepresentasikan teks dalam pemrograman. Pemahaman yang baik tentang representasi, operasi, dan manipulasi string sangat penting untuk pengembangan aplikasi.
+Strings constitute fundamental data type untuk text representation dalam programming. Solid understanding tentang representation, operations, dan string manipulation critically important untuk application development.
 
 \subsection{Poin-Poin Penting}
 
-\textbf{Representasi String:}
+\textbf{String Representation:}
 \begin{itemize}
-  \item Pascal: Tipe \texttt{string} dengan manajemen otomatis
-  \item C: Array \texttt{char} dengan null terminator
-  \item C++: \texttt{std::string} dengan manajemen memori otomatis
-  \item Unicode/UTF-8, literal \texttt{u8"..."}, tipe \texttt{char8\_t}, dan isu encoding
+  \item Pascal: Built-in \texttt{string} type dengan automatic management
+  \item C: \texttt{char} arrays dengan null terminator requirement
+  \item C++: \texttt{std::string} featuring automatic memory management
+  \item Unicode/UTF-8 considerations, \texttt{u8"..."} literals, \texttt{char8\_t} types, dan encoding issues
 \end{itemize}
 
-\textbf{Operasi Dasar:}
+\textbf{Basic Operations:}
 \begin{itemize}
-  \item Deklarasi dan inisialisasi string
-  \item Input/output string dengan berbagai metode
-  \item Panjang string, konkatenasi, perbandingan
-  \item Substring, pencarian, penggantian
-  \item Konversi case (upper/lower)
-  \item I/O string dan karakter; escape sequences
+  \item Declaration dan initialization of strings
+  \item String input/output dengan multiple methods
+  \item Length calculation, concatenation, comparison
+  \item Substring extraction, searching, replacement
+  \item Case conversion (uppercase/lowercase)
+  \item String/character I/O; escape sequence handling
 \end{itemize}
 
-\textbf{Keamanan:}
+\textbf{Security Considerations:}
 \begin{itemize}
-  \item Selalu validasi batas buffer di C
-  \item Gunakan fungsi aman (strncpy, fgets, snprintf)
-  \item Prefer \texttt{std::string} di C++ untuk keamanan otomatis
-  \item Hindari fungsi deprecated seperti \texttt{gets()}
-  \item Fungsi pustaka C dan metode string untuk manipulasi aman
+  \item Always validate buffer bounds di C
+  \item Employ safe functions (strncpy, fgets, snprintf)
+  \item Prefer \texttt{std::string} di C++ untuk automatic security
+  \item Avoid deprecated functions seperti \texttt{gets()}
+  \item Utilize C library functions dan string methods untuk safe manipulation
 \end{itemize}
 
 \subsection{Perbandingan Antar Bahasa}
@@ -1657,29 +1657,29 @@ Bounds checking & Ya & Tidak & at() method \\
 
 \subsection{Kapan Menggunakan Apa}
 
-\textbf{Gunakan Pascal string ketika:}
+\textbf{Use Pascal strings ketika:}
 \begin{itemize}
-  \item Mengembangkan aplikasi Pascal
-  \item Memerlukan fleksibilitas indeks
-  \item Ingin manajemen memori otomatis
+  \item Developing Pascal applications
+  \item Need index flexibility
+  \item Want automatic memory management
 \end{itemize}
 
-\textbf{Gunakan C string ketika:}
+\textbf{Use C strings ketika:}
 \begin{itemize}
-  \item Interfacing dengan API sistem atau library C
-  \item Memerlukan kontrol memori tingkat rendah
-  \item Optimasi performa kritis
-  \item Embedded systems dengan resource terbatas
+  \item Interfacing dengan system APIs atau C libraries
+  \item Require low-level memory control
+  \item Performance-critical optimization scenarios
+  \item Embedded systems dengan limited resources
 \end{itemize}
 
-\textbf{Gunakan C++ \texttt{std::string} ketika:}
+\textbf{Use C++ \texttt{std::string} ketika:}
 \begin{itemize}
-  \item Mengembangkan aplikasi C++ modern
-  \item Keamanan dan kemudahan lebih penting dari kontrol detail
-  \item Memerlukan operasi string yang kaya
-  \item Ingin menghindari manual memory management
+  \item Building modern C++ applications
+  \item Safety dan convenience outweigh granular control
+  \item Need rich string operations
+  \item Want to avoid manual memory management
 \end{itemize}
 
-String adalah fondasi pemrosesan teks dalam pemrograman. Penguasaan operasi string yang baik akan memudahkan pengembangan berbagai aplikasi, dari parsing data, validasi input, hingga pemrosesan teks kompleks. Selalu prioritaskan keamanan dan clarity dalam code Anda!
+Strings form the foundation dari text processing dalam programming. Mastering string operations akan significantly facilitate development dari various applications—from data parsing, input validation, hingga complex text processing tasks. Always prioritize safety dan code clarity!
 
 \end{document}

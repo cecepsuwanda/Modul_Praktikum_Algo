@@ -654,18 +654,10 @@ Pointer dapat menunjuk ke pointer lain, membentuk multiple levels of indirection
 
 \subsection{Double Pointer di C}
 
-Program berikut menunjukkan penggunaan pointer to pointer untuk mengubah nilai dan mengubah ke mana pointer menunjuk melalui fungsi:
+Program berikut menunjukkan penggunaan pointer to pointer untuk mengubah nilai dan mengubah ke mana pointer menunjuk:
 
 \begin{lstlisting}[language=C, caption={Pointer to pointer di C}]
 #include <stdio.h>
-
-void changeValue(int **pp, int newValue) {
-  **pp = newValue;  // Mengubah nilai yang ditunjuk
-}
-
-void changePointer(int **pp, int *newTarget) {
-  *pp = newTarget;  // Mengubah ke mana pointer menunjuk
-}
 
 int main() {
   int x = 10, y = 20;
@@ -684,12 +676,14 @@ int main() {
   *pp = &y;
   printf("*p = %d\n", *p);       // 20 (now points to y)
   
-  // Melalui fungsi
+  // Mengubah nilai melalui double pointer (seperti changeValue)
   p = &x;
-  changeValue(&p, 100);
+  pp = &p;
+  **pp = 100;  // Mengubah nilai yang ditunjuk
   printf("x = %d\n", x);         // 100
   
-  changePointer(&p, &y);
+  // Mengubah ke mana pointer menunjuk (seperti changePointer)
+  *pp = &y;  // Mengubah ke mana pointer menunjuk
   printf("*p = %d\n", *p);       // 20
   
   return 0;
@@ -698,31 +692,20 @@ int main() {
 
 \subsection{Aplikasi Double Pointer}
 
-Contoh berikut menunjukkan alokasi array 2D dinamis menggunakan double pointer dengan fungsi helper untuk alokasi dan dealokasi:
+Contoh berikut menunjukkan alokasi array 2D dinamis menggunakan double pointer:
 
 \begin{lstlisting}[language=C, caption={Double pointer untuk 2D array}]
 #include <stdio.h>
 #include <stdlib.h>
 
-// Alokasi 2D array dinamis
-int** allocate2DArray(int rows, int cols) {
-  int **arr = (int**)malloc(rows * sizeof(int*));
-  for (int i = 0; i < rows; i++) {
-    arr[i] = (int*)malloc(cols * sizeof(int));
-  }
-  return arr;
-}
-
-void free2DArray(int **arr, int rows) {
-  for (int i = 0; i < rows; i++) {
-    free(arr[i]);
-  }
-  free(arr);
-}
-
 int main() {
   int rows = 3, cols = 4;
-  int **matrix = allocate2DArray(rows, cols);
+  
+  // Alokasi 2D array dinamis (inline di main)
+  int **matrix = (int**)malloc(rows * sizeof(int*));
+  for (int i = 0; i < rows; i++) {
+    matrix[i] = (int*)malloc(cols * sizeof(int));
+  }
   
   // Isi matrix
   int value = 1;
@@ -740,7 +723,12 @@ int main() {
     printf("\n");
   }
   
-  free2DArray(matrix, rows);
+  // Dealokasi memori (inline di main)
+  for (int i = 0; i < rows; i++) {
+    free(matrix[i]);
+  }
+  free(matrix);
+  
   return 0;
 }
 \end{lstlisting}

@@ -12,80 +12,80 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 \end{itemize}
 
 \section{Sejarah dan Posisi Pascal, C, C++}
-Pascal, C, dan C++ adalah bahasa dasar yang banyak dipakai untuk belajar algoritma dan membangun perangkat lunak performa tinggi. Pascal awalnya dibuat untuk pendidikan dengan sintaks yang jelas; C dipakai luas untuk pemrograman sistem karena kontrol memori yang ketat; C++ menambah konsep berorientasi objek dan generik di atas C untuk proyek besar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
+Ketiga bahasa pemrograman ini—Pascal, C, dan C++—merupakan fondasi penting dalam pembelajaran algoritma dan pengembangan aplikasi dengan performa optimal. Bahasa Pascal dirancang khusus untuk keperluan edukasi, menawarkan sintaks yang mudah dipahami dan terstruktur. Sementara itu, bahasa C berkembang menjadi pilihan utama dalam pemrograman tingkat sistem karena memberikan kontrol langsung terhadap memori komputer. Adapun C++ hadir sebagai evolusi dari C dengan mengusung paradigma pemrograman berorientasi objek dan template untuk menangani proyek-proyek skala besar \parencite{pascal-tutorial-wikibooks,gnu-c-manual,cpp-reference}.
 
-Ketiganya penting dalam kurikulum karena memberi keseimbangan antara kedekatan ke perangkat keras dan kemampuan abstraksi. Menguasai ketiga perspektif ini memudahkan mahasiswa melanjutkan ke struktur data, algoritme, dan rekayasa perangkat lunak. Fokus praktikum kita adalah menulis program yang benar, mudah diuji, dan cukup efisien \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
+Mengapa ketiga bahasa ini masih diajarkan dalam kurikulum? Jawabannya terletak pada keseimbangan unik yang mereka tawarkan—dari akses langsung ke level hardware hingga kemampuan abstraksi tingkat tinggi. Dengan menguasai perspektif yang berbeda dari masing-masing bahasa, mahasiswa akan lebih siap ketika mempelajari topik lanjutan seperti struktur data, desain algoritme, hingga rekayasa perangkat lunak. Target pembelajaran kita di praktikum ini sederhana namun esensial: mampu menulis kode yang tidak hanya berjalan dengan benar, tetapi juga mudah diverifikasi dan cukup efisien untuk kebutuhan praktis \parencite{free-pascal-docs,gnu-c-manual,cpp-reference}.
 
-Dalam praktik industri, C umum untuk firmware dan sistem tertanam, C++ untuk aplikasi performa tinggi (gim, mesin basis data), sedangkan Pascal (melalui Free Pascal/Lazarus) tetap relevan untuk pembelajaran dan sebagian aplikasi desktop \parencite{free-pascal-docs}.
+Di dunia industri saat ini, masing-masing bahasa memiliki domain spesialisasinya. Bahasa C masih mendominasi pengembangan firmware dan sistem embedded. C++ menjadi andalan untuk aplikasi yang menuntut performa maksimal seperti game engine dan database management system. Sedangkan Pascal, khususnya implementasi Free Pascal dan Lazarus, masih eksis dalam ranah pendidikan dan pengembangan aplikasi desktop tertentu \parencite{free-pascal-docs}.
 
 \section{Lingkungan Pengembangan}
-Untuk praktikum ini, kita akan menggunakan lingkungan pengembangan terintegrasi (IDE) yang menyediakan editor kode, kompiler, debugger, dan alat bantu lainnya dalam satu antarmuka. IDE mempermudah proses belajar karena mahasiswa tidak perlu mengatur kompiler secara manual via terminal.
+Di praktikum ini, mahasiswa akan bekerja dengan lingkungan pengembangan terintegrasi atau Integrated Development Environment (IDE). Sebuah IDE menyatukan berbagai tool esensial dalam satu platform: editor untuk menulis kode, compiler untuk menerjemahkannya, debugger untuk mencari bug, dan utilitas pendukung lainnya. Penggunaan IDE sangat membantu proses pembelajaran karena mahasiswa tidak perlu repot mengonfigurasi compiler melalui command line atau terminal—semuanya sudah terintegrasi dan siap pakai.
 
-Berikut penjelasan lengkap untuk masing-masing IDE yang direkomendasikan. Mahasiswa dapat memilih salah satu sesuai kebutuhan dan preferensi.
+Kami menyediakan beberapa pilihan IDE yang disesuaikan dengan preferensi dan kondisi masing-masing mahasiswa. Penjelasan detail untuk setiap opsi akan diuraikan berikut ini.
 
 \subsection{Lingkungan Online}
-\textbf{OnlineGDB} \parencite{onlinegdb} — platform berbasis web untuk menjalankan Pascal, C, dan C++ tanpa instalasi. Cocok untuk latihan cepat dan berbagi kode.
+\textbf{OnlineGDB} \parencite{onlinegdb} merupakan platform pemrograman berbasis browser yang memungkinkan Anda menjalankan kode Pascal, C, maupun C++ tanpa harus menginstal software apapun di komputer lokal. Solusi ini sangat praktis untuk latihan kilat atau ketika Anda ingin membagikan kode dengan rekan kuliah.
 
-Langkah penggunaan:
+Cara menggunakan OnlineGDB:
 \begin{enumerate}
-  \item Buka \url{https://www.onlinegdb.com}
-  \item Pilih bahasa (Pascal, C, atau C++)
-  \item Tulis atau tempel kode pada editor
-  \item Klik tombol \emph{Run} untuk kompilasi dan eksekusi
-  \item Simpan berkas untuk mendapatkan tautan berbagi
+  \item Akses situs \url{https://www.onlinegdb.com} melalui browser
+  \item Tentukan bahasa pemrograman yang akan digunakan (Pascal, C, atau C++)
+  \item Ketik kode program Anda langsung di editor, atau copy-paste dari sumber lain
+  \item Tekan tombol \emph{Run} untuk melakukan kompilasi sekaligus menjalankan program
+  \item Jika ingin menyimpan kode, gunakan fitur save untuk mendapatkan link yang bisa dibagikan
 \end{enumerate}
 
 \subsection{Lingkungan Offline untuk Pascal}
-\textbf{Lazarus IDE} \parencite{lazarus} — IDE lengkap berbasis Free Pascal dengan dukungan GUI dan konsol. Tersedia untuk Windows, Linux, dan macOS.
+\textbf{Lazarus IDE} \parencite{lazarus} adalah IDE komprehensif yang dibangun di atas Free Pascal Compiler. Tool ini mendukung pembuatan aplikasi konsol maupun GUI, dan tersedia untuk berbagai sistem operasi: Windows, Linux, hingga macOS.
 
 \subsubsection{Instalasi Lazarus IDE}
-Langkah instalasi:
+Prosedur instalasi Lazarus:
 \begin{enumerate}
-  \item Kunjungi situs resmi Lazarus di \url{https://www.lazarus-ide.org}
-  \item Unduh versi yang sesuai dengan sistem operasi Anda (Windows, Linux, atau macOS)
-  \item Untuk Windows, unduh file installer (misalnya \texttt{lazarus-}\\\texttt{X.X.X-fpc-X.X.X-win64.exe})
-  \item Jalankan file instalasi dan ikuti petunjuk instalasi
-  \item Paket instalasi Lazarus biasanya sudah menyertakan Free Pascal Compiler (FPC). Jika tidak, unduh FPC dari \url{https://www.freepascal.org/download.html}
-  \item Setelah instalasi selesai, buka Lazarus IDE untuk memverifikasi bahwa instalasi berjalan dengan baik
+  \item Buka situs resmi Lazarus di alamat \url{https://www.lazarus-ide.org}
+  \item Download installer yang cocok dengan OS Anda (bisa Windows, Linux, atau macOS)
+  \item Pengguna Windows dapat mengunduh file installer, contohnya \texttt{lazarus-}\\\texttt{X.X.X-fpc-X.X.X-win64.exe}
+  \item Eksekusi file installer tersebut, lalu ikuti wizard instalasi yang muncul
+  \item Umumnya, paket instalasi Lazarus sudah include Free Pascal Compiler (FPC). Namun jika belum tersedia, Anda bisa download FPC secara terpisah dari \url{https://www.freepascal.org/download.html}
+  \item Setelah proses instalasi rampung, coba buka Lazarus IDE untuk memastikan semuanya berjalan normal
 \end{enumerate}
 
-Langkah penggunaan:
+Cara mengoperasikan Lazarus:
 \begin{enumerate}
-  \item Buat proyek baru: \texttt{Project \textrightarrow{} New Project \textrightarrow{} Console Application}
-  \item Tulis kode Pascal pada editor
-  \item Klik \texttt{Run} atau tekan F9 untuk kompilasi dan eksekusi
-  \item Tambahkan unit bila diperlukan untuk modularisasi
+  \item Mulai dengan membuat proyek baru: \texttt{Project \textrightarrow{} New Project \textrightarrow{} Console Application}
+  \item Ketikkan kode Pascal Anda di area editor
+  \item Klik tombol \texttt{Run} atau tekan shortcut F9 untuk melakukan kompilasi dan eksekusi sekaligus
+  \item Apabila program Anda memerlukan modularisasi, Anda bisa menambahkan unit terpisah
 \end{enumerate}
 
 \subsection{Lingkungan Offline untuk C/C++}
-\textbf{Code::Blocks} \parencite{codeblocks} — IDE lintas platform untuk C dan C++. Mendukung berbagai kompiler (GCC, Clang, MSVC).
+\textbf{Code::Blocks} \parencite{codeblocks} adalah IDE yang bersifat cross-platform, dirancang khusus untuk bahasa C dan C++. IDE ini fleksibel karena mampu bekerja dengan berbagai jenis compiler, antara lain GCC, Clang, dan MSVC.
 
 \subsubsection{Instalasi Code::Blocks}
-Langkah instalasi:
+Petunjuk instalasi Code::Blocks:
 \begin{enumerate}
-  \item Kunjungi situs resmi Code::Blocks di \url{http://www.codeblocks.org/downloads/binaries}
-  \item Untuk Windows, unduh versi yang sudah menyertakan compiler MinGW (misalnya \texttt{codeblocks-20.03mingw-setup.exe})
-  \item Untuk Linux, gunakan package manager sistem Anda (misalnya \texttt{sudo apt-get install codeblocks} pada Ubuntu/Debian)
-  \item Untuk macOS, unduh file DMG atau gunakan Homebrew
-  \item Jalankan file instalasi yang telah diunduh
-  \item Pada instalasi Windows: klik \texttt{Next}, setujui lisensi (\texttt{I Agree}), biarkan komponen default, pilih lokasi instalasi, lalu klik \texttt{Install}
-  \item Setelah instalasi selesai, buka Code::Blocks
-  \item Saat pertama kali membuka, pilih \texttt{GNU GCC Compiler} jika diminta memilih compiler
-  \item Verifikasi pengaturan compiler melalui menu \texttt{Settings \textrightarrow{} Compiler \textrightarrow{} Toolchain executables}
+  \item Akses halaman download resmi di \url{http://www.codeblocks.org/downloads/binaries}
+  \item Untuk pengguna Windows, pilih versi yang sudah bundled dengan compiler MinGW (contoh: \texttt{codeblocks-20.03mingw-setup.exe})
+  \item Bagi pengguna Linux, instalasi bisa dilakukan via package manager masing-masing distro (pada Ubuntu/Debian, ketik \texttt{sudo apt-get install codeblocks})
+  \item Pengguna macOS bisa download file DMG atau menggunakan Homebrew untuk instalasi
+  \item Jalankan installer yang sudah Anda download
+  \item Di Windows: klik \texttt{Next} pada wizard, accept agreement lisensi dengan \texttt{I Agree}, biarkan komponen tetap default, tentukan folder tujuan instalasi, kemudian klik \texttt{Install}
+  \item Setelah selesai terinstal, jalankan aplikasi Code::Blocks
+  \item Pada first run, Anda mungkin diminta memilih compiler—pilih \texttt{GNU GCC Compiler}
+  \item Lakukan verifikasi konfigurasi compiler dengan masuk ke \texttt{Settings \textrightarrow{} Compiler \textrightarrow{} Toolchain executables}
 \end{enumerate}
 
-Langkah penggunaan:
+Panduan pemakaian Code::Blocks:
 \begin{enumerate}
-  \item Buat proyek baru: \texttt{File \textrightarrow{} New \textrightarrow{} Project \textrightarrow{} Console Application}
-  \item Pilih bahasa C atau C++
-  \item Tulis kode di \texttt{main.c} atau \texttt{main.cpp}
-  \item Klik \texttt{Build \& Run} atau tekan F9
+  \item Inisiasi proyek baru melalui: \texttt{File \textrightarrow{} New \textrightarrow{} Project \textrightarrow{} Console Application}
+  \item Tentukan apakah akan menggunakan bahasa C atau C++
+  \item Tulis source code Anda di file \texttt{main.c} atau \texttt{main.cpp}
+  \item Jalankan program dengan menekan tombol \texttt{Build \& Run} atau shortcut F9
 \end{enumerate}
 
 \section{Struktur Program Dasar}
-Sebelum menulis program yang lebih kompleks, pahami kerangka minimal tiap bahasa.
+Sebelum melangkah ke pembuatan program yang kompleks, penting bagi kita untuk memahami struktur fundamental dari masing-masing bahasa pemrograman yang digunakan.
 
-Setiap bahasa pemrograman memiliki struktur dasar yang harus diikuti. Berikut adalah kerangka minimal program Pascal yang menunjukkan bagian-bagian wajib dalam sebuah program:
+Tiap bahasa memiliki aturan sintaks dasarnya sendiri yang wajib dipatuhi. Mari kita lihat bentuk paling sederhana dari sebuah program Pascal beserta komponen-komponen esensialnya:
 
 \begin{lstlisting}[language=Pascal, caption={Kerangka program Pascal}]
 program Main;
@@ -94,7 +94,7 @@ begin
 end.
 \end{lstlisting}
 
-Dalam bahasa C, program minimal memerlukan fungsi \texttt{main()} sebagai titik masuk eksekusi. Berikut struktur dasarnya:
+Untuk bahasa C, sebuah program paling tidak harus memiliki fungsi \texttt{main()} yang menjadi entry point saat program dijalankan. Struktur minimalnya seperti berikut:
 
 \begin{lstlisting}[language=C, caption={Kerangka program C}]
 #include <stdio.h>
@@ -105,7 +105,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-C++ memiliki struktur yang mirip dengan C, namun menyediakan namespace dan stream I/O yang lebih modern:
+Bahasa C++ memiliki kerangka dasar yang tidak jauh berbeda dari C, tetapi dilengkapi dengan fitur namespace dan stream I/O yang lebih up-to-date:
 
 \begin{lstlisting}[language=C++, caption={Kerangka program C++}]
 #include <iostream>
@@ -118,9 +118,9 @@ int main() {
 \end{lstlisting}
 
 \section{Program Pertama}
-Program pertama memastikan instalasi dan alur kompilasi-pengejalan (\emph{run}) bekerja. Perbedaan I/O dasar: Pascal memakai \texttt{Writeln}, C memakai \texttt{printf}, C++ memakai \texttt{std::cout} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
+Membuat program pertama berfungsi sebagai langkah verifikasi bahwa instalasi IDE dan proses kompilasi hingga eksekusi sudah berjalan dengan semestinya. Perlu dicatat bahwa setiap bahasa punya cara berbeda dalam melakukan I/O dasar: Pascal menggunakan \texttt{Writeln}, C mengandalkan \texttt{printf}, sedangkan C++ memakai \texttt{std::cout} \parencite{w3pascal-io,gnu-c-manual,cpp-reference}.
 
-Program Hello World adalah program pertama yang biasanya dibuat untuk memverifikasi bahwa lingkungan pengembangan sudah ter-setup dengan benar. Program ini menampilkan teks "Hello, World!" ke layar:
+Program "Hello World" merupakan tradisi dalam dunia pemrograman sebagai program perdana yang dibuat untuk mengecek apakah environment development sudah ter-konfigurasi dengan baik. Program ini cukup sederhana—hanya menampilkan teks "Hello, World!" ke layar output:
 
 \begin{lstlisting}[language=Pascal, caption={Hello World pada Pascal}]
 program Hello;
@@ -146,14 +146,14 @@ int main() {
 }
 \end{lstlisting}
 
-Untuk menjalankan program di atas, gunakan salah satu IDE yang direkomendasikan (OnlineGDB, Lazarus, atau Code::Blocks). Cukup salin kode ke editor IDE, lalu klik tombol Run atau tekan F9.
+Untuk mengeksekusi contoh program di atas, silakan pakai salah satu IDE yang sudah kita bahas sebelumnya (bisa OnlineGDB, Lazarus, maupun Code::Blocks). Caranya sangat mudah: copy kode program ke dalam editor IDE yang Anda pilih, kemudian klik tombol Run atau tekan F9 di keyboard.
 
 \section{Rangkuman Materi}
 \begin{itemize}
-  \item Peran Pascal, C, C++ dalam pembelajaran dan konteks industri.
-  \item Menyiapkan lingkungan: OnlineGDB, Lazarus (Pascal), Code::Blocks (C/C++).
-  \item Alur build dasar: tulis sumber \textrightarrow{} kompilasi \textrightarrow{} linking \textrightarrow{} eksekusi.
-  \item Kerangka program minimal di Pascal, C, C++ dan contoh \emph{Hello World}.
+  \item Kita telah mempelajari pentingnya Pascal, C, dan C++ baik dalam konteks pembelajaran maupun aplikasi di industri software.
+  \item Persiapan environment pengembangan telah dibahas lengkap, mencakup opsi online (OnlineGDB) dan offline (Lazarus untuk Pascal, Code::Blocks untuk C/C++).
+  \item Alur kerja pembuatan program dimulai dari penulisan source code, dilanjutkan dengan proses kompilasi, linking, hingga akhirnya eksekusi program.
+  \item Struktur minimal program di ketiga bahasa pemrograman beserta implementasi program \emph{Hello World} telah dipraktikkan.
 \end{itemize}
 
 \end{document}

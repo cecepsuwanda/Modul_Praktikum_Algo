@@ -91,9 +91,10 @@
 \setcounter{biburllcpenalty}{7000}
 
 % Allow more flexibility in line breaking
-\emergencystretch=2em
-\tolerance=2000
-\hfuzz=0.5pt
+\emergencystretch=3em
+\tolerance=3000
+\hbadness=10000
+\hfuzz=2pt
 
 % Subfiles per chapter
 \usepackage{subfiles}
@@ -106,7 +107,37 @@
 \begin{document}
 \frontmatter
 \hypersetup{pageanchor=false}
-\maketitle
+% Custom title page dengan format Indonesia
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  
+  % Judul buku di bagian atas
+  {\huge\bfseries Buku Praktikum\par}
+  \vspace{0.2cm}
+  {\huge\bfseries Algoritma dan Pemrograman\par}
+  \vspace{0.2cm}
+  {\LARGE\bfseries \(Pascal, C \& C++\)\par}
+  
+  
+  \vfill
+  
+  % Nama penulis di bagian tengah
+  {\large Tim Pengajar Algoritma dan Pemrograman\par}
+  
+  \vfill
+  
+  % Nama instansi di bagian bawah
+  {\large\bfseries Program Studi Sistem Informasi\par}
+  \vspace{0.2cm}
+  {\large\bfseries Fakultas Teknologi Informasi\par}
+  \vspace{0.2cm}
+  {\large\bfseries Universitas Bale Bandung\par}
+  \vspace{0.2cm}
+  {\large \the\year\par}
+  
+  \vspace{1cm}
+\end{titlepage}
 \hypersetup{pageanchor=true}
 \pagenumbering{roman}
 \tableofcontents
