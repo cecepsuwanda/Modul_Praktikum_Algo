@@ -1,0 +1,47 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{10}}{}
+\begin{document}
+
+\chapter{Fungsi dan Prosedur}
+
+\begin{subcpmk}
+  \item Sub-CPMK 4.1: Membuat fungsi dengan parameter dan nilai return dalam C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Definisi dan pemanggilan fungsi; parameter (pass by value) dan return value; scope variabel (lokal vs global) \cite{ref7,ref2}.
+
+\input{bab-11/section-11-1}
+\input{bab-11/section-11-2}
+\input{bab-11/section-11-3}
+
+\begin{aktivitas}
+  \item Buat fungsi untuk menghitung faktorial, lalu panggil dari main.
+  \item Buat fungsi untuk mengecek bilangan prima.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan parameter dan return value!
+  \item Apa perbedaan variabel lokal dan global?
+  \item \textbf{Refleksi}: Kapan Anda memecah program menjadi beberapa fungsi? Berikan contoh satu program yang menurut Anda lebih baik jika di-modularisasi.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 4.1}: Buat program C dengan fungsi \code{int max3(int a, int b, int c)} yang mengembalikan nilai terbesar dari tiga bilangan. Panggil dari \code{main} dengan input dari user. Tambahkan fungsi \code{void cetakBilangan(int n)} yang menampilkan 1 sampai n.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat mendefinisikan dan memanggil fungsi
+  \item Saya memahami parameter dan return value
+  \item Saya memahami scope variabel
+\end{checklist}
+
+\begin{rangkuman}
+Fungsi modularisasi program. Parameter sebagai input; return sebagai output. Variabel lokal vs global.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

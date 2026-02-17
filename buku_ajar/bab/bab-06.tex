@@ -1,0 +1,150 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{5}}{}
+\begin{document}
+
+\chapter{Operator dalam C}
+
+\begin{subcpmk}
+  \item Sub-CPMK 3.1: Menggunakan operator aritmatika, perbandingan, logika, bitwise, dan penugasan secara tepat dalam menyelesaikan masalah sederhana.
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} 
+\begin{itemize}
+    \item Operator Aritmatika dan Increment/Decrement
+    \item Operator Relasional dan Logika
+    \item Operator Bitwise dan Penugasan
+    \item Prioritas Operator (Precedence) dan Asosiativitas
+\end{itemize}
+
+\noindent\textit{Referensi: \cite{ref7, control_flow_cppref, operator_precedence_c, ref2}}
+
+\input{bab-06/section-6-1}
+\input{bab-06/section-6-2}
+\input{bab-06/section-6-3}
+\input{bab-06/section-6-4}
+
+% ============================================================
+% AKTIVITAS PEMBELAJARAN
+% ============================================================
+\begin{aktivitas}
+  \item \textbf{Eksperimen Increment}: Buat program kecil untuk membandingkan \code{a = ++b} dan \code{a = b++}. Tampilkan nilai variabels sebelum dan sesudah operasi.
+  \item \textbf{Bitwise Magic}: Gunakan operator bitwise \code{\&} untuk memeriksa apakah sebuah bilangan ganjil atau genap (hint: cek bit terakhir).
+  \item \textbf{Short-Circuit Demo}: Buat kondisi \code{if} dengan dua ekspresi, di mana ekspresi kedua memiliki *side effect* (misal print teks atau increment). Amati apakah ekspresi kedua dijalankan jika ekspresi pertama sudah menentukan hasil (misal \code{FALSE \&\& ...}).
+\end{aktivitas}
+
+% ============================================================
+% LATIHAN DAN REFLEKSI
+% ============================================================
+\begin{latihan}
+  \item Jelaskan perbedaan antara \code{x++} (postfix) dan \code{++x} (prefix) ketika digunakan dalam sebuah ekspresi!
+  \item Apa hasil dari ekspresi \code{10 \% 3} dan \code{10 \% -3}? Jelaskan perilaku operator modulus pada bilangan negatif di C.
+  \item Ubah kondisi berikut menjadi bentuk operator ternary: 
+  \begin{lstlisting}[language=C]
+if (nilai >= 60) status = 1;
+else status = 0;
+  \end{lstlisting}
+  \item Diberikan \code{int a = 5; int b = 10;}. Berapa nilai \code{a} dan \code{b} setelah ekspresi: \code{int hasil = (a++ > 5) || (b++ > 10);}? Jelaskan mengapa \code{b} berubah atau tidak berubah.
+  \item \textbf{Refleksi}: Mengapa memahami prioritas operator (precedence) itu penting? Berikan contoh bug yang mungkin muncul jika kita mengabaikan prioritas operator.
+\end{latihan}
+
+% ============================================================
+% ASESMEN
+% ============================================================
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 3.1}
+
+\noindent\textbf{Soal 1 (Aritmatika \& Logika):}
+Buat program C yang menerima input 3 sisi segitiga (a, b, c). Program harus menentukan:
+\begin{enumerate}
+    \item Apakah ketiga sisi dapat membentuk segitiga yang valid? (Syarat: $a+b>c$ DAN $a+c>b$ DAN $b+c>a$)
+    \item Jika valid, tentukan jenisnya: Sama Sisi, Sama Kaki, atau Sembarang.
+\end{enumerate}
+Gunakan operator logika dan relasional yang tepat.
+
+\noindent\textbf{Soal 2 (Bitwise):}
+Buat program yang menerima input bilangan bulat, lalu menggunakan operator geser (\code{<<} atau \code{>>}) untuk mengalikan bilangan tersebut dengan 4 dan membaginya dengan 2. Bandingkan hasilnya dengan operator aritmatika biasa.
+
+\noindent\textbf{Soal 3 (Evaluasi Ekspresi):}
+Evaluasi ekspresi berikut secara manual, lalu buat program C untuk memverifikasi jawaban Anda:
+\code{result = 10 + 5 * 2 > 15 \&\& 4 \% 2 == 0;}
+Jelaskan urutan pengerjaannya berdasarkan prioritas operator.
+\end{asesmen}
+
+% ============================================================
+% CHECKLIST KOMPETENSI
+% ============================================================
+\begin{checklist}
+  \item Saya memahami perbedaan prefix dan postfix increment/decrement
+  \item Saya dapat menggunakan operator aritmatika, relasional, dan logika dengan benar
+  \item Saya memahami konsep \textit{short-circuit evaluation}
+  \item Saya dapat menggunakan operator bitwise dasar (\&, |, \^{}, \textasciitilde, <<, >>)
+  \item Saya dapat menggunakan operator ternary sebagai alternatif if-else sederhana
+  \item Saya memahami urutan evaluasi berdasarkan tabel prioritas operator
+\end{checklist}
+
+% ============================================================
+% RANGKUMAN
+% ============================================================
+\begin{rangkuman}
+Bab ini mengupas tuntas berbagai operator dalam bahasa C:
+\begin{itemize}
+    \item \textbf{Aritmatika}: Melakukan perhitungan matematika (+, -, *, /, \%). Perhatikan pembagian integer dan modulus.
+    \item \textbf{Increment/Decrement}: Menambah/mengurang 1 nilai variabal. Prefix (\code{++i}) mengubah nilai sebelum digunakan, Postfix (\code{i++}) menggunakan nilai lama dulu baru mengubah.
+    \item \textbf{Relasional \& Logika}: Membandingkan nilai dan menggabungkan kondisi (\&\&, ||, !). Menggunakan \textit{short-circuit evaluation} untuk efisiensi dan keamanan.
+    \item \textbf{Bitwise}: Memanipulasi data pada level bit, sangat berguna untuk pemrograman sistem atau optimasi tingkat rendah.
+    \item \textbf{Assignment Majemuk}: Menyingkat penulisan operasi update (\code{+=}, \code{*=}).
+    \item \textbf{Ternary}: \code{kondisi ? nilai\_true : nilai\_false} untuk percabangan inline.
+    \item \textbf{Precedence}: Aturan yang menentukan operator mana yang dieksekusi lebih dulu dalam ekspresi kompleks.
+\end{itemize}
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}
+\ifSubfilesClassLoaded{\setcounter{chapter}{5}}{}
+\begin{document}
+
+\chapter{Operator dalam C}
+
+\begin{subcpmk}
+  \item Sub-CPMK 3.1: Menggunakan operator aritmatika, perbandingan, logika, dan penugasan
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Operator aritmatika, perbandingan, logika, dan penugasan dalam C; prioritas operator; short-circuit evaluation \cite{ref7}.
+
+\input{bab-06/section-6-1}
+\input{bab-06/section-6-2}
+
+\begin{aktivitas}
+  \item Buat program kalkulator sederhana dengan operator +, -, *, /.
+  \item Eksperimen dengan operator logika pada kondisi if.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Apa perbedaan \code{=} dan \code{==}?
+  \item Jelaskan perilaku short-circuit pada \code{\&\&} dan \code{||}!
+  \item \textbf{Refleksi}: Kapan Anda memilih operator logika \code{\&\&} daripada \code{||}? Berikan contoh kasus dari program yang pernah Anda buat.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 3.1}: Buat program C yang membaca dua bilangan dan satu operator (+, -, *, /), lalu menampilkan hasil operasi. Gunakan operator aritmatika dan validasi pembagi nol. Jelaskan penggunaan operator yang Anda pakai.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan operator aritmatika dan perbandingan
+  \item Saya dapat menggunakan operator logika
+\end{checklist}
+
+\begin{rangkuman}
+Operator C meliputi aritmatika (+ - * / \%), perbandingan (== != < >), logika (\&\& || !), dan penugasan (= += -=).
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

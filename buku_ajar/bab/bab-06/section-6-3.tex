@@ -1,0 +1,84 @@
+\section{Operator Bitwise, Penugasan, dan Lainnya}
+
+Selain operator matematika dan logika standar, C menyediakan operator yang bekerja pada tingkat bit dan memori, yang menjadi salah satu kekuatan utama bahasa C.
+
+\subsection{Operator Bitwise}
+Operator bitwise bekerja pada level representasi biner dari integer. Operator ini tidak dapat digunakan pada tipe \code{float}, \code{double}, atau \code{long double}.
+
+\begin{table}[h]
+\centering
+\caption{Operator Bitwise}
+\label{tab:bitwise}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{Op} & \textbf{Nama} & \textbf{Deskripsi} \\ \hline
+\code{\&} & AND & Bit bernilai 1 jika kedua bit operand bernilai 1 \\ \hline
+\code{|} & OR & Bit bernilai 1 jika salah satu bit operand bernilai 1 \\ \hline
+\code{\^} & XOR (Exclusive OR) & Bit bernilai 1 jika bit operand berbeda nilainya \\ \hline
+\code{\textasciitilde} & NOT (Complement) & Membalik nilai bit (0 jadi 1, 1 jadi 0) \\ \hline
+\code{<<} & Left Shift & Menggeser bit ke kiri (mengalikan dengan $2^n$) \\ \hline
+\code{>>} & Right Shift & Menggeser bit ke kanan (membagi dengan $2^n$) \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Contoh:} Misalkan A = 60 (\code{0011 1100}) dan B = 13 (\code{0000 1101}).
+\begin{itemize}
+    \item \code{A \& B} = 12 (\code{0000 1100})
+    \item \code{A | B} = 61 (\code{0011 1101})
+    \item \code{A \^ B} = 49 (\code{0011 0001})
+    \item \code{A << 2} = 240 (\code{1111 0000})
+\end{itemize}
+
+\subsection{Operator Penugasan Majemuk (Compound Assignment)}
+C memungkinkan kita menggabungkan operasi aritmatika/bitwise dengan penugasan untuk penulisan kode yang lebih ringkas.
+
+\begin{table}[h]
+\centering
+\caption{Operator Penugasan Majemuk}
+\label{tab:assignment}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Penulisan Singkat} & \textbf{Ekivalen Dengan} \\ \hline
+\code{a += b} & \code{a = a + b} \\ \hline
+\code{a -= b} & \code{a = a - b} \\ \hline
+\code{a *= b} & \code{a = a * b} \\ \hline
+\code{a /= b} & \code{a = a / b} \\ \hline
+\code{a \%= b} & \code{a = a \% b} \\ \hline
+\code{a <<= b} & \code{a = a << b} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Operator Lainnya}
+
+\subsubsection{Operator Ternary (Conditional Operator)}
+Ini adalah satu-satunya operator C yang mengambil tiga operand. Bentuknya:
+\begin{center}
+\code{kondisi ? ekspresi\_jika\_true : ekspresi\_jika\_false}
+\end{center}
+
+Contoh:
+\begin{lstlisting}[language=C]
+int a = 10, b = 20;
+int max;
+
+// Menggunakan if-else biasa
+if (a > b) max = a;
+else max = b;
+
+// Menggunakan ternary (lebih ringkas)
+max = (a > b) ? a : b;
+\end{lstlisting}
+
+\subsubsection{Operator \code{sizeof}}
+Operator unary yang mengembalikan ukuran dalam \textit{bytes} dari tipe data atau variabel.
+\begin{lstlisting}[language=C]
+printf("Ukuran int: %lu bytes\n", sizeof(int)); // Biasanya 4
+\end{lstlisting}
+
+\subsubsection{Operator Koma (\code{,})}
+Digunakan untuk memisahkan dua atau lebih ekspresi yang dievaluasi berurutan. Nilai ekspresi keseluruhan adalah nilai dari ekspresi paling kanan. Sering dijumpai dalam loop \code{for}.
+\begin{lstlisting}[language=C]
+int x, y;
+y = (x = 5, x + 10); 
+// x diisi 5, lalu hitung x+10 (15). y akan bernilai 15.
+\end{lstlisting}

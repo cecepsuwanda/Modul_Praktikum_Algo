@@ -1,0 +1,66 @@
+\section{Kesalahan Umum dan Praktik Terbaik}
+
+Dalam menggunakan struktur percabangan, programmer pemula seringkali terjebak dalam beberapa kesalahan umum yang dapat menyebabkan \textit{logic error} yang sulit dilacak.
+
+\subsection{Masalah \textit{Dangling Else}}
+Masalah ini muncul ketika ada `if` bersarang namun jumlah `else` lebih sedikit daripada `if`, dan tidak menggunakan kurung kurawal. Compiler C akan memasangkan `else` dengan `if` \textbf{terdekat sebelumnya}.
+
+\textbf{Kode Membingungkan (Tanpa Kurung Kurawal):}
+\begin{lstlisting}[language=C]
+if (a > 0)
+    if (b > 0)
+        printf("A dan B positif");
+else
+    printf("???"); // Else ini milik siapa?
+\end{lstlisting}
+
+Secara indentasi, seolah-olah `else` milik `if (a > 0)`. Namun bagi Compiler C, `else` tersebut milik `if (b > 0)`. Jika `a = -5`, tidak ada output yang muncul (padahal mungkin kita mengharapkan blok else jalan).
+
+\textbf{Solusi:} Selalu gunakan kurung kurawal!
+\begin{lstlisting}[language=C]
+if (a > 0) {
+    if (b > 0) {
+        printf("A dan B positif");
+    }
+} else {
+    printf("A negatif atau nol");
+}
+\end{lstlisting}
+
+\subsection{Assignment di dalam Kondisi}
+Kesalahan menggunakan `=` (penugasan) alih-alih `==` (perbandingan).
+
+\begin{lstlisting}[language=C]
+// SALAH - Bug Fatal
+if (skor = 100) { // Nilai 100 di-assign ke skor. 100 != 0, maka dianggap True.
+    printf("Sempurna!"); // Selalu tercetak, berapapun skor awalnya.
+}
+
+// BENAR
+if (skor == 100) {
+    printf("Sempurna!");
+}
+\end{lstlisting}
+
+\begin{tip}
+Beberapa programmer menggunakan gaya Yoda Condition: \code{if (100 == skor)} untuk mencegah error ini. Jika tidak sengaja menulis \code{if (100 = skor)}, compiler akan error karena literal angka tidak bisa di-assign.
+\end{tip}
+
+\subsection{Titik Koma (Semicolon) yang Salah Tempat}
+Menaruh titik koma tepat setelah `if` akan mengakhiri statement `if` tersebut tanpa menjalankan blok apa-apa.
+
+\begin{lstlisting}[language=C]
+// SALAH
+if (nilai > 60); // Titik koma ini mengakhiri if!
+{
+    printf("Lulus"); // Blok ini jadi tidak terikat if, SELALU dijalankan.
+}
+\end{lstlisting}
+
+\subsection{Membandingkan Floating Point}
+Seperti dibahas di Bab 6, hindari menggunakan `==` untuk `float` atau `double`.
+\begin{lstlisting}[language=C]
+float x = 1.0 / 3.0;
+if (x * 3.0 == 1.0) // Mungkin False karena presisi
+\end{lstlisting}
+Gunakan toleransi epsilon \code{fabs(a - b) < 0.00001}.

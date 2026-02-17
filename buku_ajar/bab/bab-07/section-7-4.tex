@@ -1,0 +1,123 @@
+\section{Studi Kasus Percabangan Kompleks}
+
+Bagian ini menyajikan studi kasus implementasi logika bisnis yang lebih kompleks menggunakan gabungan operator logika dan struktur percabangan.
+
+\subsection{Kasus 1: Menentukan Tahun Kabisat}
+Dulu kita diajarkan \"Tahun kabisat adalah tahun yang habis dibagi 4\". Namun aturan Gregorian Calendar sebenarnya:
+\begin{enumerate}
+    \item Jika tahun habis dibagi 400, maka \textbf{Kabisat}.
+    \item Jika tidak habis dibagi 400 tetapi habis dibagi 100, maka \textbf{Bukan Kabisat}.
+    \item Jika tidak habis dibagi 100 tetapi habis dibagi 4, maka \textbf{Kabisat}.
+    \item Sisanya \textbf{Bukan Kabisat}.
+\end{enumerate}
+
+\textbf{Implementasi Nested If:}
+\begin{lstlisting}[language=C]
+if (tahun % 400 == 0) {
+    printf("Kabisat");
+} else if (tahun % 100 == 0) {
+    printf("Bukan Kabisat");
+} else if (tahun % 4 == 0) {
+    printf("Kabisat");
+} else {
+    printf("Bukan Kabisat");
+}
+\end{lstlisting}
+
+\textbf{Implementasi Single Logic (Efisiensi):}
+\begin{lstlisting}[language=C]
+// Logika: (Habis 400) ATAU (Habis 4 DAN Tidak Habis 100)
+if ((tahun % 400 == 0) || ((tahun % 4 == 0) && (tahun % 100 != 0))) {
+    printf("Kabisat");
+} else {
+    printf("Bukan Kabisat");
+}
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowio, below=of start] (input) {Input Tahun};
+  
+  % Logic flow for leap year
+  \node[flowdecision, below=of input] (d400) { \% 400 == 0?};
+  \node[flowdecision, below=1cm of d400] (d100) { \% 100 == 0?};
+  \node[flowdecision, below=1cm of d100] (d4) { \% 4 == 0?};
+  
+  \node[flowprocess, right=2cm of d400] (kabisat) {Cetak "Kabisat"};
+  \node[flowprocess, right=2cm of d4] (bukan) {Cetak "Bukan"};
+  
+  \node[flowstart, below=of bukan] (end) {Selesai};
+
+  % Edges
+  \draw[arrow] (start) -- (input);
+  \draw[arrow] (input) -- (d400);
+  
+  % 400 check
+  \draw[arrow] (d400) -- node[above] {Ya} (kabisat);
+  \draw[arrow] (d400) -- node[right] {Tidak} (d100);
+  
+  % 100 check
+  % Manually routing to avoid crossing labels bad
+  \draw[arrow] (d100) -| node[near start, above] {Ya} (bukan); 
+  \draw[arrow] (d100) -- node[right] {Tidak} (d4);
+  
+  % 4 check
+  \draw[arrow] (d4) -| node[near start, below] {Ya} (kabisat);
+  \draw[arrow] (d4) -| node[near start, above] {Tidak} (bukan);
+
+  % Connecting to End
+  \draw[arrow] (kabisat) |- (end);
+  \draw[arrow] (bukan) -- (end);
+
+\end{tikzpicture}
+\caption{Flowchart Logika Tahun Kabisat}
+\label{fig:flowchart_kabisat}
+\end{figure}
+
+\subsection{Kasus 2: Validasi Segitiga}
+Diberikan tiga panjang sisi $a, b, c$. Tentukan apakah bisa membentuk segitiga, dan jika ya, jenisnya.
+Syarat Segitiga Valid (Triangle Inequality): $a+b>c$ DAN $a+c>b$ DAN $b+c>a$.
+
+\begin{lstlisting}[language=C]
+if (a + b > c && a + c > b && b + c > a) {
+    // Segitiga Valid
+    if (a == b && b == c) {
+        printf("Segitiga Sama Sisi");
+    } else if (a == b || a == c || b == c) {
+        printf("Segitiga Sama Kaki");
+    } else {
+        // Cek Siku-Siku (Pythagoras)
+        // Anggap c sisi terpanjang (perlu sorting idealnya)
+        if (a*a + b*b == c*c || a*a + c*c == b*b || b*b + c*c == a*a)
+             printf("Segitiga Siku-Siku");
+        else
+             printf("Segitiga Sembarang");
+    }
+} else {
+    printf("Bukan Segitiga (Sisi tidak valid)");
+}
+\end{lstlisting}
+
+\subsection{Kasus 3: Menu Program Sederhana}
+Sebelum mengenal `switch-case`, kita bisa membuat menu dengan `if-else if`.
+
+\begin{lstlisting}[language=C]
+printf("Menu:\n1. Nasi Goreng\n2. Mie Goreng\n3. Jus Jeruk\n");
+printf("Plihan Anda: ");
+scanf("%d", &pilihan);
+
+if (pilihan == 1) {
+    harga = 15000;
+    printf("Anda memesan Nasi Goreng. Harga: %d", harga);
+} else if (pilihan == 2) {
+    harga = 12000;
+    printf("Anda memesan Mie Goreng. Harga: %d", harga);
+} else if (pilihan == 3) {
+    harga = 5000;
+    printf("Anda memesan Jus Jeruk. Harga: %d", harga);
+} else {
+    printf("Menu tidak tersedia!");
+}
+\end{lstlisting}

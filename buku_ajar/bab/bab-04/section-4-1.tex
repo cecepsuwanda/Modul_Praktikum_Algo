@@ -1,0 +1,83 @@
+\section{Definisi dan Notasi Pseudocode}
+
+Pseudocode adalah deskripsi algoritma dalam bahasa manusia yang menyerupai kode program namun tidak terikat pada sintaks bahasa pemrograman tertentu \cite{pseudocode_wikipedia}. Kata "pseudocode" berasal dari "pseudo" (semu) dan "code" (kode), yang berarti kode semu atau tiruan kode program. Pseudocode pertama kali digunakan pada tahun 1950-an sebagai alat untuk mendokumentasikan algoritma sebelum implementasi dalam bahasa assembly.
+
+\subsection{Fungsi Pseudocode}
+
+Pseudocode memiliki beberapa fungsi penting dalam pengembangan perangkat lunak:
+
+\begin{enumerate}
+  \item \textbf{Perancangan Logika:} Memungkinkan fokus pada algoritma tanpa detail sintaks
+  \item \textbf{Dokumentasi:} Membuat dokumentasi algoritma yang mudah dipahami
+  \item \textbf{Komunikasi:} Memfasilitasi komunikasi tim tanpa terikat bahasa pemrograman
+  \item \textbf{Validasi:} Memungkinkan pengecekan logika sebelum implementasi
+  \item \textbf{Pembelajaran:} Membantu pemula memahami konsep pemrograman
+\end{enumerate}
+
+\subsection{Standar Notasi Pseudocode}
+
+Berikut adalah standar notasi pseudocode yang umum digunakan:
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}p{4.25cm}|>{\raggedright\arraybackslash}p{4.05cm}|}
+\hline
+\textbf{Kategori} & \textbf{Notasi Pseudocode} & \textbf{Contoh} \\
+\hline
+Struktur & MULAI, SELESAI & MULAI ... SELESAI \\
+\hline
+Input/Output & BACA, CETAK, TULIS & BACA nilai, CETAK ``Hello'' \\
+\hline
+Assignment & := atau = & nilai := 10, x = y + 1 \\
+\hline
+Percabangan & JIKA...MAKA...JIKA TIDAK & JIKA x > 0 MAKA CETAK ``Positif'' \\
+\hline
+Perulangan & UNTUK...DARI...\allowbreak SAMPAI & UNTUK i := 1 DARI 1 SAMPAI 10 \\
+\hline
+Perulangan & SELAMA...LAKUKAN & SELAMA $x > 0$ LAKUKAN $x := x - 1$ \\
+\hline
+Prosedur & PROSEDUR nama() & PROSEDUR hitungRata() \\
+\hline
+Fungsi & FUNGSI nama() & FUNGSI maks(a, b) \\
+\hline
+Komentar & // atau /* ... */ & // Ini komentar \\
+\hline
+\end{tabular}
+\caption{Standar Notasi Pseudocode}
+\end{table}
+
+\subsection{Aturan Penulisan Pseudocode}
+
+\begin{itemize}
+  \item \textbf{Konsistensi:} Gunakan notasi yang sama di seluruh pseudocode
+  \item \textbf{Indentasi:} Gunakan indentasi untuk menunjukkan blok kode
+  \item \textbf{Bahasa Jelas:} Gunakan bahasa Indonesia atau Inggris yang jelas
+  \item \textbf{Struktur Logis:} Ikuti alur logika yang sistematis
+  \item \textbf{Detail Tepat:} Berikan detail cukup namun tidak terlalu teknis
+\end{itemize}
+
+\subsection{Perbandingan Pseudocode dan Flowchart}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\hline
+\textbf{Pseudocode} & \textbf{Flowchart} \\
+\hline
+Teks-based, linear & Visual, grafis \\
+\hline
+Lebih detail implementasi & Lebih fokus pada alur logika \\
+\hline
+Mudah diketik & Membutuhkan alat gambar \\
+\hline
+Baik untuk algoritma kompleks & Baik untuk presentasi \\
+\hline
+Struktur hierarki jelas & Alur visual langsung \\
+\hline
+\end{tabular}
+\caption{Perbandingan Pseudocode dan Flowchart}
+\end{table}
+
+Pseudocode memudahkan perancangan logika algoritma sebelum implementasi ke bahasa pemrograman seperti C. Dengan pseudocode, programmer dapat fokus pada alur logika tanpa khawatir tentang detail sintaks.

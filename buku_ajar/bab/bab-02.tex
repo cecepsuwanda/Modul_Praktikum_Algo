@@ -1,0 +1,136 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{1}}{}
+\begin{document}
+
+\chapter{Landasan Teori dan Konsep Dasar Algoritma}
+
+\begin{subcpmk}
+  \item Sub-CPMK 1.1: Menjelaskan definisi dan karakteristik algoritma (input, output, definiteness, finiteness, effectiveness, determinism)
+\end{subcpmk}
+
+\noindent\textit{Bab ini juga menyajikan materi pengantar pemrograman prosedural dan bahasa C sebagai fondasi untuk CPMK-3.}
+
+% ============================================================
+% MATERI POKOK
+% ============================================================
+\input{bab-02/section-2-1}
+\input{bab-02/section-2-2}
+\input{bab-02/section-2-3}
+\input{bab-02/section-2-4}
+\input{bab-02/section-2-5}
+
+% ============================================================
+% AKTIVITAS PEMBELAJARAN
+% ============================================================
+
+\begin{aktivitas}
+  \item \textbf{Diskusi Kelompok}: Identifikasi 5 contoh algoritma dalam kehidupan sehari-hari (misalnya: resep masakan, petunjuk penggunaan ATM) dan analisis apakah memenuhi enam karakteristik algoritma.
+  
+  \item \textbf{Analisis Kode}: Jalankan program Hello World dalam C, modifikasi untuk menampilkan nama Anda, lalu identifikasi fungsi \code{printf} dan \code{main}.
+  
+  \item \textbf{Perbandingan Paradigma}: Cari informasi tentang perbedaan pemrograman prosedural dan OOP. Buat ringkasan singkat kapan masing-masing cocok digunakan.
+  
+  \item \textbf{Instalasi Compiler}: Install GCC atau MinGW di komputer Anda, lalu kompilasi dan jalankan program C sederhana.
+\end{aktivitas}
+
+% ============================================================
+% LATIHAN DAN REFLEKSI
+% ============================================================
+
+\begin{latihan}
+  \item Jelaskan definisi algoritma menurut pemahaman Anda! Berikan dua contoh algoritma dari kehidupan sehari-hari.
+  
+  \item Sebutkan dan jelaskan enam karakteristik algoritma (input, output, definiteness, finiteness, effectiveness, determinism)!
+  
+  \item Mengapa bahasa C cocok untuk mempelajari dasar-dasar algoritma dan pemrograman?
+  
+  \item Jelaskan perbedaan utama antara pemrograman prosedural dan pemrograman berorientasi objek!
+  
+  \item Buat program C minimal yang menampilkan nama dan NIM Anda. Jelaskan fungsi setiap baris kode.
+  
+  \item \textbf{Refleksi}: Bagaimana pemahaman Anda tentang algoritma sebelum dan sesudah mempelajari bab ini? Konsep mana yang paling sulit dipahami?
+\end{latihan}
+
+% ============================================================
+% ASESMEN
+% ============================================================
+
+\begin{asesmen}
+\textbf{Instrumen Penilaian untuk Sub-CPMK 1.1}
+
+\textbf{A. Pilihan Ganda}
+
+\begin{enumerate}
+  \item Manakah yang BUKAN merupakan karakteristik algoritma?
+  \begin{enumerate}
+    \item Input
+    \item Output
+    \item Abstraksi
+    \item Finiteness
+  \end{enumerate}
+  
+  \item Bahasa C dikembangkan oleh:
+  \begin{enumerate}
+    \item James Gosling
+    \item Dennis Ritchie
+    \item Bjarne Stroustrup
+    \item Guido van Rossum
+  \end{enumerate}
+  
+  \item Karakteristik algoritma yang menyatakan bahwa setiap langkah harus jelas dan tidak ambigu disebut:
+  \begin{enumerate}
+    \item Input
+    \item Definiteness
+    \item Effectiveness
+    \item Output
+  \end{enumerate}
+\end{enumerate}
+
+\textbf{B. Essay}
+
+\begin{enumerate}
+  \item Jelaskan dengan kata-kata Anda sendiri apa yang dimaksud dengan algoritma dan berikan 2 contoh algoritma dari kehidupan sehari-hari.
+  
+  \item Sebutkan dan jelaskan keenam karakteristik algoritma yang baik. Berikan contoh langkah yang memenuhi dan tidak memenuhi karakteristik definiteness dan determinism.
+\end{enumerate}
+
+\textbf{Rubrik Penilaian}: Lihat Lampiran A
+\end{asesmen}
+
+% ============================================================
+% CHECKLIST KOMPETENSI
+% ============================================================
+
+\begin{checklist}
+  \item Saya dapat menjelaskan definisi dan sejarah algoritma
+  \item Saya dapat menyebutkan dan menjelaskan enam karakteristik algoritma
+  \item Saya memahami perbedaan pemrograman prosedural dan paradigma lain
+  \item Saya dapat menulis dan menjalankan program C minimal (Hello World)
+  \item Saya memahami peta konsep mata kuliah Algoritma dan Pemrograman
+\end{checklist}
+
+% ============================================================
+% RANGKUMAN
+% ============================================================
+
+\begin{rangkuman}
+Bab ini membahas landasan teori Algoritma dan Pemrograman, termasuk sejarah dan konsep algoritma, pemrograman prosedural, pengantar bahasa C, serta karakteristik algoritma.
+
+\textbf{Poin Kunci:}
+\begin{itemize}
+  \item Algoritma adalah urutan langkah logis yang terdefinisi untuk menyelesaikan masalah
+  \item Enam karakteristik algoritma: Input, Output, Definiteness, Finiteness, Effectiveness, Determinism
+  \item Bahasa C adalah bahasa prosedural yang cocok untuk mempelajari dasar pemrograman
+  \item Pemrograman prosedural fokus pada fungsi dan data, cocok untuk program sederhana
+  \item Peta konsep menunjukkan alur dari algoritma, flowchart, variabel, percabangan, perulangan, hingga pengurutan dan pencarian
+\end{itemize}
+
+\textbf{Kata Kunci}: Algoritma, Pemrograman Prosedural, Bahasa C, Flowchart, Pseudocode
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

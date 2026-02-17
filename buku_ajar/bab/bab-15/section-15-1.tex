@@ -1,0 +1,206 @@
+\section{Definisi Struct}
+
+Struct (structure) adalah tipe data bentukan yang menggabungkan beberapa variabel dengan tipe berbeda dalam satu unit. Struct memungkinkan programmer merepresentasikan entitas dunia nyata (misalnya Mahasiswa dengan NIM, nama, IPK) dalam satu variabel terstruktur. Struct adalah salah satu fitur fundamental dalam C untuk mengorganisir data yang kompleks.
+
+\subsection{Deklarasi Struct}
+
+Sintaks dasar deklarasi struct:
+\begin{lstlisting}[language=C]
+struct NamaStruct {
+    tipe_data field1;
+    tipe_data field2;
+    // ... field lainnya
+};
+\end{lstlisting}
+
+\textbf{Contoh dasar - Struct Mahasiswa:}
+\begin{lstlisting}[language=C]
+struct Mahasiswa {
+    int nim;
+    char nama[50];
+    float ipk;
+    int umur;
+};
+\end{lstlisting}
+
+\subsection{Definisi Variabel Struct}
+
+Setelah struct dideklarasikan, kita dapat membuat variabel dari struct tersebut:
+
+\begin{lstlisting}[language=C]
+// Metode 1: Deklarasi terpisah
+struct Mahasiswa mhs1;
+
+// Metode 2: Deklarasi dengan inisialisasi
+struct Mahasiswa mhs2 = {12345, "Budi Santoso", 3.75, 20};
+
+// Metode 3: Menggunakan typedef (lebih praktis)
+typedef struct {
+    int nim;
+    char nama[50];
+    float ipk;
+    int umur;
+} Mahasiswa;
+
+// Setelah typedef, deklarasi lebih sederhana
+Mahasiswa mhs3;
+\end{lstlisting}
+
+\subsection{Akses Anggota Struct}
+
+Anggota struct diakses menggunakan operator dot (.):
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int nim;
+    char nama[50];
+    float ipk;
+    int umur;
+} Mahasiswa;
+
+int main() {
+    Mahasiswa mhs;
+    
+    // Mengisi nilai ke anggota struct
+    mhs.nim = 2024001234;
+    strcpy(mhs.nama, "Ahmad Fauzi");
+    mhs.ipk = 3.85;
+    mhs.umur = 21;
+    
+    // Mengakses dan menampilkan nilai
+    printf("NIM: %d\n", mhs.nim);
+    printf("Nama: %s\n", mhs.nama);
+    printf("IPK: %.2f\n", mhs.ipk);
+    printf("Umur: %d tahun\n", mhs.umur);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Nested Struct}
+
+Struct dapat berisi struct lain sebagai anggotanya:
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <string.h>
+
+// Struct untuk tanggal
+typedef struct {
+    int hari;
+    int bulan;
+    int tahun;
+} Tanggal;
+
+// Struct untuk alamat
+typedef struct {
+    char jalan[100];
+    char kota[50];
+    char provinsi[50];
+    int kodePos;
+} Alamat;
+
+// Struct mahasiswa yang menggunakan struct lain
+typedef struct {
+    int nim;
+    char nama[50];
+    Tanggal tanggalLahir;
+    Alamat alamat;
+    float ipk;
+} MahasiswaLengkap;
+
+int main() {
+    MahasiswaLengkap mhs;
+    
+    // Mengisi data mahasiswa
+    mhs.nim = 2024001234;
+    strcpy(mhs.nama, "Siti Nurhaliza");
+    
+    // Mengisi data tanggal lahir
+    mhs.tanggalLahir.hari = 15;
+    mhs.tanggalLahir.bulan = 8;
+    mhs.tanggalLahir.tahun = 2002;
+    
+    // Mengisi data alamat
+    strcpy(mhs.alamat.jalan, "Jl. Merdeka No. 123");
+    strcpy(mhs.alamat.kota, "Jakarta");
+    strcpy(mhs.alamat.provinsi, "DKI Jakarta");
+    mhs.alamat.kodePos = 12345;
+    
+    mhs.ipk = 3.90;
+    
+    // Menampilkan data
+    printf("Data Mahasiswa:\n");
+    printf("NIM: %d\n", mhs.nim);
+    printf("Nama: %s\n", mhs.nama);
+    printf("Tanggal Lahir: %d/%d/%d\n", 
+           mhs.tanggalLahir.hari, 
+           mhs.tanggalLahir.bulan, 
+           mhs.tanggalLahir.tahun);
+    printf("Alamat: %s, %s, %s %d\n", 
+           mhs.alamat.jalan, 
+           mhs.alamat.kota, 
+           mhs.alamat.provinsi, 
+           mhs.alamat.kodePos);
+    printf("IPK: %.2f\n", mhs.ipk);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Array of Struct}
+
+Struct dapat dibuat dalam bentuk array untuk mengelola banyak entitas:
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int nim;
+    char nama[50];
+    float ipk;
+} Mahasiswa;
+
+int main() {
+    // Array of struct
+    Mahasiswa kelas[5];
+    int i;
+    
+    // Mengisi data untuk 5 mahasiswa
+    for (i = 0; i < 5; i++) {
+        printf("Mahasiswa ke-%d:\n", i + 1);
+        printf("NIM: ");
+        scanf("%d", &kelas[i].nim);
+        printf("Nama: ");
+        scanf("%s", kelas[i].nama);
+        printf("IPK: ");
+        scanf("%f", &kelas[i].ipk);
+        printf("\n");
+    }
+    
+    // Menampilkan semua data
+    printf("\nData Semua Mahasiswa:\n");
+    for (i = 0; i < 5; i++) {
+        printf("%d. %s - NIM: %d - IPK: %.2f\n", 
+               i + 1, kelas[i].nama, kelas[i].nim, kelas[i].ipk);
+    }
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Keuntungan Menggunakan Struct}
+
+\begin{itemize}
+  \item \textbf{Organisasi Data:} Mengelompokkan data terkait dalam satu unit
+  \item \textbf{Readability:} Kode lebih mudah dibaca dan dimengerti
+  \item \textbf{Maintainability:} Modifikasi data menjadi lebih terstruktur
+  \item \textbf{Real-world Modeling:} Mudah memodelkan entitas dunia nyata
+  \item \textbf{Parameter Passing:} Memudahkan passing data kompleks ke fungsi
+\end{itemize}
+
+Struct adalah fondasi untuk pemrograman berorientasi objek dan sangat penting dalam pengembangan aplikasi yang mengelola data kompleks.

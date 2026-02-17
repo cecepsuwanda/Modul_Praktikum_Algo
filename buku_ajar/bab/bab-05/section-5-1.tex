@@ -1,0 +1,103 @@
+\section{Variabel dan Deklarasi dalam C}
+
+Variabel adalah tempat penyimpanan data di memori yang memiliki nama dan tipe data \cite{ref7}. Dalam pemrograman, variabel berfungsi seperti wadah yang dapat menampung nilai-nilai yang berubah selama eksekusi program. Setiap variabel dalam C memiliki alamat memori unik yang digunakan untuk menyimpan dan mengakses data.
+
+\subsection{Deklarasi Variabel}
+
+Dalam C, variabel harus dideklarasikan sebelum digunakan dengan sintaks umum:
+\begin{lstlisting}[language=C]
+tipe_data nama_variabel;
+\end{lstlisting}
+
+\textbf{Contoh Deklarasi:}
+\begin{lstlisting}[language=C]
+int umur;                    // Variabel integer untuk umur
+float tinggi;                // Variabel float untuk tinggi badan
+char grade;                  // Variabel karakter untuk nilai
+double gpa;                  // Variabel double untuk IPK
+\end{lstlisting}
+
+\subsection{Inisialisasi Variabel}
+
+Variabel dapat diinisialisasi saat deklarasi atau diberi nilai kemudian:
+
+\begin{lstlisting}[language=C]
+// Inisialisasi saat deklarasi
+int x = 10;
+float pi = 3.14159;
+char huruf = 'A';
+
+// Inisialisasi terpisah
+int y;
+y = 20;  // Assignment setelah deklarasi
+\end{lstlisting}
+
+\subsection{Aturan Penamaan Variabel}
+
+Nama variabel (identifier) harus mengikuti aturan berikut:
+
+\begin{itemize}
+  \item \textbf{Karakter yang diizinkan:} Huruf (a-z, A-Z), angka (0-9), dan underscore (\_)
+  \item \textbf{Karakter pertama:} Harus huruf atau underscore, tidak boleh angka
+  \item \textbf{Panjang maksimal:} Biasanya 31 karakter (standar C)
+  \item \textbf{Case sensitive:} \code{nilai} berbeda dengan \code{Nilai}
+  \item \textbf{Reserved words:} Tidak boleh menggunakan kata kunci C seperti \code{int}, \code{if}, \code{while}
+\end{itemize}
+
+\textbf{Contoh nama variabel yang valid:}
+\begin{lstlisting}[language=C]
+int umurMahasiswa;
+float nilai_rata_rata;
+char grade;
+int _counter;
+\end{lstlisting}
+
+\textbf{Contoh nama variabel yang tidak valid:}
+\begin{lstlisting}[language=C]
+int 2umur;          // Tidak boleh diawali angka
+float nilai-rata;    // Tidak boleh menggunakan strip (-)
+char class;          // Tidak boleh reserved word
+\end{lstlisting}
+
+\subsection{Scope Variabel}
+
+Scope menentukan di mana variabel dapat diakses dalam program:
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{7cm}|}
+\hline
+\textbf{Jenis Scope} & \textbf{Keterangan} \\
+\hline
+Local & Dideklarasikan di dalam fungsi, hanya dapat diakses di fungsi tersebut \\
+\hline
+Global & Dideklarasikan di luar semua fungsi, dapat diakses di seluruh program \\
+\hline
+Block & Dideklarasikan di dalam blok \{\}, hanya dapat diakses di blok tersebut \\
+\hline
+\end{tabular}
+\caption{Jenis Scope Variabel dalam C}
+\end{table}
+
+\textbf{Contoh Scope:}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int globalVar = 100;  // Variabel global
+
+int main() {
+    int localVar = 50;  // Variabel local
+    
+    {
+        int blockVar = 25;  // Variabel block
+        printf("Block: %d\n", blockVar);  // Bisa diakses
+    }
+    
+    printf("Local: %d\n", localVar);    // Bisa diakses
+    printf("Global: %d\n", globalVar);   // Bisa diakses
+    // printf("Block: %d\n", blockVar);  // Error: tidak bisa diakses
+    
+    return 0;
+}
+\end{lstlisting}

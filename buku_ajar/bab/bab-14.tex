@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{13}}{}
+\begin{document}
+
+\chapter{String dalam C}
+
+\begin{subcpmk}
+  \item Sub-CPMK 4.2: Menggunakan string dan manipulasi teks dalam C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} String sebagai array \code{char} dengan null terminator; fungsi \code{strlen}, \code{strcpy}, \code{strcmp}, \code{strcat} dari \code{string.h}.\cite{ref7,string_cppref}
+
+\input{bab-14/bab-14-section-1}
+\input{bab-14/bab-14-section-2}
+
+\begin{aktivitas}
+  \item Buat program mengecek palindrom.
+  \item Buat program menghitung jumlah kata dalam kalimat.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Mengapa string C diakhiri '\textbackslash0'?
+  \item Jelaskan perbedaan strcpy dan strcmp!
+  \item \textbf{Refleksi}: Apa risiko jika lupa mengalokasikan ruang cukup untuk string (termasuk \textbackslash0) atau lupa null terminator? Berikan contoh.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 4.2}: Buat program C yang membaca sebuah kata, lalu mengecek apakah kata tersebut palindrom (dibaca sama dari kiri dan kanan). Gunakan loop dan bandingkan karakter, atau gunakan fungsi dari \code{string.h}.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan string dan fungsi string.h
+  \item Saya dapat memanipulasi string
+\end{checklist}
+
+\begin{rangkuman}
+String = array char + null terminator. Fungsi: strlen, strcpy, strcmp, strcat.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{3}}{}
+\begin{document}
+
+\chapter{Pseudocode dan Notasi Algoritma}
+
+\begin{subcpmk}
+  \item Sub-CPMK 1.2: Membuat pseudocode untuk masalah sederhana dan mengkonversinya ke bahasa C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Konsep dan notasi pseudocode, pemetaan pseudocode ke struktur kontrol C, serta contoh konversi sederhana \cite{pseudocode_wikipedia,ref7}.
+
+\input{bab-04/section-4-1}
+\input{bab-04/section-4-2}
+
+\begin{aktivitas}
+  \item Tulis pseudocode untuk menghitung rata-rata tiga bilangan, lalu konversikan ke C.
+  \item Bandingkan flowchart dan pseudocode untuk masalah yang sama. Mana yang lebih mudah dibuat?
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan flowchart dan pseudocode!
+  \item Tulis pseudocode untuk menentukan bilangan terbesar dari tiga input!
+  \item \textbf{Refleksi}: Bagian mana dari konversi pseudocode ke C yang paling menantang bagi Anda? Jelaskan alasannya.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 1.2}: Buat pseudocode dan implementasi C untuk menghitung luas segitiga dari input alas dan tinggi, lalu jelaskan pemetaan setiap langkah pseudocode ke kode C.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menulis pseudocode untuk masalah sederhana
+  \item Saya dapat mengkonversi pseudocode ke kode C
+\end{checklist}
+
+\begin{rangkuman}
+Pseudocode adalah deskripsi algoritma dalam bahasa manusia yang memudahkan perancangan sebelum implementasi ke C.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

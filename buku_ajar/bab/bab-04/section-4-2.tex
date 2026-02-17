@@ -1,0 +1,185 @@
+\section{Contoh Pseudocode dan Konversi ke Bahasa C}
+
+Berikut adalah contoh-contoh pseudocode lengkap dengan konversinya ke bahasa C untuk memahami hubungan antara desain algoritma dan implementasi kode.
+
+\subsection{Contoh 1: Program Hello World}
+
+\textbf{Pseudocode:}
+\begin{lstlisting}[language=]
+MULAI
+    CETAK "Hello, World"
+SELESAI
+\end{lstlisting}
+
+\textbf{Konversi ke C:}
+\begin{lstlisting}[language=C, caption={Konversi Hello World ke C}]
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World\n");
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Analisis Konversi:}
+\begin{itemize}
+  \item MULAI → \code{int main() \{}
+  \item CETAK → \code{printf()}
+  \item SELESAI → \code{return 0; \}}
+\end{itemize}
+
+\subsection{Contoh 2: Membaca Input dan Menampilkan Output}
+
+\textbf{Pseudocode:}
+\begin{lstlisting}[language=]
+MULAI
+    BACA nama
+    CETAK "Halo, ", nama
+SELESAI
+\end{lstlisting}
+
+\textbf{Konversi ke C:}
+\begin{lstlisting}[language=C, caption={Konversi Input/Output ke C}]
+#include <stdio.h>
+
+int main() {
+    char nama[50];
+    
+    printf("Masukkan nama: ");
+    scanf("%s", nama);
+    printf("Halo, %s\n", nama);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\textbf{Analisis Konversi:}
+\begin{itemize}
+  \item BACA nama → \code{scanf("\%s", nama)}
+  \item CETAK → \code{printf()}
+  \item Perlu deklarasi variabel: \code{char nama[50];}
+\end{itemize}
+
+\subsection{Contoh 3: Percabangan If-Else}
+
+\textbf{Pseudocode:}
+\begin{lstlisting}[language=]
+MULAI
+    BACA nilai
+    JIKA nilai > 60 MAKA
+        CETAK "Lulus"
+    JIKA TIDAK
+        CETAK "Tidak Lulus"
+SELESAI
+\end{lstlisting}
+
+\textbf{Konversi ke C:}
+\begin{lstlisting}[language=C, caption={Konversi Percabangan ke C}]
+#include <stdio.h>
+
+int main() {
+    int nilai;
+    
+    printf("Masukkan nilai: ");
+    scanf("%d", &nilai);
+    
+    if (nilai > 60) {
+        printf("Lulus\n");
+    } else {
+        printf("Tidak Lulus\n");
+    }
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Contoh 4: Perulangan For}
+
+\textbf{Pseudocode:}
+\begin{lstlisting}[language=]
+MULAI
+    UNTUK i := 1 DARI 1 SAMPAI 5 LAKUKAN
+        CETAK i
+SELESAI
+\end{lstlisting}
+
+\textbf{Konversi ke C:}
+\begin{lstlisting}[language=C, caption={Konversi Perulangan ke C}]
+#include <stdio.h>
+
+int main() {
+    int i;
+    
+    for (i = 1; i <= 5; i++) {
+        printf("%d\n", i);
+    }
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Contoh 5: Menghitung Rata-rata}
+
+\textbf{Pseudocode:}
+\begin{lstlisting}[language=]
+MULAI
+    BACA bil1, bil2, bil3
+    jumlah := bil1 + bil2 + bil3
+    rata := jumlah / 3
+    CETAK "Rata-rata: ", rata
+SELESAI
+\end{lstlisting}
+
+\textbf{Konversi ke C:}
+\begin{lstlisting}[language=C, caption={Konversi Perhitungan Rata-rata ke C}]
+#include <stdio.h>
+
+int main() {
+    float bil1, bil2, bil3, jumlah, rata;
+    
+    printf("Masukkan tiga bilangan: ");
+    scanf("%f %f %f", &bil1, &bil2, &bil3);
+    
+    jumlah = bil1 + bil2 + bil3;
+    rata = jumlah / 3;
+    
+    printf("Rata-rata: %.2f\n", rata);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Tabel Pemetaan Konversi}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\textbf{Pseudocode} & \textbf{Bahasa C} \\
+\hline
+MULAI & \code{int main() \{} \\
+\hline
+SELESAI & \code{return 0; \}} \\
+\hline
+BACA variabel & \code{scanf("\%format", \&variabel);} \\
+\hline
+CETAK teks & \code{printf("teks\textbackslash n");} \\
+\hline
+variabel := nilai & \code{variabel = nilai;} \\
+\hline
+JIKA kondisi MAKA & \code{if (kondisi) \{} \\
+\hline
+JIKA TIDAK & \code{\} else \{} \\
+\hline
+UNTUK i := 1 SAMPAI n & \code{for (i = 1; i <= n; i++) \{} \\
+\hline
+SELAMA kondisi & \code{while (kondisi) \{} \\
+\hline
+LAKUKAN & \code{// Isi loop} \\
+\hline
+\end{tabular}
+\caption{Pemetaan Konversi Pseudocode ke Bahasa C}
+\end{table}
+
+Konversi pseudocode ke C dilakukan dengan memetakan setiap notasi pseudocode ke sintaks yang sesuai dalam bahasa C, ditambah dengan deklarasi variabel dan header yang diperlukan.

@@ -1,0 +1,47 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{15}}{}
+\begin{document}
+
+\chapter{Algoritma Pengurutan dan Pencarian}
+
+\begin{subcpmk}
+  \item Sub-CPMK 5.1: Mengimplementasikan bubble sort, selection sort, linear search, binary search
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Algoritma pengurutan (bubble sort, selection sort) dan pencarian (linear search, binary search); kompleksitas O(n²) dan O(n)/O(log n) \cite{sorting_wikipedia,bubble_sort_wikipedia,selection_sort_wikipedia,insertion_sort_wikipedia,linear_search_wikipedia,binary_search_wikipedia,ref3}.
+
+\input{bab-16/section-16-1}
+\input{bab-16/section-16-2}
+\input{bab-16/section-16-3}
+\input{bab-16/section-16-4}
+
+\begin{aktivitas}
+  \item Implementasikan bubble sort dan uji dengan array acak.
+  \item Implementasikan binary search; pastikan array terurut terlebih dahulu.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan bubble sort dan selection sort!
+  \item Mengapa binary search membutuhkan data terurut? Bandingkan kompleksitas linear vs binary search.
+  \item \textbf{Refleksi}: Kapan Anda memilih linear search dan kapan binary search? Bagaimana jika data belum terurut?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 5.1}: Buat program C yang: (1) mengisi array dengan 10 bilangan acak, (2) mengurutkannya dengan selection sort dan menampilkan hasil, (3) membaca sebuah bilangan dan mencari dengan binary search lalu menampilkan indeks atau pesan tidak ditemukan.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat mengimplementasikan bubble sort dan selection sort
+  \item Saya dapat mengimplementasikan linear search dan binary search
+\end{checklist}
+
+\begin{rangkuman}
+Bubble sort dan selection sort O(n²). Linear search O(n); binary search O(log n) untuk data terurut. Pemilihan algoritma bergantung pada ukuran data dan karakteristik input.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

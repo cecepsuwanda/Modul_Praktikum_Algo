@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{9}}{}
+\begin{document}
+
+\chapter{Perulangan Bersarang}
+
+\begin{subcpmk}
+  \item Sub-CPMK 3.2: Mengimplementasikan perulangan bersarang
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Perulangan bersarang (nested loop); alur eksekusi; penerapan untuk pola, tabel, dan matriks \cite{ref7,control_flow_cppref}.
+
+\input{bab-10/section-10-1}
+\input{bab-10/section-10-2}
+
+\begin{aktivitas}
+  \item Buat program menampilkan tabel perkalian 10x10.
+  \item Buat program menampilkan pola segitiga bintang.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan alur eksekusi perulangan bersarang!
+  \item Buat program menampilkan pola piramida angka!
+  \item \textbf{Refleksi}: Saat membuat pola segitiga atau tabel, kesalahan apa yang paling sering Anda buat (indeks, kondisi)? Bagaimana Anda mendebugnya?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 3.2}: Buat program C yang membaca tinggi N, lalu menampilkan pola segitiga siku-siku terbalik dari bintang (tinggi N baris). Gunakan nested loop. Tuliskan pseudocode sebelum implementasi.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat membuat perulangan bersarang
+  \item Saya dapat menerapkannya untuk pola dan tabel
+\end{checklist}
+
+\begin{rangkuman}
+Perulangan bersarang: loop di dalam loop. Digunakan untuk pola, tabel, dan operasi matriks.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

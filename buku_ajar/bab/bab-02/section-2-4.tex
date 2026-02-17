@@ -1,0 +1,87 @@
+\section{Karakteristik Algoritma}
+
+Berdasarkan standar ilmu komputer modern dan referensi dari GeeksforGeeks, sebuah algoritma harus memiliki enam karakteristik fundamental untuk dapat dikategorikan sebagai algoritma yang baik dan benar \cite{gfg_algorithm_intro}. Karakteristik ini menjadi acuan dalam mengevaluasi kualitas algoritma yang dirancang.
+
+\subsection{Enam Karakteristik Utama Algoritma}
+
+\begin{enumerate}
+  \item \textbf{Input (Masukan)}
+  \begin{itemize}
+    \item Algoritma harus memiliki nol atau lebih input yang terdefinisi dengan jelas
+    \item Input harus spesifik dan dapat diukur
+    \item Contoh: algoritma pengurutan memerlukan array sebagai input
+  \end{itemize}
+  
+  \item \textbf{Output (Keluaran)}
+  \begin{itemize}
+    \item Algoritma harus menghasilkan minimal satu output
+    \item Output harus sesuai dengan tujuan algoritma
+    \item Contoh: array yang sudah terurut, nilai maksimum, hasil perhitungan
+  \end{itemize}
+  
+  \item \textbf{Definiteness (Kejelasan)}
+  \begin{itemize}
+    \item Setiap langkah harus didefinisikan dengan jelas dan tidak ambigu
+    \item Tidak boleh ada interpretasi ganda untuk setiap instruksi
+    \item Contoh yang salah: "tambahkan sedikit garam" → tidak jelas
+    \item Contoh yang benar: "tambahkan 1 sendok teh garam" → jelas
+  \end{itemize}
+  
+  \item \textbf{Finiteness (Keterbatasan)}
+  \begin{itemize}
+    \item Algoritma harus berakhir setelah jumlah langkah terbatas
+    \item Tidak boleh mengandung infinite loop tanpa kondisi berhenti
+    \item Setiap eksekusi harus selesai dalam waktu wajar
+  \end{itemize}
+  
+  \item \textbf{Effectiveness (Efektivitas)}
+  \begin{itemize}
+    \item Setiap langkah harus dapat dilakukan dengan sumber daya yang tersedia
+    \item Instruksi harus dasar dan dapat dieksekusi dalam waktu terbatas
+    \item Tidak boleh memerlukan operasi yang tidak mungkin dilakukan
+  \end{itemize}
+  
+  \item \textbf{Determinism (Deterministik)}
+  \begin{itemize}
+    \item Untuk input yang sama, algoritma harus selalu menghasilkan output yang sama
+    \item Tidak ada elemen random atau kebetulan dalam proses
+    \item Hasil dapat diprediksi dan direproduksi
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Tabel Perbandingan Karakteristik}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.4cm}|>{\raggedright\arraybackslash}p{5.5cm}|>{\raggedright\arraybackslash}p{3.95cm}|}
+\hline
+\textbf{Karakteristik} & \textbf{Deskripsi} & \textbf{Contoh Penerapan} \\
+\hline
+Input & Data masukan yang diperlukan & Array angka untuk diurutkan \\
+\hline
+Output & Hasil yang dihasilkan & Array yang sudah terurut \\
+\hline
+Definiteness & Langkah jelas tidak ambigu & ``Tukar jika A > B'' \\
+\hline
+Finiteness & Berakhir dalam waktu terbatas & Loop berhenti setelah n-1 iterasi \\
+\hline
+Effectiveness & Langkah dapat dilakukan & Operasi perbandingan dan pertukaran \\
+\hline
+Determinism & Hasil konsisten & Input [3,1,2] selalu menghasilkan [1,2,3] \\
+\hline
+\end{tabular}
+\caption{Enam Karakteristik Algoritma yang Baik}
+\end{table}
+
+\begin{konsep}
+Ringkasan enam karakteristik algoritma:
+\begin{enumerate}
+  \item \textbf{Input}: Algoritma menerima masukan yang terdefinisi (nol atau lebih)
+  \item \textbf{Output}: Algoritma menghasilkan minimal satu keluaran
+  \item \textbf{Definiteness}: Setiap langkah jelas dan tidak ambigu
+  \item \textbf{Finiteness}: Algoritma berakhir dalam langkah terbatas
+  \item \textbf{Effectiveness}: Setiap langkah dapat dilaksanakan secara praktis
+  \item \textbf{Determinism}: Input yang sama selalu menghasilkan output yang sama
+\end{enumerate}
+\end{konsep}

@@ -1,0 +1,77 @@
+\section{Peta Konsep dan Contoh Algoritma}
+
+\subsection{Peta Konsep Algoritma dan Pemrograman}
+
+Peta konsep mata kuliah Algoritma dan Pemrograman menunjukkan alur pembelajaran dari fondasi hingga penerapan. Dimulai dari pemahaman konsep algoritma dan karakteristiknya, mahasiswa belajar merancang solusi menggunakan flowchart dan pseudocode. Selanjutnya, mahasiswa mempelajari elemen dasar bahasa C meliputi variabel, tipe data, I/O, dan operator.
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm]
+  \node[flowstart] (a) {Algoritma dan Pemrograman};
+  \node[flowprocess, below=of a] (b) {Flowchart \& Pseudocode};
+  \node[flowprocess, below=of b] (c) {Variabel, Tipe Data, I/O};
+  \node[flowprocess, below=of c] (d) {Percabangan \& Perulangan};
+  \node[flowprocess, below=of d] (e) {Fungsi, Array, String};
+  \node[flowprocess, below=of e] (f) {Struct, Pengurutan, Pencarian};
+  \draw[arrow] (a) -- (b);
+  \draw[arrow] (b) -- (c);
+  \draw[arrow] (c) -- (d);
+  \draw[arrow] (d) -- (e);
+  \draw[arrow] (e) -- (f);
+\end{tikzpicture}
+\end{center}
+
+Struktur percabangan (if-else, switch) dan perulangan (for, while, do-while) memungkinkan pengambilan keputusan dan pengulangan operasi. Fungsi dan prosedur mendukung modularisasi program. Array dan string digunakan untuk mengelola kumpulan data. Struct memungkinkan pembuatan tipe data bentukan. Algoritma pengurutan dan pencarian menerapkan semua konsep yang telah dipelajari untuk menyelesaikan masalah komputasi nyata.
+
+\subsection{Contoh Algoritma Lengkap}
+
+\textbf{Algoritma Menemukan Nilai Maksimum dalam Array:}
+
+\begin{enumerate}
+  \item \textbf{Input:} Array A dengan n elemen bilangan bulat
+  \item \textbf{Proses:}
+  \begin{enumerate}
+    \item Inisialisasi: maks ← A[0]
+    \item Untuk i ← 1 hingga n-1:
+    \begin{itemize}
+      \item Jika A[i] > maks maka maks ← A[i]
+    \end{itemize}
+  \end{enumerate}
+  \item \textbf{Output:} Nilai maksimum (maks)
+\end{enumerate}
+
+\textbf{Analisis 6 Karakteristik:}
+\begin{itemize}
+  \item \textbf{Input:} Array A dengan n elemen (terdefinisi jelas)
+  \item \textbf{Output:} Satu nilai maksimum (spesifik)
+  \item \textbf{Definiteness:} Langkah-langkah jelas (inisialisasi, loop, perbandingan, assignment)
+  \item \textbf{Finiteness:} Loop berakhir setelah n-1 iterasi
+  \item \textbf{Effectiveness:} Operasi perbandingan dan assignment dapat dilakukan
+  \item \textbf{Determinism:} Input [3,1,2,5,4] selalu menghasilkan 5
+\end{itemize}
+
+\textbf{Implementasi dalam Bahasa C:}
+\begin{lstlisting}[language=C, caption={Implementasi Algoritma Nilai Maksimum}]
+#include <stdio.h>
+
+int findMaximum(int arr[], int n) {
+    int maks = arr[0];  // Inisialisasi
+    
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > maks) {
+            maks = arr[i];  // Update jika ditemukan nilai lebih besar
+        }
+    }
+    
+    return maks;  // Output
+}
+
+int main() {
+    int data[] = {3, 1, 2, 5, 4};
+    int n = sizeof(data) / sizeof(data[0]);
+    
+    printf("Nilai maksimum: %d\n", findMaximum(data, n));
+    return 0;
+}
+\end{lstlisting}
+
+Contoh ini menunjukkan bagaimana algoritma yang dirancang dengan baik memenuhi semua karakteristik fundamental dan dapat diimplementasikan dalam bahasa C dengan hasil yang dapat diprediksi.

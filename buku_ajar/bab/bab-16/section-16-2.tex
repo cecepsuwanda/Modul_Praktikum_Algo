@@ -1,0 +1,189 @@
+\section{Algoritma Pencarian: Linear Search dan Binary Search}
+
+Algoritma pencarian (searching) adalah proses menemukan elemen tertentu dalam kumpulan data. Dua algoritma pencarian dasar yang akan dipelajari adalah Linear Search dan Binary Search dengan karakteristik yang sangat berbeda.
+
+\subsection{Linear Search}
+
+Linear Search adalah algoritma pencarian paling sederhana yang bekerja dengan cara memeriksa setiap elemen secara berurutan dari awal hingga elemen yang dicari ditemukan atau sampai akhir array.
+
+\textbf{Algoritma Linear Search:}
+\begin{enumerate}
+  \item Mulai dari elemen pertama array
+  \item Bandingkan elemen saat ini dengan nilai yang dicari
+  \item Jika sama, kembalikan indeks elemen tersebut
+  \item Jika tidak, lanjut ke elemen berikutnya
+  \item Ulangi hingga elemen ditemukan atau akhir array
+  \item Jika tidak ditemukan, kembalikan -1
+\end{enumerate}
+
+\textbf{Implementasi Linear Search dalam C:}
+\begin{lstlisting}[language=C, caption={Implementasi Linear Search}]
+#include <stdio.h>
+
+int linearSearch(int arr[], int n, int x) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (arr[i] == x) {
+            return i;  // Elemen ditemukan
+        }
+    }
+    return -1;  // Elemen tidak ditemukan
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int x = 22;
+    int result = linearSearch(arr, n, x);
+    
+    if (result == -1) {
+        printf("Elemen %d tidak ditemukan dalam array\n", x);
+    } else {
+        printf("Elemen %d ditemukan pada indeks %d\n", x, result);
+    }
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Binary Search}
+
+Binary Search adalah algoritma pencarian yang sangat efisien untuk data yang sudah terurut. Algoritma ini bekerja dengan cara membagi ruang pencarian menjadi dua bagian secara berulang.
+
+\textbf{Algoritma Binary Search:}
+\begin{enumerate}
+  \item Tentukan batas bawah (low) dan batas atas (high) array
+  \item Hitung indeks tengah: mid = low + (high - low) / 2
+  \item Bandingkan elemen tengah dengan nilai yang dicari
+  \item Jika sama, kembalikan indeks tengah
+  \item Jika nilai dicari lebih kecil, ubah high = mid - 1
+  \item Jika nilai dicari lebih besar, ubah low = mid + 1
+  \item Ulangi hingga elemen ditemukan atau low > high
+\end{enumerate}
+
+\textbf{Implementasi Binary Search dalam C:}
+\begin{lstlisting}[language=C, caption={Implementasi Binary Search}]
+#include <stdio.h>
+
+int binarySearch(int arr[], int n, int x) {
+    int low = 0, high = n - 1;
+    
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        
+        if (arr[mid] == x) {
+            return mid;  // Elemen ditemukan
+        }
+        
+        if (arr[mid] < x) {
+            low = mid + 1;  // Cari di bagian kanan
+        } else {
+            high = mid - 1;  // Cari di bagian kiri
+        }
+    }
+    
+    return -1;  // Elemen tidak ditemukan
+}
+
+int main() {
+    int arr[] = {11, 12, 22, 25, 34, 64, 90};  // Array harus terurut
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int x = 22;
+    int result = binarySearch(arr, n, x);
+    
+    if (result == -1) {
+        printf("Elemen %d tidak ditemukan dalam array\n", x);
+    } else {
+        printf("Elemen %d ditemukan pada indeks %d\n", x, result);
+    }
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Analisis Kompleksitas Pencarian}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|}
+\hline
+\textbf{Algoritma} & \textbf{Best Case} & \textbf{Average Case} & \textbf{Worst Case} \\
+\hline
+Linear Search & O(1) & O(n) & O(n) \\
+\hline
+Binary Search & O(1) & O(log n) & O(log n) \\
+\hline
+\end{tabular}
+\caption{Kompleksitas Waktu Algoritma Pencarian}
+\end{table}
+
+\subsection{Perbandingan Linear Search vs Binary Search}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3.5cm}|}
+\hline
+\textbf{Aspek} & \textbf{Linear Search} & \textbf{Binary Search} \\
+\hline
+Prinsip Kerja & Periksa elemen satu per satu & Bagi dua ruang pencarian \\
+\hline
+Syarat Data & Tidak perlu terurut & Harus terurut \\
+\hline
+Kompleksitas Waktu & O(n) & O(log n) \\
+\hline
+Kompleksitas Ruang & O(1) & O(1) \\
+\hline
+Best Case & O(1) - elemen pertama & O(1) - elemen tengah \\
+\hline
+Worst Case & O(n) - elemen terakhir & O(log n) \\
+\hline
+Implementasi & Sangat sederhana & Lebih kompleks \\
+\hline
+\end{tabular}
+\caption{Perbandingan Linear Search dan Binary Search}
+\end{table}
+
+\subsection{Visualisasi Proses Pencarian}
+
+\textbf{Contoh Linear Search: Mencari 25 dalam [64, 34, 25, 12, 22]}
+\begin{itemize}
+  \item Langkah 1: Bandingkan 64 dengan 25 → tidak sama
+  \item Langkah 2: Bandingkan 34 dengan 25 → tidak sama
+  \item Langkah 3: Bandingkan 25 dengan 25 → sama! Ditemukan di indeks 2
+\end{itemize}
+
+\textbf{Contoh Binary Search: Mencari 25 dalam [11, 12, 22, 25, 34, 64, 90]}
+\begin{itemize}
+  \item Langkah 1: low=0, high=6, mid=3 → arr[3]=25 → sama! Ditemukan di indeks 3
+\end{itemize}
+
+\textbf{Contoh Binary Search: Mencari 22 dalam [11, 12, 22, 25, 34, 64, 90]}
+\begin{itemize}
+  \item Langkah 1: low=0, high=6, mid=3 → arr[3]=25 > 22 → high=2
+  \item Langkah 2: low=0, high=2, mid=1 → arr[1]=12 < 22 → low=2
+  \item Langkah 3: low=2, high=2, mid=2 → arr[2]=22 → sama! Ditemukan di indeks 2
+\end{itemize}
+
+\subsection{Kapan Menggunakan Algoritma Pencarian}
+
+\begin{itemize}
+  \item \textbf{Gunakan Linear Search jika:}
+  \begin{itemize}
+    \item Data tidak terurut atau sering berubah
+    \item Jumlah data kecil (n < 100)
+    \item Implementasi yang sederhana diutamakan
+    \item Hanya satu kali pencarian
+  \end{itemize}
+  
+  \item \textbf{Gunakan Binary Search jika:}
+  \begin{itemize}
+    \item Data sudah terurut atau bisa diurutkan terlebih dahulu
+    \item Jumlah data besar (n > 1000)
+    \item Pencarian dilakukan berulang kali
+    \item Performa pencarian sangat penting
+  \end{itemize}
+\end{itemize}
+
+Pemilihan algoritma pencarian yang tepat sangat mempengaruhi efisiensi program, terutama untuk aplikasi yang menangani data dalam jumlah besar.

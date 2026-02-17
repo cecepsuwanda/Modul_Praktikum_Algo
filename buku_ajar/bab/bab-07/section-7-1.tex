@@ -1,0 +1,85 @@
+\section{Konsep Percabangan dan Struktur Dasar}
+
+Percabangan (branching) atau seleksi adalah salah satu elemen dasar algoritma yang memungkinkan program untuk melakukan tindakan yang berbeda berdasarkan kondisi tertentu. Tanpa percabangan, program hanya akan berjalan lurus (\textit{sequential}) dari baris pertama hingga terakhir.
+
+\subsection{Alur Logika Seleksi}
+Dalam flowchart, keputusan digambarkan dengan simbol \textit{Diamond} (Belah Ketupat). Simbol ini memiliki satu input aliran dan minimal dua output aliran (biasanya \textbf{True/Yes} dan \textbf{False/No}) \cite{flowchart_wikipedia}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowdecision, below=of start] (cond) {Kondisi Benar?};
+  \node[flowprocess, below=of cond] (stepA) {Langkah A};
+  \node[flowprocess, below=2.5cm of cond] (stepB) {Lanjut ke Langkah B};
+
+  \draw[arrow] (start) -- (cond);
+  \draw[arrow] (cond) -- node[left] {Ya} (stepA);
+  
+  % Jalur Tidak (False) - Mengelilingi blok True
+  \draw[arrow] (cond.east) -- ++(1.5,0) |- (stepB.east) node[near start, above] {Tidak};
+  
+  \draw[arrow] (stepA) -- (stepB);
+\end{tikzpicture}
+\caption{Flowchart Logika Single Selection (if)}
+\label{fig:flowchart_if}
+\end{figure}
+
+\subsection{Statement \code{if} (Single Selection)}
+Struktur \code{if} digunakan untuk menjalankan blok kode hanya jika kondisi bernilai \textbf{True} (non-zero). Jika kondisi \textbf{False} (0), blok kode dilewati.
+
+\textbf{Sintaks:}
+\begin{lstlisting}[language=C]
+if (kondisi) {
+    // Pernyataan yang dijalankan jika kondisi True
+    pernyataan;
+}
+\end{lstlisting}
+
+\textbf{Contoh:} Program menghitung nilai mutlak.
+\begin{lstlisting}[language=C]
+int angka = -5;
+if (angka < 0) {
+    angka = -angka; // Mengubah negatif menjadi positif
+}
+printf("Nilai mutlak: %d", angka); // Output: 5
+\end{lstlisting}
+
+\subsection{Statement \code{if-else} (Two-Way Selection)}
+Struktur ini memberikan alternatif. Jika kondisi True, jalankan Blok A. Jika False, jalankan Blok B. Salah satu blok \textbf{pasti} dijalankan.
+
+\textbf{Sintaks:}
+\begin{lstlisting}[language=C]
+if (kondisi) {
+    // Blok A (Jika True)
+} else {
+    // Blok B (Jika False)
+}
+\end{lstlisting}
+
+\textbf{Contoh:} Menentukan kelulusan.
+\begin{lstlisting}[language=C]
+if (nilai >= 60) {
+    printf("Selamat, Anda Lulus!\n");
+} else {
+    printf("Maaf, Anda Harus Mengulang.\n");
+}
+\end{lstlisting}
+
+\subsection{Blok Kode dan Scope}
+Dalam C, blok kode ditandai dengan kurung kurawal \code{\{ \}}. Meskipun C mengizinkan penghilangan kurung kurawal jika blok hanya terdiri dari satu baris pernyataan, sangat disarankan untuk \textbf{selalu menggunakan kurung kurawal}.
+
+\begin{lstlisting}[language=C]
+// TIDAK DISARANKAN (Rawan Error)
+if (x > 0)
+    printf("Positif");
+    x++; // Baris ini SELALU dijalankan, tidak terpengaruh if!
+
+// DISARANKAN (Aman)
+if (x > 0) {
+    printf("Positif");
+    x++; // Baris ini hanya jalan jika x > 0
+}
+\end{lstlisting}
+
+Percabangan memungkinkan program mengambil keputusan berdasarkan kondisi. Sintaks \code{if}: \code{if (kondisi) \{ pernyataan; \}}. Jika kondisi benar (non-nol), blok pernyataan dieksekusi. Sintaks \code{if-else}: \code{if (kondisi) \{ ... \} else \{ ... \}}; jika kondisi benar blok if dieksekusi, jika salah blok else dieksekusi. Blok dapat berisi satu atau lebih pernyataan; untuk satu pernyataan kurung kurawal bisa dihilangkan tapi tidak disarankan untuk kejelasan.

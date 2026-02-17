@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{8}}{}
+\begin{document}
+
+\chapter{Struktur Perulangan (for, while, do-while)}
+
+\begin{subcpmk}
+  \item Sub-CPMK 2.1, 3.2: Merancang dan mengimplementasikan struktur perulangan dalam C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Loop \code{for}, \code{while}, \code{do-while}; inisialisasi, kondisi, dan increment; kapan menggunakan masing-masing \cite{ref7,control_flow_cppref}.
+
+\input{bab-09/section-9-1}
+\input{bab-09/section-9-2}
+
+\begin{aktivitas}
+  \item Buat program menampilkan bilangan 1 sampai 10 dengan for.
+  \item Buat program menghitung jumlah digit bilangan dengan while.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan for, while, dan do-while!
+  \item Buat program menampilkan tabel perkalian!
+  \item \textbf{Refleksi}: Untuk tugas \"tampilkan bilangan 1 sampai N\", mengapa for sering lebih nyaman daripada while? Kapan Anda justru memilih while?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 2.1, 3.2}: Buat program C yang membaca bilangan bulat positif N, lalu menampilkan jumlah bilangan dari 1 sampai N (1+2+...+N) menggunakan loop. Implementasikan dengan \code{for} dan bandingkan dengan versi \code{while}.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan for, while, do-while
+  \item Saya memahami kapan menggunakan masing-masing
+\end{checklist}
+
+\begin{rangkuman}
+For untuk iterasi dengan jumlah pasti; while untuk kondisi berhenti; do-while minimal satu eksekusi.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

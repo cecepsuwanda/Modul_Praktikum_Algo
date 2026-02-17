@@ -1,0 +1,105 @@
+\section{Percabangan Bertingkat dan Bersarang}
+
+Seringkali keputusan yang diambil tidak cukup hanya ya/tidak, atau memiliki kondisi prasyarat. Untuk itu kita menggunakan percabangan bertingkat atau bersarang.
+
+\subsection{Struktur \code{if-else if} (Multi-Way Selection)}
+Digunakan ketika ada lebih dari dua kemungkinan kondisi yang harus diuji secara berurutan. Ini sering disebut sebagai \"The if-else-if Ladder\".
+
+\textbf{Prinsip Kerja:}
+\begin{enumerate}
+    \item Kondisi dievaluasi dari atas ke bawah.
+    \item Begitu ditemukan kondisi yang \textbf{True}, blok kodenya dieksekusi, dan sisa struktur dilewati (diabaikan).
+    \item Bagian \code{else} terakhir bersifat opsional, berfungsi sebagai \"block catch-all\" jika tidak ada kondisi yang terpenuhi.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=1.2cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowdecision, below=of start] (cond1) {Kondisi 1?};
+  \node[flowprocess, right=of cond1] (aksi1) {Aksi 1};
+  
+  \node[flowdecision, below=of cond1] (cond2) {Kondisi 2?};
+  \node[flowprocess, right=of cond2] (aksi2) {Aksi 2};
+  
+  \node[flowprocess, below=of cond2] (aksiElse) {Aksi Else};
+  \node[flowstart, below=1cm of aksiElse] (end) {Selesai};
+
+  \draw[arrow] (start) -- (cond1);
+  \draw[arrow] (cond1) -- node[above] {Ya} (aksi1);
+  \draw[arrow] (cond1) -- node[left] {Tidak} (cond2);
+  
+  \draw[arrow] (cond2) -- node[above] {Ya} (aksi2);
+  \draw[arrow] (cond2) -- node[left] {Tidak} (aksiElse);
+  
+  % Connecting paths to End
+  \draw[arrow] (aksi1) |- (end);
+  \draw[arrow] (aksi2) |- (end);
+  \draw[arrow] (aksiElse) -- (end);
+\end{tikzpicture}
+\caption{Flowchart Bertingkat (Ladder If)}
+\label{fig:ladder_if}
+\end{figure}
+
+\textbf{Contoh:} Konversi Nilai Angka ke Huruf.
+\begin{lstlisting}[language=C]
+if (nilai >= 85) {
+    printf("Grade A");
+} else if (nilai >= 70) {
+    printf("Grade B");
+} else if (nilai >= 55) {
+    printf("Grade C");
+} else if (nilai >= 40) {
+    printf("Grade D");
+} else {
+    printf("Grade E");
+}
+\end{lstlisting}
+
+\begin{alertbox}{Pentingnya Urutan}
+Pada struktur tangga (\textit{ladder}), urutan kondisi sangat krusial. Jika kita membalik urutannya:
+\code{if (nilai >= 40) ... else if (nilai >= 85) ...}
+Maka input nilai 90 akan masuk ke blok pertama (\code{>= 40} bernilai True), dan mencetak Grade D, yang mana salah. \textbf{Pastikan urutan kondisi logis (misal dari terbesar ke terkecil).}
+\end{alertbox}
+
+\subsection{Percabangan Bersarang (\textit{Nested if})}
+Kita bisa menempatkan struktur \code{if} di dalam blok \code{if} lainnya. Ini digunakan untuk logika berlapis atau prasyarat.
+
+\textbf{Sintaks:}
+\begin{lstlisting}[language=C]
+if (kondisi1) {
+    // Dieksekusi jika kondisi1 True
+    if (kondisi2) {
+        // Dieksekusi jika kondisi1 True DAN kondisi2 True
+    } else {
+        // Dieksekusi jika kondisi1 True DAN kondisi2 False
+    }
+} else {
+    // Dieksekusi jika kondisi1 False
+}
+\end{lstlisting}
+
+\textbf{Contoh:} Logika Login Sederhana.
+\begin{lstlisting}[language=C]
+if (username_valid) {
+    if (password_valid) {
+        printf("Login Berhasil!");
+        if (is_admin) {
+            printf("Selamat Datang Admin.");
+        }
+    } else {
+        printf("Password Salah!");
+    }
+} else {
+    printf("Username tidak ditemukan.");
+}
+\end{lstlisting}
+
+\subsubsection{Tips Mengelola Nesting}
+Nesting yang terlalu dalam (\textit{Deep Nesting}) membuat kode sulit dibaca dan dipahami (\textit{Spaghetti Code}).
+\begin{itemize}
+    \item Gunakan operator logika (\code{\&\&}) untuk menggabungkan kondisi jika memungkinkan.
+    \item Gunakan \"Early Return\" atau \"Guard Clause\" (akan dibahas di bab Fungsi).
+\end{itemize}
+
+Untuk kondisi bertingkat gunakan \code{if-else if-else}: \code{if (k1) {...} else if (k2) {...} else {...}}. Kondisi dievaluasi berurutan; blok pertama yang memenuhi kondisi akan dieksekusi. Percabangan bersarang: if di dalam if. Indentasi yang baik penting untuk keterbacaan. Contoh: menentukan grade nilai (A, B, C, D, E) berdasarkan rentang skor menggunakan if-else if.

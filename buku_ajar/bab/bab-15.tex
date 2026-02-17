@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{14}}{}
+\begin{document}
+
+\chapter{Struct dan Tipe Data Bentukan}
+
+\begin{subcpmk}
+  \item Sub-CPMK 4.2: Menggunakan struct/tipe data bentukan dan array of struct dalam program
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Definisi \code{struct}, akses anggota, \code{typedef}; array of struct untuk kumpulan data terstruktur \cite{ref7,ref2}.
+
+\input{bab-15/section-15-1}
+\input{bab-15/section-15-2}
+
+\begin{aktivitas}
+  \item Buat struct Buku (judul, pengarang, tahun), lalu buat array of struct.
+  \item Buat program mengelola data mahasiswa dengan struct.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan kegunaan struct dan kapan menggunakannya!
+  \item Bagaimana akses anggota struct dalam array of struct?
+  \item \textbf{Refleksi}: Kapan Anda memilih struct daripada beberapa array terpisah (misalnya array NIM, array nama)? Apa keuntungannya?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 4.2}: Buat program C dengan struct \code{Mahasiswa} (NIM, nama, nilai). Simpan data 3 mahasiswa dalam array of struct. Tampilkan data dan hitung rata-rata nilai. Jelaskan cara akses \code{arr[i].nilai}.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat mendefinisikan struct
+  \item Saya dapat menggunakan array of struct
+\end{checklist}
+
+\begin{rangkuman}
+Struct menggabungkan variabel beda tipe. Array of struct untuk data banyak entitas.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

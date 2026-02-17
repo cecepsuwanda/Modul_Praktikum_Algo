@@ -1,0 +1,86 @@
+\section{Prioritas Operator dan Studi Kasus}
+
+Dalam sebuah ekspresi kompleks yang memiliki banyak operator, urutan eksekusi ditentukan oleh \textbf{Prioritas Operator} (\textit{Operator Precedence}) dan \textbf{Asosiativitas}.
+
+\subsection{Tabel Prioritas Operator}
+Tabel berikut menunjukkan urutan operator dari prioritas tertinggi (dievaluasi duluan) hingga terendah.
+
+\begin{table}[ht]
+\centering
+\footnotesize
+\caption{Prioritas Operator (Disederhanakan)}
+\label{tab:precedence}
+\begin{tabular}{|c|p{3.25cm}|p{2.45cm}|p{2.2cm}|}
+\hline
+\textbf{Level} & \textbf{Operator} & \textbf{Deskripsi} & \textbf{Asos.} \\ \hline
+1 & \code{()} \code{[]} \code{->} \code{.} & Function call, Array subscript, Member & Kiri ke Kanan \\ \hline
+2 & \code{!} \code{\textasciitilde} \code{++} \code{--} \code{+} \code{-} \code{*} \code{\&} \code{sizeof} & Unary operators & \textbf{Kanan ke Kiri} \\ \hline
+3 & \code{*} \code{/} \code{\%} & Multiplicative & Kiri ke Kanan \\ \hline
+4 & \code{+} \code{-} & Additive & Kiri ke Kanan \\ \hline
+5 & \code{<<} \code{>>} & Shift & Kiri ke Kanan \\ \hline
+6 & \code{<} \code{<=} \code{>} \code{>=} & Relational & Kiri ke Kanan \\ \hline
+7 & \code{==} \code{!=} & Equality & Kiri ke Kanan \\ \hline
+8 & \code{\&} & Bitwise AND & Kiri ke Kanan \\ \hline
+9 & \code{\^} & Bitwise XOR & Kiri ke Kanan \\ \hline
+10 & \code{|} & Bitwise OR & Kiri ke Kanan \\ \hline
+11 & \code{\&\&} & Logical AND & Kiri ke Kanan \\ \hline
+12 & \code{||} & Logical OR & Kiri ke Kanan \\ \hline
+13 & \code{? :} & Ternary & \textbf{Kanan ke Kiri} \\ \hline
+14 & \code{=} \code{+=} \code{-=} dll & Assignment & \textbf{Kanan ke Kiri} \\ \hline
+15 & \code{,} & Comma & Kiri ke Kanan \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Studi Kasus Evaluasi Ekspresi}
+
+Mari kita bedah cara C mengevaluasi ekspresi berikut:
+\begin{center}
+\code{hasil = 10 + 5 * 2 > 15 \&\& 4 \% 2 == 0;}
+\end{center}
+
+\noindent\textbf{Langkah Evaluasi:}
+\begin{enumerate}
+    \item \textbf{Aritmatika Tertinggi (*) dan (\%):}
+    \begin{itemize}
+        \item \code{5 * 2} menjadi \code{10}.
+        \item \code{4 \% 2} menjadi \code{0}.
+        \item Ekspresi kini: \code{10 + 10 > 15 \&\& 0 == 0}
+    \end{itemize}
+    
+    \item \textbf{Aritmatika (+) dan (-):}
+    \begin{itemize}
+        \item \code{10 + 10} menjadi \code{20}.
+        \item Ekspresi kini: \code{20 > 15 \&\& 0 == 0}
+    \end{itemize}
+    
+    \item \textbf{Relasional (>, <, >=, <=):}
+    \begin{itemize}
+        \item \code{20 > 15} bernilai True (\code{1}).
+        \item Ekspresi kini: \code{1 \&\& 0 == 0}
+    \end{itemize}
+    
+    \item \textbf{Equality (==, !=):}
+    \begin{itemize}
+        \item \code{0 == 0} bernilai True (\code{1}).
+        \item Sisa ekspresi: \code{1 \&\& 1}
+    \end{itemize}
+    
+    \item \textbf{Logika AND (\&\&):}
+    \begin{itemize}
+        \item \code{1 \&\& 1} bernilai True (\code{1}).
+    \end{itemize}
+    
+    \item \textbf{Assignment (=):}
+    \begin{itemize}
+        \item Nilai \code{1} disimpan ke variabel \code{hasil}.
+    \end{itemize}
+\end{enumerate}
+
+\begin{alertbox}{Kesalahan Umum: Chaining Relational}
+Ekspresi matematika $5 < x < 10$ tidak bisa ditulis mentah-mentah di C sebagai \code{5 < x < 10}.
+\begin{itemize}
+    \item C akan mengevaluasi \code{(5 < x)} terlebih dahulu, menghasilkan 0 atau 1.
+    \item Kemudian hasil tersebut dibandingkan dengan 10: \code{(0 atau 1) < 10}, yang mana \textbf{selalu True}.
+    \item \textbf{Solusi:} Gunakan operator logika: \code{5 < x \&\& x < 10}.
+\end{itemize}
+\end{alertbox}

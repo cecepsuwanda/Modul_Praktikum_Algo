@@ -1,0 +1,166 @@
+\section{Asesmen Akhir Komprehensif}
+
+Bab ini menyajikan evaluasi komprehensif untuk mengukur pencapaian semua CPMK mata kuliah Algoritma dan Pemrograman. Asesmen meliputi kuis teori (algoritma, flowchart, pseudocode, konsep C), praktik coding (variabel, percabangan, perulangan, fungsi, array, struct), serta implementasi algoritma pengurutan dan pencarian. Mahasiswa diharapkan dapat menyelesaikan soal UTS dan UAS sesuai format yang ditetapkan dalam RPS. Rubrik penilaian mengacu pada Lampiran A.
+
+\subsection{Soal UTS: Teori dan Implementasi Dasar}
+
+\textbf{Bagian A: Teori Algoritma (30 points)}
+
+\begin{enumerate}
+  \item Jelaskan keenam karakteristik algoritma yang baik. Berikan contoh algoritma dari kehidupan sehari-hari dan analisis apakah memenuhi semua karakteristik tersebut. (10 points)
+  
+  \item Bandingkan kelebihan dan kekurangan antara flowchart dan pseudocode sebagai alat bantu perancangan algoritma. Berikan contoh kasus di mana flowchart lebih cocok dan contoh kasus di mana pseudocode lebih cocok. (10 points)
+  
+  \item Analisis kompleksitas Big O dari algoritma berikut:
+  \begin{lstlisting}[language=C]
+  for (int i = 0; i < n; i++) {
+      for (int j = i; j < n; j++) {
+          printf("%d ", arr[i] + arr[j]);
+      }
+  }
+  \end{lstlisting}
+  Jelaskan langkah-langkah analisisnya. (10 points)
+\end{enumerate}
+
+\textbf{Bagian B: Implementasi Dasar (40 points)}
+
+\begin{enumerate}
+  \item Buat program C untuk menghitung nilai akhir mahasiswa dengan ketentuan:
+  \begin{itemize}
+    \item Input: nilai tugas, nilai uts, nilai uas (0-100)
+    \item Bobot: tugas 30\%, uts 35\%, uas 35\%
+    \item Output: nilai akhir dan grade (A: 80-100, B: 70-79, C: 60-69, D: 50-59, E: <50)
+    \item Validasi: input harus antara 0-100
+  \end{itemize}
+  (20 points)
+  
+  \item Buat program C untuk menampilkan pola segitiga berikut:
+  \begin{verbatim}
+*
+**
+***
+****
+*****
+  \end{verbatim}
+  Tinggi segitiga diinput oleh user. Gunakan nested loop. (10 points)
+  
+  \item Buat fungsi untuk mengecek apakah suatu bilangan adalah bilangan prima. Fungsi menerima parameter integer dan mengembalikan 1 jika prima, 0 jika bukan. (10 points)
+\end{enumerate}
+
+\textbf{Bagian C: Algoritma Lanjut (30 points)}
+
+\begin{enumerate}
+  \item Implementasikan algoritma selection sort untuk mengurutkan array of integers. Tampilkan proses sorting setiap iterasi. (15 points)
+  
+  \item Implementasikan binary search untuk mencari elemen dalam array yang sudah terurut. Hitung jumlah perbandingan yang dilakukan. (15 points)
+\end{enumerate}
+
+\subsection{Soal UAS: Integrasi Komprehensif}
+
+\textbf{Studi Kasus: Sistem Perpustakaan Mini}
+
+Buat program manajemen perpustakaan dengan spesifikasi berikut:
+
+\textbf{Data Buku:}
+\begin{itemize}
+  \item Kode buku (int)
+  \item Judul (string)
+  \item Pengarang (string)
+  \item Tahun terbit (int)
+  \item Status (tersedia/dipinjam)
+\end{itemize}
+
+\textbf{Fitur yang Dibutuhkan:}
+\begin{enumerate}
+  \item \textbf{Menu Utama} dengan pilihan:
+  \begin{itemize}
+    \item Tambah buku baru
+    \item Tampilkan semua buku
+    \item Cari buku berdasarkan kode
+    \item Pinjam buku
+    \item Kembalikan buku
+    \item Urutkan buku berdasarkan judul
+    \item Statistik perpustakaan
+    \item Keluar
+  \end{itemize}
+  
+  \item \textbf{Validasi Input:}
+  \begin{itemize}
+    \item Kode buku harus unik
+    \item Tahun terbit harus reasonable (1900-2024)
+    \item Judul dan pengarang tidak boleh kosong
+  \end{itemize}
+  
+  \item \textbf{Fitur Pencarian:} Gunakan binary search untuk pencarian berdasarkan kode (array harus diurutkan terlebih dahulu)
+  
+  \item \textbf{Fitur Pengurutan:} Implementasikan bubble sort untuk mengurutkan berdasarkan judul buku
+  
+  \item \textbf{Statistik:} Tampilkan total buku, buku tersedia, buku dipinjam
+\end{enumerate}
+
+\textbf{Kriteria Penilaian:}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{2cm}|>{\raggedright\arraybackslash}p{5cm}|}
+\hline
+\textbf{Aspek} & \textbf{Bobot} & \textbf{Kriteria} \\
+\hline
+Struktur Data & 20\% & Penggunaan struct yang tepat, array management \\
+\hline
+Modularitas & 25\% & Fungsi yang terstruktur, parameter passing \\
+\hline
+Algoritma & 20\% & Implementasi sorting dan searching yang benar \\
+\hline
+User Interface & 15\% & Menu yang jelas, input validation \\
+\hline
+Error Handling & 10\% & Penanganan error yang memadai \\
+\hline
+Dokumentasi & 10\% & Komentar, variable naming, formatting \\
+\hline
+\end{tabular}
+\caption{Rubrik Penilaian UAS}
+\end{table}
+
+\subsection{Format Pengumpulan}
+
+\begin{itemize}
+  \item \textbf{Source Code:} File .c yang sudah kompilasi sukses
+  \item \textbf{Dokumentasi:} Penjelasan algoritma dan struktur program (maks 5 halaman)
+  \item \textbf{Screenshot:} Output program untuk setiap fitur
+  \item \textbf{Video Demo:} Video singkat (2-3 menit) menjelaskan program (opsional, nilai tambah)
+\end{itemize}
+
+\subsection{Kriteria Kelulusan}
+
+\begin{itemize}
+  \item \textbf{A (80-100):} Semua fitur berjalan sempurna, kode terstruktur, dokumentasi lengkap
+  \item \textbf{B (70-79):} Sebagian besar fitur berjalan, ada beberapa bug minor
+  \item \textbf{C (60-69):} Fitur utama berjalan, struktur dasar benar
+  \item \textbf{D (50-59):} Beberapa fitur utama berjalan, ada bug signifikan
+  \item \textbf{E (<50):} Program tidak berjalan atau fitur utama tidak ada
+\end{itemize}
+
+\subsection{Pemetaan Soal ke CPMK}
+
+Tabel berikut memetakan bagian UTS dan UAS ke Capaian Pembelajaran Mata Kuliah (CPMK) agar asesmen dapat dijadikan bukti pencapaian kompetensi.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.2cm}|c|>{\raggedright\arraybackslash}p{5.5cm}|}
+\hline
+\textbf{Asesmen} & \textbf{CPMK} & \textbf{Keterangan} \\
+\hline
+UTS Bagian A (Teori) & CPMK-1 & Karakteristik algoritma, flowchart, pseudocode, kompleksitas \\
+\hline
+UTS Bagian B (Implementasi Dasar) & CPMK-2, CPMK-3 & Rancang dan implementasi: variabel, percabangan, perulangan, fungsi \\
+\hline
+UTS Bagian C (Algoritma Lanjut) & CPMK-5 & Selection sort, binary search \\
+\hline
+UAS (Sistem Perpustakaan) & CPMK-2 s.d. CPMK-5 & Integrasi: flowchart/pseudocode, C, struct, array, string, sorting, searching \\
+\hline
+\end{tabular}
+\caption{Pemetaan Asesmen UTS/UAS ke CPMK}
+\end{table}

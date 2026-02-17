@@ -1,0 +1,48 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{4}}{}
+\begin{document}
+
+\chapter{Variabel, Tipe Data, dan I/O dalam C}
+
+\begin{subcpmk}
+  \item Sub-CPMK 3.1 (dasar): Mendeklarasikan variabel, menggunakan tipe data, serta \code{printf} dan \code{scanf}
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Konsep variabel, tipe data dasar, format I/O dengan \code{printf}/\code{scanf}, serta casting tipe data \cite{ref7}.
+
+\input{bab-05/section-5-1}
+\input{bab-05/section-5-2}
+\input{bab-05/section-5-3}
+\input{bab-05/section-5-4}
+
+\begin{aktivitas}
+  \item Buat program yang membaca nama dan umur, lalu menampilkannya.
+  \item Buat program konversi suhu Celsius ke Fahrenheit.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan \code{int}, \code{float}, dan \code{double}!
+  \item Mengapa \code{scanf} memerlukan \code{\&} sebelum nama variabel?
+  \item \textbf{Refleksi}: Bagaimana Anda memilih tipe data yang paling tepat untuk sebuah masalah?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 3.1}: Buat program C yang membaca nama, usia, dan tinggi badan, lalu menampilkan kembali dengan format rapi menggunakan \code{printf}. Jelaskan alasan pemilihan tipe data dan format specifier.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat mendeklarasikan variabel dengan tipe data yang tepat
+  \item Saya dapat menggunakan \code{printf} dan \code{scanf}
+  \item Saya memahami type casting
+\end{checklist}
+
+\begin{rangkuman}
+Variabel menyimpan data; tipe data dasar C meliputi int, float, double, char. \code{printf} dan \code{scanf} digunakan untuk I/O.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

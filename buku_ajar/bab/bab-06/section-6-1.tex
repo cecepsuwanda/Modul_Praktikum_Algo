@@ -1,0 +1,66 @@
+\section{Operator Aritmatika dan Increment/Decrement}
+
+Operator adalah simbol khusus yang memberitahu kompilator untuk melakukan operasi matematika atau logika tertentu. Bahasa C kaya akan operator internal.
+
+\subsection{Operator Aritmatika}
+Operator aritmatika digunakan untuk melakukan operasi matematika dasar.
+
+\begin{table}[ht]
+\centering
+\footnotesize
+\caption{Operator Aritmatika dalam C}
+\label{tab:aritmatika}
+\begin{tabular}{|c|p{2.2cm}|p{2.2cm}|p{3.8cm}|}
+\hline
+\textbf{Operator} & \textbf{Nama} & \textbf{Contoh} & \textbf{Keterangan} \\ \hline
+\code{+} & Penjumlahan & \code{a + b} & Menjumlahkan dua operand \\ \hline
+\code{-} & Pengurangan & \code{a - b} & Mengurangkan operand kedua dari pertama \\ \hline
+\code{*} & Perkalian & \code{a * b} & Mengalikan dua operand \\ \hline
+\code{/} & Pembagian & \code{a / b} & Membagi operand pertama dengan kedua \\ \hline
+\code{\%} & Modulus (Sisa Bagi) & \code{a \% b} & Sisa hasil bagi integer \\ \hline
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Catatan Penting:}
+\begin{enumerate}
+    \item \textbf{Pembagian Integer}: Jika kedua operand adalah integer, hasilnya adalah integer (dibulatkan ke bawah/truncate). Contoh: \code{7 / 2} menghasilkan \code{3}, bukan \code{3.5}. Agar mendapatkan hasil desimal, salah satu operand harus bertipe \textit{floating point} (misal: \code{7.0 / 2}).
+    \item \textbf{Modulus}: Operator \code{\%} hanya bekerja pada tipe data integer. \code{7 \% 2} bernilai \code{1}. Pada C modern, tanda hasil modulus mengikuti operand pertama (misal \code{-7 \% 3} hasilnya \code{-1}).
+\end{enumerate}
+
+\subsection{Operator Increment dan Decrement}
+C memiliki operator unik untuk menambah atau mengurangi nilai variabel sebesar 1, yaitu \code{++} dan \code{--}. Operator ini bisa diletakkan sebelum variabel (\textit{prefix}) atau sesudah variabel (\textit{postfix}).
+
+\begin{itemize}
+    \item \textbf{Prefix (\code{++a})}: Nilai variabel diubah \textit{terlebih dahulu}, lalu hasilnya digunakan dalam ekspresi.
+    \item \textbf{Postfix (\code{a++})}: Nilai variabel \textit{saat ini} digunakan dulu dalam ekspresi, baru kemudian nilainya diubah.
+\end{itemize}
+
+\begin{lstlisting}[language=C, caption=Perbedaan Prefix dan Postfix]
+#include <stdio.h>
+
+int main() {
+    int a = 5, b = 5;
+    int hasil_a, hasil_b;
+
+    // Prefix increment
+    hasil_a = ++a; 
+    // a bertambah jadi 6 dulu, lalu nilai 6 dimasukkan ke hasil_a
+    printf("a: %d, hasil_a: %d\n", a, hasil_a); // Output: 6, 6
+
+    // Postfix increment
+    hasil_b = b++;
+    // nilai b (5) dimasukkan ke hasil_b dulu, baru b bertambah jadi 6
+    printf("b: %d, hasil_b: %d\n", b, hasil_b); // Output: 6, 5
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Operator Unary}
+Operator unary hanya memerlukan satu operand. Selain increment/decrement, ada:
+\begin{itemize}
+    \item \code{+} (Unary Plus): Menandakan nilai positif (jarang ditulis eksplisit).
+    \item \code{-} (Unary Minus): Mengnegasikan nilai (mengubah positif jadi negatif, dan sebaliknya).
+\end{itemize}
+
+Operator aritmatika C: \code{+}, \code{-}, \code{*}, \code{/}, \code{\%} (modulo). Prioritas mengikuti aturan matematika. Operator perbandingan: \code{==}, \code{!=}, \code{<}, \code{>}, \code{<=}, \code{>=}; menghasilkan nilai 1 (true) atau 0 (false). Operator penugasan: \code{=} serta bentuk majemuk \code{+=}, \code{-=}, \code{*=}, \code{/=}. Hati-hati dengan \code{=} vs \code{==}; kesalahan umum menggunakan \code{=} pada kondisi.

@@ -1,0 +1,78 @@
+\section{Contoh Flowchart: Konversi Suhu}
+
+Berikut contoh flowchart lengkap untuk mengonversi suhu dari Celsius ke Fahrenheit dengan implementasi dalam bahasa C.
+
+\subsection{Algoritma Konversi Suhu}
+
+\textbf{Algoritma:}
+\begin{enumerate}
+  \item Mulai
+  \item Input suhu dalam Celsius
+  \item Hitung Fahrenheit = Celsius $\times$ 9/5 + 32
+  \item Tampilkan hasil Fahrenheit
+  \item Selesai
+\end{enumerate}
+
+\subsection{Flowchart Lengkap}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowio, below=of start] (input) {Input Celsius};
+  \node[flowprocess, below=of input] (calc) {F = C $\times$ 9/5 + 32};
+  \node[flowio, below=of calc] (output) {Tampilkan F};
+  \node[flowstart, below=of output] (end) {Selesai};
+  \draw[arrow] (start) -- (input);
+  \draw[arrow] (input) -- (calc);
+  \draw[arrow] (calc) -- (output);
+  \draw[arrow] (output) -- (end);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Implementasi dalam Bahasa C}
+
+\begin{lstlisting}[language=C, caption={Program Konversi Suhu Celsius ke Fahrenheit}]
+#include <stdio.h>
+
+int main() {
+    float celsius, fahrenheit;
+    
+    // Input suhu Celsius
+    printf("Masukkan suhu dalam Celsius: ");
+    scanf("%f", &celsius);
+    
+    // Konversi ke Fahrenheit
+    fahrenheit = celsius * 9.0 / 5.0 + 32;
+    
+    // Tampilkan hasil
+    printf("%.2f Celsius = %.2f Fahrenheit\n", celsius, fahrenheit);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Analisis Karakteristik Algoritma}
+
+\begin{itemize}
+  \item \textbf{Input:} Satu nilai suhu dalam Celsius
+  \item \textbf{Output:} Satu nilai suhu dalam Fahrenheit
+  \item \textbf{Definiteness:} Langkah-langkah jelas (input, hitung, output)
+  \item \textbf{Finiteness:} Algoritma berakhir setelah 4 langkah
+  \item \textbf{Effectiveness:} Operasi aritmatika dasar dapat dilakukan
+  \item \textbf{Determinism:} Input 25°C selalu menghasilkan 77°F
+\end{itemize}
+
+\subsection{Contoh Output Program}
+
+\begin{verbatim}
+Masukkan suhu dalam Celsius: 25
+25.00 Celsius = 77.00 Fahrenheit
+
+Masukkan suhu dalam Celsius: 0
+0.00 Celsius = 32.00 Fahrenheit
+
+Masukkan suhu dalam Celsius: 100
+100.00 Celsius = 212.00 Fahrenheit
+\end{verbatim}
+
+Contoh ini menunjukkan bagaimana flowchart dapat membantu merancang algoritma sederhana sebelum implementasi dalam bahasa pemrograman.

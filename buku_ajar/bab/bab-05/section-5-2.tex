@@ -1,0 +1,124 @@
+\section{Tipe Data Dasar}
+
+Tipe data dasar C menentukan jenis data yang dapat disimpan dalam variabel, ukuran memori yang digunakan, dan rentang nilai yang mungkin. Pemilihan tipe data yang tepat sangat penting untuk efisiensi memori dan akurasi perhitungan.
+
+\subsection{Tipe Data Integer}
+
+Tipe data integer digunakan untuk menyimpan bilangan bulat (tanpa desimal):
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\textbf{Tipe Data} & \textbf{Ukuran} & \textbf{Rentang Nilai} & \textbf{Contoh Penggunaan} \\
+\hline
+\code{short int} & 2 byte & -32,768 hingga 32,767 & Usia, jumlah kecil \\
+\hline
+\code{unsigned short} & 2 byte & 0 hingga 65,535 & ID positif \\
+\hline
+\code{int} & 4 byte & -2,147,483,648 hingga 2,147,483,647 & Counter, umum \\
+\hline
+\code{unsigned int} & 4 byte & 0 hingga 4,294,967,295 & ID, populasi \\
+\hline
+\code{long int} & 4/8 byte & Sama seperti int & Kompatibilitas \\
+\hline
+\code{long long} & 8 byte & $\pm$9.2 x 10$^{18}$ & Bilangan sangat besar \\
+\hline
+\end{tabular}
+\caption{Tipe Data Integer dalam C}
+\end{table}
+
+\subsection{Tipe Data Floating Point}
+
+Tipe data floating point digunakan untuk menyimpan bilangan desimal:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\textbf{Tipe Data} & \textbf{Ukuran} & \textbf{Presisi} & \textbf{Contoh Penggunaan} \\
+\hline
+\code{float} & 4 byte & 6-7 digit desimal & Suhu, persentase \\
+\hline
+\code{double} & 8 byte & 15-16 digit desimal & IPK, nilai akurat \\
+\hline
+\code{long double} & 10/16 byte & 19-21 digit desimal & Ilmiah, presisi tinggi \\
+\hline
+\end{tabular}
+\caption{Tipe Data Floating Point dalam C}
+\end{table}
+
+\subsection{Tipe Data Karakter}
+
+\begin{itemize}
+  \item \textbf{\code{char}:} Menyimpan satu karakter (1 byte)
+  \item \textbf{Rentang:} -128 hingga 127 (signed) atau 0 hingga 255 (unsigned)
+  \item \textbf{Penggunaan:} Huruf, angka, simbol, atau nilai ASCII
+\end{itemize}
+
+\textbf{Contoh:}
+\begin{lstlisting}[language=C]
+char grade = 'A';        // Karakter A
+char newline = '\n';      // Karakter newline
+char nilai_ascii = 65;     // Sama dengan 'A'
+\end{lstlisting}
+
+\subsection{Modifier Tipe Data}
+
+Modifier dapat digunakan untuk mengubah sifat tipe data dasar:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{7cm}|}
+\hline
+\textbf{Modifier} & \textbf{Pengaruh} \\
+\hline
+\code{signed} & Default, dapat menyimpan nilai positif dan negatif \\
+\hline
+\code{unsigned} & Hanya nilai non-negatif, rentang positif dua kali lipat \\
+\hline
+\code{short} & Mengurangi ukuran memori (biasanya setengah dari int) \\
+\hline
+\code{long} & Meningkatkan ukuran memori (minimal sama dengan int) \\
+\hline
+\end{tabular}
+\caption{Modifier Tipe Data dalam C}
+\end{table}
+
+\subsection{Memilih Tipe Data yang Tepat}
+
+\textbf{Guidelines pemilihan tipe data:}
+
+\begin{itemize}
+  \item \textbf{Usia, jumlah item:} \code{int} atau \code{unsigned int}
+  \item \textbf{Uang, nilai akademik:} \code{double} (hindari float untuk akurasi)
+  \item \textbf{Suhu, persentase:} \code{float} (cukup untuk presisi biasa)
+  \item \textbf{Huruf, status:} \code{char}
+  \item \textbf{Bilangan sangat besar:} \code{long long}
+  \item \textbf{ID yang selalu positif:} \code{unsigned int}
+\end{itemize}
+
+\textbf{Contoh implementasi:}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main() {
+    // Tipe data yang tepat untuk berbagai kebutuhan
+    int umur = 20;                    // Umur mahasiswa
+    double ipk = 3.75;                 // IPK (perlu presisi)
+    float suhu = 36.5f;               // Suhu tubuh
+    char grade = 'A';                  // Nilai huruf
+    unsigned int npm = 2024001234;      // Nomor pokok mahasiswa
+    
+    printf("Umur: %d tahun\n", umur);
+    printf("IPK: %.2f\n", ipk);
+    printf("Suhu: %.1f derajat C\n", suhu);
+    printf("Grade: %c\n", grade);
+    printf("NPM: %u\n", npm);
+    
+    return 0;
+}
+\end{lstlisting}

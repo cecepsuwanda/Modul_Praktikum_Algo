@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{11}}{}
+\begin{document}
+
+\chapter{Array Satu Dimensi}
+
+\begin{subcpmk}
+  \item Sub-CPMK 4.2: Menggunakan array satu dimensi dalam program
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Deklarasi dan inisialisasi array 1D; indeks dari 0; operasi dasar: input, output, penjumlahan, pencarian \cite{ref7,ref2}.
+
+\input{bab-12/section-12-1}
+\input{bab-12/section-12-2}
+
+\begin{aktivitas}
+  \item Buat program membaca n bilangan, menyimpan di array, lalu menampilkan rata-rata.
+  \item Buat program mencari nilai terbesar dalam array.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Mengapa indeks array dimulai dari 0?
+  \item Buat program membalik urutan elemen array!
+  \item \textbf{Refleksi}: Kesalahan apa yang sering terjadi saat mengakses array (off-by-one, out of bounds)? Bagaimana Anda menghindarinya?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 4.2}: Buat program C yang membaca N bilangan ke dalam array, lalu menampilkan nilai terbesar, terkecil, dan rata-ratanya. Validasi N (misalnya 1--100). Jelaskan penggunaan indeks dalam loop Anda.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat mendeklarasikan dan mengakses array 1D
+  \item Saya dapat melakukan operasi dasar pada array
+\end{checklist}
+
+\begin{rangkuman}
+Array 1D: kumpulan elemen bertipe sama. Indeks dari 0. Operasi: input, output, penjumlahan, pencarian.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

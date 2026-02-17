@@ -1,0 +1,190 @@
+\section{Algoritma Pengurutan: Bubble Sort dan Selection Sort}
+
+Algoritma pengurutan (sorting) adalah proses mengatur elemen-elemen array dalam urutan tertentu (ascending atau descending). Dua algoritma sorting dasar yang akan dipelajari adalah Bubble Sort dan Selection Sort, keduanya memiliki kompleksitas O(n²) namun dengan pendekatan yang berbeda.
+
+\subsection{Bubble Sort}
+
+Bubble Sort adalah algoritma sorting sederhana yang bekerja dengan cara membandingkan elemen-elemen bertetangga dan menukarnya jika urutannya salah. Proses ini diulang hingga tidak ada lagi pertukaran yang terjadi.
+
+\textbf{Algoritma Bubble Sort:}
+\begin{enumerate}
+  \item Bandingkan elemen ke-i dengan elemen ke-(i+1)
+  \item Jika elemen ke-i > elemen ke-(i+1), tukar posisinya
+  \item Ulangi langkah 1-2 untuk semua elemen
+  \item Lakukan proses di atas hingga tidak ada pertukaran
+\end{enumerate}
+
+\textbf{Implementasi Bubble Sort dalam C:}
+\begin{lstlisting}[language=C, caption={Implementasi Bubble Sort}]
+#include <stdio.h>
+
+void bubbleSort(int arr[], int n) {
+    int i, j, temp;
+    int swapped;
+    
+    for (i = 0; i < n-1; i++) {
+        swapped = 0;
+        // Loop dalam untuk membandingkan elemen bertetangga
+        for (j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // Tukar elemen
+                temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+                swapped = 1;
+            }
+        }
+        
+        // Jika tidak ada pertukaran, array sudah terurut
+        if (swapped == 0) {
+            break;
+        }
+    }
+}
+
+void printArray(int arr[], int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    printf("Array sebelum sorting: ");
+    printArray(arr, n);
+    
+    bubbleSort(arr, n);
+    
+    printf("Array setelah sorting: ");
+    printArray(arr, n);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Selection Sort}
+
+Selection Sort adalah algoritma sorting yang bekerja dengan cara mencari elemen minimum dari sisa array yang belum terurut, lalu menempatkannya di posisi yang benar.
+
+\textbf{Algoritma Selection Sort:}
+\begin{enumerate}
+  \item Cari elemen minimum dari seluruh array
+  \item Tukar elemen minimum dengan elemen pertama
+  \item Cari elemen minimum dari sisa array (mulai dari elemen kedua)
+  \item Tukar elemen minimum dengan elemen kedua
+  \item Ulangi hingga seluruh array terurut
+\end{enumerate}
+
+\textbf{Implementasi Selection Sort dalam C:}
+\begin{lstlisting}[language=C, caption={Implementasi Selection Sort}]
+#include <stdio.h>
+
+void selectionSort(int arr[], int n) {
+    int i, j, min_idx, temp;
+    
+    // Loop luar untuk setiap posisi
+    for (i = 0; i < n-1; i++) {
+        // Cari elemen minimum dari sisa array
+        min_idx = i;
+        for (j = i+1; j < n; j++) {
+            if (arr[j] < arr[min_idx]) {
+                min_idx = j;
+            }
+        }
+        
+        // Tukar elemen minimum dengan elemen ke-i
+        if (min_idx != i) {
+            temp = arr[i];
+            arr[i] = arr[min_idx];
+            arr[min_idx] = temp;
+        }
+    }
+}
+
+void printArray(int arr[], int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    
+    printf("Array sebelum sorting: ");
+    printArray(arr, n);
+    
+    selectionSort(arr, n);
+    
+    printf("Array setelah sorting: ");
+    printArray(arr, n);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Analisis Kompleksitas}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|}
+\hline
+\textbf{Algoritma} & \textbf{Best Case} & \textbf{Average Case} & \textbf{Worst Case} \\
+\hline
+Bubble Sort & O(n) & O(n²) & O(n²) \\
+\hline
+Selection Sort & O(n²) & O(n²) & O(n²) \\
+\hline
+\end{tabular}
+\caption{Kompleksitas Waktu Algoritma Sorting}
+\end{table}
+
+\subsection{Perbandingan Bubble Sort vs Selection Sort}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\textbf{Aspek} & \textbf{Bubble Sort} & \textbf{Selection Sort} \\
+\hline
+Prinsip Kerja & Tukar elemen bertetangga & Cari minimum, tempatkan di posisi \\
+\hline
+Jumlah Perbandingan & O(n²) & O(n²) \\
+\hline
+Jumlah Pertukaran & Bervariasi (0 hingga O(n²)) & Selalu O(n) \\
+\hline
+Stabilitas & Stabil & Tidak stabil \\
+\hline
+Best Case & O(n) - data sudah terurut & O(n²) - selalu sama \\
+\hline
+Memory & O(1) - in-place & O(1) - in-place \\
+\hline
+\end{tabular}
+\caption{Perbandingan Bubble Sort dan Selection Sort}
+\end{table}
+
+\subsection{Visualisasi Proses Sorting}
+
+\textbf{Contoh Bubble Sort: [5, 1, 4, 2, 8]}
+\begin{itemize}
+  \item Pass 1: [1, 5, 4, 2, 8] → [1, 4, 5, 2, 8] → [1, 4, 2, 5, 8] → [1, 4, 2, 5, 8]
+  \item Pass 2: [1, 4, 2, 5, 8] → [1, 2, 4, 5, 8] → [1, 2, 4, 5, 8]
+  \item Pass 3: [1, 2, 4, 5, 8] → [1, 2, 4, 5, 8] (sudah terurut)
+\end{itemize}
+
+\textbf{Contoh Selection Sort: [5, 1, 4, 2, 8]}
+\begin{itemize}
+  \item Pass 1: Minimum=1 → [1, 5, 4, 2, 8]
+  \item Pass 2: Minimum=2 → [1, 2, 4, 5, 8]
+  \item Pass 3: Minimum=4 → [1, 2, 4, 5, 8] (sudah terurut)
+\end{itemize}
+
+Kedua algoritma ini cocok untuk data kecil (n < 1000) atau untuk tujuan pembelajaran konsep sorting dasar. Untuk data yang lebih besar, algoritma yang lebih efisien seperti Quick Sort atau Merge Sort lebih direkomendasikan.

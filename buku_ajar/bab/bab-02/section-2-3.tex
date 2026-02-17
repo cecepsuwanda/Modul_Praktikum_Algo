@@ -1,0 +1,20 @@
+\section{Pengantar Bahasa C}
+
+Bahasa C dikembangkan oleh Dennis Ritchie di Bell Labs pada tahun 1972 untuk sistem operasi UNIX. C menjadi salah satu bahasa pemrograman paling berpengaruh karena efisiensinya, portabilitasnya, dan kemampuannya melakukan manipulasi level rendah \cite{ref7}. Banyak bahasa pemrograman modern seperti C++, Java, dan Python terpengaruh oleh sintaks dan konsep C. Dalam mata kuliah ini, C dipilih karena kesederhanaannya dan kesesuaiannya untuk mempelajari dasar-dasar algoritma dan pemrograman prosedural.
+
+Program C terdiri dari fungsi-fungsi, dengan fungsi \code{main()} sebagai titik masuk eksekusi. C mendukung tipe data dasar seperti \keyword{int}, \keyword{float}, \keyword{char}, dan \keyword{double}, serta struktur kontrol seperti percabangan dan perulangan. Untuk mengompilasi program C, dibutuhkan compiler seperti GCC (GNU Compiler Collection) atau MinGW di Windows. Setelah dikompilasi, program C menghasilkan file executable yang dapat dijalankan langsung oleh sistem operasi.
+
+\begin{contoh}
+Contoh program C minimal yang menampilkan teks ke layar:
+
+\begin{lstlisting}[language=C, caption={Program Hello World dalam C}]
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+\end{lstlisting}
+
+Baris \code{\#include <stdio.h>} menyertakan header untuk fungsi input-output. Fungsi \code{printf} menampilkan teks ke layar, dan \code{return 0} mengindikasikan program berakhir sukses.
+\end{contoh}

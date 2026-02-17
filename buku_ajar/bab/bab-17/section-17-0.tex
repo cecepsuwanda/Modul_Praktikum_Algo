@@ -1,0 +1,151 @@
+\section{Panduan Proyek Integrasi (Pertemuan 15)}
+
+Sesuai RPS, pertemuan 15 ditujukan untuk integrasi materi, proyek, dan review. Proyek integrasi mengukur pencapaian CPMK-2 hingga CPMK-5 dengan menggabungkan semua konsep yang telah dipelajari: algoritma, flowchart, pseudocode, variabel, struktur kontrol, fungsi, array, struct, pengurutan, dan pencarian.
+
+\subsection{Studi Kasus 1: Manajemen Data Mahasiswa}
+
+\textbf{Deskripsi:} Buat program yang mengelola data mahasiswa dengan fitur lengkap.
+
+\textbf{Spesifikasi Requirements:}
+\begin{itemize}
+  \item \textbf{Data Mahasiswa:} NIM (int), nama (string), IPK (float), umur (int)
+  \item \textbf{Fitur Input:} Tambah data mahasiswa baru
+  \item \textbf{Fitur Tampil:} Tampilkan semua data mahasiswa
+  \item \textbf{Fitur Pencarian:} Cari mahasiswa berdasarkan NIM
+  \item \textbf{Fitur Analisis:} Hitung rata-rata IPK semua mahasiswa
+  \item \textbf{Fitur Pengurutan:} Urutkan data berdasarkan nama atau IPK
+\end{itemize}
+
+\textbf{Teknis Implementasi:}
+\begin{itemize}
+  \item Gunakan \code{struct Mahasiswa} untuk merepresentasikan data
+  \item Gunakan array \code{Mahasiswa kelas[50]} untuk menyimpan data
+  \item Buat fungsi terpisah untuk setiap operasi
+  \item Implementasikan menu interaktif dengan \code{switch-case}
+  \item Gunakan bubble sort atau selection sort untuk pengurutan
+  \item Gunakan linear search untuk pencarian
+\end{itemize}
+
+\textbf{Contoh Struktur Program:}
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int nim;
+    char nama[50];
+    float ipk;
+    int umur;
+} Mahasiswa;
+
+// Fungsi-fungsi yang dibutuhkan
+void tambahMahasiswa(Mahasiswa kelas[], int *jumlah);
+void tampilkanSemua(Mahasiswa kelas[], int jumlah);
+void cariMahasiswa(Mahasiswa kelas[], int jumlah);
+void hitungRataIPK(Mahasiswa kelas[], int jumlah);
+void urutkanBerdasarkanIPK(Mahasiswa kelas[], int jumlah);
+void urutkanBerdasarkanNama(Mahasiswa kelas[], int jumlah);
+
+int main() {
+    Mahasiswa kelas[50];
+    int jumlah = 0;
+    int pilihan;
+    
+    do {
+        // Menu utama
+        printf("\n=== MENU MANAJEMEN MAHASISWA ===\n");
+        printf("1. Tambah Mahasiswa\n");
+        printf("2. Tampilkan Semua Mahasiswa\n");
+        printf("3. Cari Mahasiswa\n");
+        printf("4. Hitung Rata-rata IPK\n");
+        printf("5. Urutkan berdasarkan IPK\n");
+        printf("6. Urutkan berdasarkan Nama\n");
+        printf("0. Keluar\n");
+        printf("Pilihan: ");
+        scanf("%d", &pilihan);
+        
+        switch(pilihan) {
+            case 1: tambahMahasiswa(kelas, &jumlah); break;
+            case 2: tampilkanSemua(kelas, jumlah); break;
+            case 3: cariMahasiswa(kelas, jumlah); break;
+            case 4: hitungRataIPK(kelas, jumlah); break;
+            case 5: urutkanBerdasarkanIPK(kelas, jumlah); break;
+            case 6: urutkanBerdasarkanNama(kelas, jumlah); break;
+        }
+    } while (pilihan != 0);
+    
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Studi Kasus 2: Sistem Inventory Barang}
+
+\textbf{Deskripsi:} Buat program inventory untuk mengelola data barang.
+
+\textbf{Spesifikasi Requirements:}
+\begin{itemize}
+  \item \textbf{Data Barang:} Kode (int), nama (string), jumlah (int), harga (float)
+  \item \textbf{Fitur CRUD:} Create, Read, Update, Delete barang
+  \item \textbf{Fitur Pencarian:} Cari berdasarkan kode atau nama
+  \item \textbf{Fitur Laporan:} Hitung total nilai inventory
+  \item \textbf{Fitur Sorting:} Urutkan berdasarkan nama atau harga
+\end{itemize}
+
+\subsection{Rubrik Penilaian Proyek}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{2cm}|>{\raggedright\arraybackslash}p{7cm}|}
+\hline
+\textbf{Kriteria} & \textbf{Bobot} & \textbf{Deskripsi Penilaian} \\
+\hline
+Desain Algoritma & 20\% & 
+\begin{itemize}
+  \item Flowchart lengkap dan benar (10\%)
+  \item Pseudocode terstruktur (10\%)
+\end{itemize} \\
+\hline
+Implementasi Kode & 40\% & 
+\begin{itemize}
+  \item Kode benar dan kompilasi sukses (15\%)
+  \item Modularitas dan fungsi yang baik (15\%)
+  \item Error handling yang memadai (10\%)
+\end{itemize} \\
+\hline
+Struktur Data & 25\% & 
+\begin{itemize}
+  \item Penggunaan struct yang tepat (10\%)
+  \item Pengelolaan array dengan benar (10\%)
+  \item Manipulasi string yang proper (5\%)
+\end{itemize} \\
+\hline
+Integrasi Algoritma & 15\% & 
+\begin{itemize}
+  \item Implementasi sorting yang benar (8\%)
+  \item Implementasi searching yang efisien (7\%)
+\end{itemize} \\
+\hline
+\end{tabular}
+\caption{Rubrik Penilaian Proyek Integrasi}
+\end{table}
+
+\subsection{Tahap Pengembangan Proyek}
+
+\begin{enumerate}
+  \item \textbf{Analisis (Pekan 1):} Pahami requirements, buat flowchart
+  \item \textbf{Desain (Pekan 2):} Buat pseudocode, definisikan struct dan fungsi
+  \item \textbf{Implementasi (Pekan 3-4):} Koding fitur-fitur utama
+  \item \textbf{Integrasi (Pekan 5):} Gabungkan semua fitur, testing
+  \item \textbf{Dokumentasi (Pekan 6):} Buat laporan dan presentasi
+\end{enumerate}
+
+\subsection{Format Pengumpulan}
+
+\begin{itemize}
+  \item \textbf{Source Code:} File .c dan .h (jika ada)
+  \item \textbf{Executable:} File .exe (hasil kompilasi)
+  \item \textbf{Dokumentasi:} Laporan PDF (maks 10 halaman)
+  \item \textbf{Flowchart:} Gambar flowchart (PNG/JPG)
+  \item \textbf{Demo:} Video demo program (opsional, nilai tambah)
+\end{itemize}

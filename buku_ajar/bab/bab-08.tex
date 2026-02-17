@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{7}}{}
+\begin{document}
+
+\chapter{Struktur Percabangan (switch-case)}
+
+\begin{subcpmk}
+  \item Sub-CPMK 3.1: Mengimplementasikan struktur seleksi switch-case dalam C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Sintaks \code{switch-case}, peran \code{break} dan \code{default}; kapan memilih switch daripada if-else \cite{ref7,control_flow_cppref}.
+
+\input{bab-08/section-8-1}
+\input{bab-08/section-8-2}
+
+\begin{aktivitas}
+  \item Buat program kalkulator dengan menu (1.Tambah 2.Kurang 3.Kali 4.Bagi) menggunakan switch.
+  \item Buat program konversi angka ke nama hari (1=Senin, 2=Selasa, ...).
+\end{aktivitas}
+
+\begin{latihan}
+  \item Kapan sebaiknya menggunakan switch daripada if-else?
+  \item Apa fungsi break dalam switch? Apa yang terjadi jika dihilangkan?
+  \item \textbf{Refleksi}: Kapan Anda memilih menu dengan switch-case dan kapan dengan if-else? Jelaskan pertimbangan Anda.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 3.1}: Buat program C dengan menu (1--4) untuk operasi geometri: 1) luas persegi, 2) luas lingkaran, 3) luas segitiga, 4) keluar. Gunakan switch-case. Jelaskan mengapa switch tepat untuk kasus ini.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan switch-case
+  \item Saya mengetahui kapan menggunakan switch vs if-else
+\end{checklist}
+
+\begin{rangkuman}
+Switch-case untuk percabangan berdasarkan nilai diskret. Gunakan break untuk mencegah fall-through; default untuk nilai tidak cocok.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

@@ -1,0 +1,71 @@
+\section{Operator Relasional dan Logika}
+
+Operator relasional dan logika adalah fondasi dari pengambilan keputusan (percabangan) dan perulangan dalam pemrograman.
+
+\subsection{Operator Relasional (Perbandingan)}
+Operator ini membandingkan dua nilai dan menghasilkan nilai kebenaran. Di C (sebelum C99), nilai kebenaran direpresentasikan dengan integer: \textbf{0 untuk False} dan \textbf{1 (atau bukan nol) untuk True}.
+
+\begin{table}[h]
+\centering
+\caption{Operator Relasional}
+\label{tab:relasional}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{Operator} & \textbf{Deskripsi} & \textbf{Contoh (A=10, B=20)} \\ \hline
+\code{==} & Sama dengan & \code{(A == B)} $\rightarrow$ False (0) \\ \hline
+\code{!=} & Tidak sama dengan & \code{(A != B)} $\rightarrow$ True (1) \\ \hline
+\code{>} & Lebih besar dari & \code{(A > B)} $\rightarrow$ False (0) \\ \hline
+\code{<} & Lebih kecil dari & \code{(A < B)} $\rightarrow$ True (1) \\ \hline
+\code{>=} & Lebih besar atau sama dengan & \code{(A >= B)} $\rightarrow$ False (0) \\ \hline
+\code{<=} & Lebih kecil atau sama dengan & \code{(A <= B)} $\rightarrow$ True (1) \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{alertbox}{Peringatan}
+Jangan tertukar antara operator penugasan \code{=} (assignment) dengan operator perbandingan \code{==} (equality). Menulis \code{if (x = 5)} adalah \textbf{valid} secara sintaks tapi seringkali berupa \textit{bug logic}, karena akan melakukan assignment nilai 5 ke x, yang nilainya (5) dianggap True.
+\end{alertbox}
+
+\subsubsection{Membandingkan Floating Point}
+Hati-hati saat membandingkan tipe \code{float} atau \code{double} menggunakan \code{==} karena masalah presisi. Sebaiknya gunakan selisih absolut dengan nilai toleransi (epsilon).
+\begin{lstlisting}[language=C]
+// Kurang aman
+if (f == 3.14) { ... } 
+
+// Lebih aman
+if (fabs(f - 3.14) < 0.00001) { ... }
+\end{lstlisting}
+
+\subsection{Operator Logika}
+Digunakan untuk menggabungkan beberapa ekspresi relasional.
+
+\begin{table}[ht]
+\centering
+\caption{Tabel Kebenaran Operator Logika}
+\label{tab:logika}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{A \&\& B (AND)} & \textbf{A || B (OR)} & \textbf{!A (NOT)} \\ \hline
+0 & 0 & 0 & 0 & 1 \\ \hline
+0 & 1 & 0 & 1 & 1 \\ \hline
+1 & 0 & 0 & 1 & 0 \\ \hline
+1 & 1 & 1 & 1 & 0 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Short-Circuit Evaluation}
+C menggunakan evaluasi \textit{short-circuit} untuk efisiensi:
+\begin{enumerate}
+    \item \textbf{AND (\&\&)}: Jika operand kiri \textbf{False} (0), operand kanan \textbf{tidak dievaluasi} karena hasilnya pasti False.
+    \item \textbf{OR (||)}: Jika operand kiri \textbf{True} (1), operand kanan \textbf{tidak dievaluasi} karena hasilnya pasti True.
+\end{enumerate}
+
+Contoh keamanan menggunakan short-circuit:
+\begin{lstlisting}[language=C]
+// Mencegah pembagian dengan nol
+if (x != 0 && (100 / x) > 10) {
+    // Jika x == 0, bagian (100 / x) tidak akan dieksekusi 
+    // sehingga error division by zero terhindarkan.
+}
+\end{lstlisting}
+
+Operator logika: \code{\&\&} (AND), \code{||} (OR), \code{!} (NOT). AND bernilai true hanya jika kedua operand true. OR bernilai true jika salah satu operand true. NOT membalik nilai kebenaran. Operator logika sering digunakan dalam kondisi percabangan dan perulangan. Contoh: \code{if (x > 0 \&\& x < 10)} memeriksa apakah x berada di antara 0 dan 10. Short-circuit evaluation: jika operand pertama menentukan hasil, operand kedua tidak dievaluasi.

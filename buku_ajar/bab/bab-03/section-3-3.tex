@@ -1,0 +1,102 @@
+\section{Membuat Flowchart Sederhana}
+
+Untuk membuat flowchart, mulailah dengan simbol terminator bertuliskan "Mulai", kemudian tambahkan langkah-langkah algoritma secara berurutan menggunakan simbol proses atau input/output. Jika algoritma memiliki percabangan, gunakan simbol keputusan dengan dua cabang (Ya dan Tidak) yang menuju ke langkah yang sesuai. Akhiri flowchart dengan simbol terminator bertuliskan "Selesai". Pastikan setiap panah mengalir dengan jelas dan tidak ada langkah yang terputus.
+
+\subsection{Contoh 1: Menentukan Bilangan Positif atau Negatif}
+
+\textbf{Algoritma:}
+\begin{enumerate}
+  \item Mulai
+  \item Input bilangan
+  \item Jika bilangan > 0 maka tampilkan "Positif"
+  \item Jika tidak maka tampilkan "Negatif"
+  \item Selesai
+\end{enumerate}
+
+\textbf{Flowchart:}
+\begin{center}
+\begin{tikzpicture}[node distance=0.6cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowio, below=of start] (p1) {Input bilangan};
+  \node[flowdecision, below=of p1] (d1) {bilangan > 0?};
+  \node[flowprocess, below left=1.2cm of d1] (p2) {Tampilkan "Positif"};
+  \node[flowprocess, below right=1.2cm of d1] (p3) {Tampilkan "Negatif"};
+  \node[flowstart, below=2.5cm of d1] (end) {Selesai};
+  \draw[arrow] (start) -- (p1);
+  \draw[arrow] (p1) -- (d1);
+  \draw[arrow] (d1) -| node[near start, above] {Ya} (p2);
+  \draw[arrow] (d1) -| node[near start, above] {Tidak} (p3);
+  \draw[arrow] (p2) |- (end);
+  \draw[arrow] (p3) |- (end);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Contoh 2: Menghitung Rata-rata Tiga Bilangan}
+
+\textbf{Algoritma:}
+\begin{enumerate}
+  \item Mulai
+  \item Input bilangan1, bilangan2, bilangan3
+  \item Hitung jumlah = bilangan1 + bilangan2 + bilangan3
+  \item Hitung rata-rata = jumlah / 3
+  \item Tampilkan rata-rata
+  \item Selesai
+\end{enumerate}
+
+\textbf{Flowchart:}
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowio, below=of start] (input) {Input bil1, bil2, bil3};
+  \node[flowprocess, below=of input] (sum) {jumlah = bil1 + bil2 + bil3};
+  \node[flowprocess, below=of sum] (avg) {rata = jumlah / 3};
+  \node[flowio, below=of avg] (output) {Tampilkan rata};
+  \node[flowstart, below=of output] (end) {Selesai};
+  \draw[arrow] (start) -- (input);
+  \draw[arrow] (input) -- (sum);
+  \draw[arrow] (sum) -- (avg);
+  \draw[arrow] (avg) -- (output);
+  \draw[arrow] (output) -- (end);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Contoh 3: Loop untuk Menampilkan Bilangan 1-5}
+
+\textbf{Algoritma:}
+\begin{enumerate}
+  \item Mulai
+  \item Inisialisasi i = 1
+  \item Jika i > 5 maka ke langkah 7
+  \item Tampilkan i
+  \item i = i + 1
+  \item Kembali ke langkah 3
+  \item Selesai
+\end{enumerate}
+
+\textbf{Flowchart:}
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm]
+  \node[flowstart] (start) {Mulai};
+  \node[flowprocess, below=of start] (init) {i = 1};
+  \node[flowdecision, below=of init] (cond) {i > 5?};
+  \node[flowio, below left=1.5cm of cond] (print) {Tampilkan i};
+  \node[flowprocess, below=of print] (inc) {i = i + 1};
+  \node[flowstart, below=2cm of cond] (end) {Selesai};
+  \draw[arrow] (start) -- (init);
+  \draw[arrow] (init) -- (cond);
+  \draw[arrow] (cond) -| node[near start, above] {Tidak} (print);
+  \draw[arrow] (print) -- (inc);
+  \draw[arrow] (inc) |- (cond);
+  \draw[arrow] (cond) -- node[near start, right] {Ya} (end);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Tips Membuat Flowchart yang Baik}
+
+\begin{itemize}
+  \item \textbf{Mulai dari atas:} Alur flowchart sebaiknya mengalir dari atas ke bawah
+  \item \textbf{Gunakan simbol yang tepat:} Pastikan setiap operasi menggunakan simbol yang sesuai
+  \item \textbf{Hindari persimpangan:} Usahakan garis alur tidak saling memotong
+  \item \textbf{Label yang jelas:} Gunakan teks yang singkat namun jelas
+  \item \textbf{Uji logika:} Pastikan flowchart merepresentasikan algoritma dengan benar
+\end{itemize}

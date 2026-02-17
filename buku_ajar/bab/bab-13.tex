@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{12}}{}
+\begin{document}
+
+\chapter{Array Dua Dimensi dan Matriks}
+
+\begin{subcpmk}
+  \item Sub-CPMK 4.2: Menggunakan array dua dimensi dan operasi matriks
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Array 2D dan representasi row-major; operasi matriks: penjumlahan, transpose, perkalian \cite{ref7,ref2}.
+
+\input{bab-13/section-13-1}
+\input{bab-13/section-13-2}
+
+\begin{aktivitas}
+  \item Buat program penjumlahan dua matriks.
+  \item Buat program transpose matriks.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan representasi array 2D dalam memori (row-major)!
+  \item Buat program perkalian matriks 2x2!
+  \item \textbf{Refleksi}: Kapan Anda memilih array 2D daripada beberapa array 1D? Berikan contoh masalah yang cocok dengan array 2D.
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 4.2}: Buat program C yang membaca dua matriks 2x2, menghitung penjumlahan dan perkalian keduanya, lalu menampilkan hasil. Gunakan nested loop untuk perkalian matriks.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan array 2D
+  \item Saya dapat melakukan operasi matriks sederhana
+\end{checklist}
+
+\begin{rangkuman}
+Array 2D untuk matriks. Akses mat[i][j]. Operasi: penjumlahan, transpose, perkalian.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}

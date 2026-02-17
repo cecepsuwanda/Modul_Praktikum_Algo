@@ -1,0 +1,147 @@
+\documentclass[../main.tex]{subfiles}
+\ifSubfilesClassLoaded{\setcounter{chapter}{6}}{}
+\begin{document}
+
+\chapter{Struktur Percabangan (Selection)}
+
+\begin{subcpmk}
+  \item Sub-CPMK 2.1: Merancang algoritma dengan struktur seleksi yang tepat (if, if-else, nested if).
+  \item Sub-CPMK 3.1: Mengimplementasikan struktur percabangan dalam bahasa C untuk menyelesaikan masalah pengambilan keputusan.
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} 
+\begin{itemize}
+    \item Konsep Percabangan: Single Selection, Two-Way Selection, Multi-Way Selection
+    \item Struktur \code{if} dan \code{if-else}
+    \item Struktur \code{if-else if} (Ladder)
+    \item Percabangan Bersarang (\textit{Nested If})
+    \item Studi Kasus dan Kesalahan Umum (\textit{Common Pitfalls})
+\end{itemize}
+
+\noindent\textit{Referensi: \cite{ref7, control_flow_cppref, ref2}}
+
+\input{bab-07/section-7-1}
+\input{bab-07/section-7-2}
+\input{bab-07/section-7-3}
+\input{bab-07/section-7-4}
+
+% ============================================================
+% AKTIVITAS PEMBELAJARAN
+% ============================================================
+\begin{aktivitas}
+  \item \textbf{Analisis Logika}: Diberikan flowchart "Menentukan Bilangan Terbesar dari 3 Angka", tuliskan pseudocode dan implementasinya dalam C.
+  \item \textbf{Debugging}: Cari kesalahan pada kode berikut dan perbaiki:
+  \begin{lstlisting}[language=C]
+if (nilai >= 70);
+    printf("Lulus\n");
+else
+    printf("Tidak Lulus\n");
+  \end{lstlisting}
+  \item \textbf{Refactoring}: Ubah serangkaian \code{if} tunggal menjadi struktur \code{if-else if} yang lebih efisien untuk menentukan kategori usia (Anak, Remaja, Dewasa, Lansia).
+\end{aktivitas}
+
+% ============================================================
+% LATIHAN DAN REFLEKSI
+% ============================================================
+\begin{latihan}
+  \item Jelaskan perbedaan mendasar antara \textit{Two-Way Selection} (\code{if-else}) dan \textit{Multi-Way Selection} (\code{if-else if})!
+  \item Apa itu \textit{Dangling Else}? Bagaimana cara menghindarinya?
+  \item Buatlah tabel kebenaran untuk logika tahun kabisat (Kabisat jika: habis dibagi 400, ATAU (habis dibagi 4 TAPI tidak habis dibagi 100)).
+  \item \textbf{Refleksi}: Mengapa indentasi (penulisan kode yang menjorok) sangat penting dalam \textit{Nested If}, meskipun compiler C tidak mempedulikannya?
+\end{latihan}
+
+% ============================================================
+% ASESMEN
+% ============================================================
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 2.1, 3.1}
+
+\noindent\textbf{Soal 1 (Nested If - Kategori Nilai):}
+Buat program yang membaca Nilai Angka (0-100) dan Kehadiran (0-100\%). Mahasiswa dinyatakan LULUS jika Nilai Angka $\ge$ 60 DAN Kehadiran $\ge$ 80\%.
+\begin{itemize}
+    \item Jika Lulus, tentukan Grade: A ($\ge$ 85), B ($\ge$ 70), C (sisanya).
+    \item Jika Tidak Lulus, berikan alasannya: "Nilai Kurang", "Kehadiran Kurang", atau "Keduanya Kurang".
+\end{itemize}
+
+\noindent\textbf{Soal 2 (Validasi Segitiga):}
+Baca 3 buah bilangan bulat positif. Tentukan apakah ketiga bilangan tersebut bisa membentuk segitiga. Jika ya, tentukan apakah segitiga Siku-siku (gunakan Pythagoras $a^2 + b^2 = c^2$), Sama Kaki, atau Sama Sisi.
+
+\noindent\textbf{Soal 3 (Analisis Kompleksitas):}
+Diberikan 3 kondisi independen. Manakah yang lebih efisien: menggunakan 3 buah \code{if} terpisah atau menggunakan \code{if-else if}? Jelaskan alasannya.
+\end{asesmen}
+
+% ============================================================
+% CHECKLIST KOMPETENSI
+% ============================================================
+\begin{checklist}
+  \item Saya memahami konsep blok kode (\code{\{\}})
+  \item Saya dapat menggunakan struktur \code{if} dan \code{if-else} dengan benar
+  \item Saya dapat merancang logika bertingkat menggunakan \code{if-else if}
+  \item Saya mampu mengelola kompleksitas pada \textit{nested if}
+  \item Saya mengetahui bahaya \textit{dangling else} dan assignment dalam kondisi
+\end{checklist}
+
+% ============================================================
+% RANGKUMAN
+% ============================================================
+\begin{rangkuman}
+Bab ini membahas struktur kontrol seleksi yang memungkinkan program \"berpikir\" dan mengambil keputusan:
+\begin{itemize}
+    \item \code{if}: Seleksi tunggal, hanya dijalankan jika kondisi True.
+    \item \code{if-else}: Seleksi dua arah, memilih satu dari dua blok kode yang harus dijalankan.
+    \item \code{if-else if}: Seleksi banyak arah (bertingkat), memeriksa kondisi secara berurutan sampai ada yang memenuhi.
+    \item \code{Nested if}: Struktur percabangan di dalam percabangan lain untuk logika yang lebih spesifik/kompleks.
+    \item \textbf{Best Practice}: Selalu gunakan kurung kurawal \code{\{\}} untuk setiap blok \code{if} atau \code{else} guna mencegah ambiguitas dan bug logis.
+\end{itemize}
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}
+\ifSubfilesClassLoaded{\setcounter{chapter}{6}}{}
+\begin{document}
+
+\chapter{Struktur Percabangan (if-else)}
+
+\begin{subcpmk}
+  \item Sub-CPMK 2.1, 3.1: Merancang dan mengimplementasikan struktur seleksi if-else dalam C
+\end{subcpmk}
+
+\noindent\textbf{Materi Pokok:} Struktur \code{if}, \code{if-else}, \code{if-else if}; percabangan bersarang; penggabungan kondisi dengan operator logika \cite{ref7,control_flow_cppref}.
+
+\input{bab-07/section-7-1}
+\input{bab-07/section-7-2}
+
+\begin{aktivitas}
+  \item Buat program menentukan bilangan ganjil/genap.
+  \item Buat program menentukan grade nilai (A-E) dari input skor.
+\end{aktivitas}
+
+\begin{latihan}
+  \item Jelaskan perbedaan if, if-else, dan if-else if!
+  \item Buat program mengecek tahun kabisat!
+  \item \textbf{Refleksi}: Dalam kehidupan sehari-hari, berikan satu contoh keputusan yang mirip dengan \code{if-else if} bertingkat. Bagaimana Anda memastikan urutan kondisi sudah tepat?
+\end{latihan}
+
+\begin{asesmen}
+\textbf{Instrumen untuk Sub-CPMK 2.1, 3.1}: Buat program C yang membaca nilai ujian (0--100) dan menampilkan grade (A/B/C/D/E) serta pesan lulus/tidak. Gunakan struktur if-else if. Buat juga flowchart untuk algoritma tersebut.
+\end{asesmen}
+
+\begin{checklist}
+  \item Saya dapat menggunakan if, if-else, if-else if
+  \item Saya dapat membuat percabangan bersarang
+\end{checklist}
+
+\begin{rangkuman}
+Percabangan if-else memungkinkan pengambilan keputusan berdasarkan kondisi. Gunakan if-else if untuk kondisi bertingkat.
+\end{rangkuman}
+
+\ifSubfilesClassLoaded{
+  \renewcommand{\bibname}{Daftar Pustaka}
+  \bibliographystyle{plain}
+  \bibliography{../references}
+}{}
+\end{document}
